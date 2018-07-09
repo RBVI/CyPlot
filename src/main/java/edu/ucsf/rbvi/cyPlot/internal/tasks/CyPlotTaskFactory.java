@@ -12,7 +12,7 @@ public class CyPlotTaskFactory extends AbstractTaskFactory {
 	} 
 
 	public TaskIterator createTaskIterator () {
-		return new TaskIterator(new CyPlotTask(registrar));
+		return new TaskIterator(new VolcanoPlotTask(registrar));
 	}
 
 	public boolean isReady() { 

@@ -13,8 +13,8 @@ public class VolcanoPlotTaskFactory implements TaskFactory {
 
 	public TaskIterator createTaskIterator() { 
 		// This should do something like:
-		// return new TaskIterator(new VolcanoPlotTask(serviceRegistrar);
-		return null;
+		return new TaskIterator(new VolcanoPlotTask(serviceRegistrar));
+		//return null;
 	}
 
 	public boolean isReady() { 

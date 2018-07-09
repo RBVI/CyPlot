@@ -2,6 +2,8 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+
 import org.cytoscape.command.AvailableCommands;
 import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.service.util.CyServiceRegistrar;
@@ -9,12 +11,20 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.util.ListSingleSelection;
+import org.cytoscape.model.CyColumn;
 
-public class CyPlotTask extends AbstractTask {
+public class VolcanoPlotTask extends AbstractTask {
 	
 	final CyServiceRegistrar sr;
+	@Tunable (description="Fold-change column")
+	public ListSingleSelection<Callable<CyColumn>> foldChangeCol;
+
+	@Tunable (description="P-Value column")
+	public ListSingleSelection<Callable<CyColumn>> pValCol;
 	
-	public CyPlotTask(final CyServiceRegistrar sr) {
+	public VolcanoPlotTask(final CyServiceRegistrar sr) {
 		super();
 		this.sr = sr; 
 	}
