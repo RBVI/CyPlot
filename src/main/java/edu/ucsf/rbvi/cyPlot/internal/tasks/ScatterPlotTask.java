@@ -18,25 +18,25 @@ import org.cytoscape.model.CyColumn;
 public class ScatterPlotTask extends AbstractTask {
 	
 	final CyServiceRegistrar sr;
-	@Tunable (description="Fold-change column")
-	public ListSingleSelection<Callable<CyColumn>> foldChangeCol;
+	@Tunable (description="X-axis column")
+	public ListSingleSelection<Callable<CyColumn>> xCol;
 
-	@Tunable (description="P-Value column")
-	public ListSingleSelection<Callable<CyColumn>> pValCol;
+	@Tunable (description="Y-axis column")
+	public ListSingleSelection<Callable<CyColumn>> yCol;
 	
 	public ScatterPlotTask(final CyServiceRegistrar sr) {
 		super();
 		this.sr = sr; 
-		foldChangeCol = new ListSingleSelection("option 1", "option 2");
-		pValCol = new ListSingleSelection("option 1", "option 2");
+		xCol = new ListSingleSelection("option 1", "option 2");
+		yCol = new ListSingleSelection("option 1", "option 2");
 	}
 	
-	public Callable<CyColumn> getFoldChangeSelection() {
-		return foldChangeCol.getSelectedValue();
+	public Callable<CyColumn> getXSelection() {
+		return xCol.getSelectedValue();
 	}
 	
-	public Callable<CyColumn> getPValueSelection() {
-		return pValCol.getSelectedValue();
+	public Callable<CyColumn> getYSelection() {
+		return yCol.getSelectedValue();
 	}
 
 	public void run(TaskMonitor monitor) { 
