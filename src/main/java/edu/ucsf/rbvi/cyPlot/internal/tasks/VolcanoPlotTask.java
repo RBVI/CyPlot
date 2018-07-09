@@ -27,6 +27,16 @@ public class VolcanoPlotTask extends AbstractTask {
 	public VolcanoPlotTask(final CyServiceRegistrar sr) {
 		super();
 		this.sr = sr; 
+		foldChangeCol = new ListSingleSelection("option 1", "option 2");
+		pValCol = new ListSingleSelection("option 1", "option 2");
+	}
+	
+	public Callable<CyColumn> getFoldChangeSelection() {
+		return foldChangeCol.getSelectedValue();
+	}
+	
+	public Callable<CyColumn> getPValueSelection() {
+		return pValCol.getSelectedValue();
 	}
 
 	public void run(TaskMonitor monitor) { 
