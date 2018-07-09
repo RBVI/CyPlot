@@ -8,22 +8,47 @@ import org.cytoscape.work.ServiceProperties;
 import org.cytoscape.work.TaskFactory;
 import org.osgi.framework.BundleContext;
 
-import edu.ucsf.rbvi.cyPlot.internal.tasks.CyPlotTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.tasks.VolcanoPlotTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.tasks.ScatterPlotTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapTaskFactory;
 
 public class CyActivator extends AbstractCyActivator {
   
 	@Override
 	public void start(BundleContext context) throws Exception {
+		//creating menu for CyPlot
 		Properties props = new Properties();
-	//	props.setProperty(ServiceProperties.PREFERRED_MENU, "Apps");
-	//	props.setProperty(ServiceProperties.TITLE, "hello world");
-		props.put(ServiceProperties.PREFERRED_MENU, "Apps");
-		props.put(ServiceProperties.TITLE, "CyPlot");
+//		props.put(ServiceProperties.PREFERRED_MENU, "Apps");
+//		props.put(ServiceProperties.TITLE, "CyPlot");
+//		props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		
+		//adding in the various types of plots
+		Properties props1 = new Properties();
+		props1.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+		props1.put(ServiceProperties.TITLE, "Volcano plot");
+		props1.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		
+		Properties props2 = new Properties();
+		props2.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+		props2.put(ServiceProperties.TITLE, "Scatter plot");
+		props2.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		
+		Properties props3 = new Properties();
+		props3.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+		props3.put(ServiceProperties.TITLE, "Heat map");
+		props3.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 
+		//registering all services
 		CyServiceRegistrar sr = getService(context, CyServiceRegistrar.class);
 		
-		TaskFactory tf = new CyPlotTaskFactory(sr); // Implementation
-		registerService(context, tf, TaskFactory.class, props); // Service properties	
+		TaskFactory vtf = new VolcanoPlotTaskFactory(sr);
+		registerService(context, vtf, TaskFactory.class, props1);
+		
+		TaskFactory stf = new ScatterPlotTaskFactory(sr);
+		registerService(context, stf, TaskFactory.class, props2);
+		
+		TaskFactory htf = new HeatMapTaskFactory(sr);
+		registerService(context, htf, TaskFactory.class, props3);
 	}
 }
 //package edu.ucsf.rbvi.cyPlot.internal;
