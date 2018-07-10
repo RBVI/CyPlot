@@ -46,17 +46,19 @@ public class VolcanoPlotTask extends AbstractTask {
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		
 		String html1 = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>";
-	//	String html2 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react@16.2.0/umd/react.production.min.js\"></script>";
-	//	String html3 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script></head>";
-		String html4 = "<body><div id=\"scattertest\" style=\"width:600px;height:600px;\"></div>";
-		String html5 = "<script> var trace1 = { x: [0, 1, 2, 3, 4, 5, 6, 7, 8], y: [8, 7, 6, 5, 4, 3, 2, 1, 0], type: 'scatter'};";
-		String html6 = "var trace2 = { x: [0, 1, 2, 3, 4, 5, 6, 7, 8], y: [0, 1, 2, 3, 4, 5, 6, 7, 8], type:'scatter'};";
-		String html7 = "var data = [trace1, trace2];";
-		String html8 = "var layout = { xaxis: {range: [2,5]}, yaxis: {range: [2,5]}};";
-		String html9 = "Plotly.react('myDiv', data).then(function(){ Plotly.react('myDiv', data, layout); })";
-		String html10 = "</script></body></html>";
-		
-        String html = html1 + html4 + html5 + html6 + html7 + html8 + html9 + html10;
+		String html4 = "<body><div id=\"myDiv\"></div>";
+		String html5 = "<script>function makeplot(){ Plotly.d3.csv(\"https://raw.githubusercontent.com/plotly/datasets/master/2014_apple_stock.csv\", function(data){ processData(data){);}";
+		String html6 = "function processData(allRows){ var x = [], y = [], std = [];";
+		String html7 = "for (var i = 0; i < allRows.length; i++) { row = allRows[i];";
+		String html8 = "x.push(row['AAPL_x']);";
+		String html9 = "y.push(row['AAPL_y']);}";
+		String html10 = "makePlotly(x,y,std);}";
+		String html11 = "function makePlotly(x,y,std){";
+		String html12 = "var plotDiv = document.getElementById(\"plot\");";
+		String html13 = "var traces = [{x: x, y: y}];";
+		String html14 = "var layout = {yaxis: {fixedrange: true}, xaxis: {fixedrange: true}, title: 'my graph'} Plotly.newPlot('myDiv', traces,layout);}; makeplot();";
+		String html15 = "</script></body></html>";
+        String html = html1 + html4 + html5 + html6 + html7 + html8 + html9 + html10 + html11 + html12 + html13 + html14 + html15;
 	//	String html = "<!DOCTYPE HTML><html><body><a href=\"https://www.google.com/\"></a></body></html>";
 		Map<String, Object> args = new HashMap<>();
 		
