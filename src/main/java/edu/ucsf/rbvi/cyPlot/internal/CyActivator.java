@@ -18,9 +18,6 @@ public class CyActivator extends AbstractCyActivator {
 	public void start(BundleContext context) throws Exception {
 		//creating menu for CyPlot
 		Properties props = new Properties();
-//		props.put(ServiceProperties.PREFERRED_MENU, "Apps");
-//		props.put(ServiceProperties.TITLE, "CyPlot");
-//		props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 		
 		//adding in the various types of plots
 		Properties props1 = new Properties();
