@@ -4,12 +4,26 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class ScatterPlotScreen extends JPanel implements ActionListener {
 
+	public JButton color, thickness;
 	public ScatterPlotScreen() {
 		setFocusable(true);
+		
+		color = new JButton("Choose color");
+		color.setBounds(500,250,100,30);
+		color.addActionListener(this);
+		this.add(color);
+		color.setVisible(true);
+		
+		thickness = new JButton("Set point thickness");
+		thickness.setBounds(500,300,100,30);
+		thickness.addActionListener(this);
+		this.add(thickness);
+		thickness.setVisible(true);
 	}
 	
 	public Dimension getPreferredSize() {
