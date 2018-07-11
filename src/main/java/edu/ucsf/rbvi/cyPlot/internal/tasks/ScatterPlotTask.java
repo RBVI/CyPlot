@@ -1,5 +1,7 @@
 package edu.ucsf.rbvi.cyPlot.internal.tasks;
 
+import javax.swing.JFrame;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -86,6 +88,14 @@ public class ScatterPlotTask extends AbstractTask {
 		args.put("title", "Plot");
 		args.put("url", "https://unpkg.com/react@16.2.0/umd/react.production.min.js");
 		args.put("id", "01");
+		
+		//JFrame
+		JFrame fr = new JFrame("Scatter plot interface");
+        ScatterPlotScreen sc = new ScatterPlotScreen();
+        fr.add(sc);
+        fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        fr.pack();
+        fr.setVisible(true);
 		
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
 		sTM.execute(ti);
