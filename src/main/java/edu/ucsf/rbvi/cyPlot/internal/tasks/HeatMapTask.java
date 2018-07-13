@@ -1,12 +1,19 @@
 package edu.ucsf.rbvi.cyPlot.internal.tasks;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import javax.swing.JFrame;
+
+import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.command.AvailableCommands;
 import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
@@ -14,29 +21,46 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
 
 public class HeatMapTask extends AbstractTask {
-	
+	public CyApplicationManager appManager;
+	public CyNetworkView netView;
 	final CyServiceRegistrar sr;
-	@Tunable (description="Fold-change column")
-	public ListSingleSelection<Callable<CyColumn>> foldChangeCol;
+	
+	@Tunable (description="X-value column")
+	public ListSingleSelection<Callable<CyColumn>> xCol;
 
-	@Tunable (description="P-Value column")
-	public ListSingleSelection<Callable<CyColumn>> pValCol;
+	@Tunable (description="Y-Value column")
+	public ListSingleSelection<Callable<CyColumn>> yCol;
 	
 	public HeatMapTask(final CyServiceRegistrar sr) {
 		super();
 		this.sr = sr; 
-		foldChangeCol = new ListSingleSelection("option 1", "option 2");
-		pValCol = new ListSingleSelection("option 1", "option 2");
+		appManager = sr.getService(CyApplicationManager.class);
+		netView = appManager.getCurrentNetworkView();
+		CyNetwork network = netView.getModel();
+		CyTable table = network.getDefaultNodeTable();
+		Collection<CyColumn> columns = table.getColumns();
+		
+		List<String> headers = new ArrayList();
+		for(CyColumn each : columns) {
+			String header = each.getName();
+			headers.add(header);
+		}
+		
+		xCol = new ListSingleSelection(headers);
+		yCol = new ListSingleSelection(headers);
+
 	}
 	
-	public Callable<CyColumn> getFoldChangeSelection() {
-		return foldChangeCol.getSelectedValue();
+	public Callable<CyColumn> getxColSelection() {
+		return xCol.getSelectedValue();
 	}
 	
-	public Callable<CyColumn> getPValueSelection() {
-		return pValCol.getSelectedValue();
+	public Callable<CyColumn> getyColSelection() {
+		return yCol.getSelectedValue();
 	}
 
 	public void run(TaskMonitor monitor) { 
@@ -58,13 +82,17 @@ public class HeatMapTask extends AbstractTask {
 		
         String html = html1 + html4 + html5 + html6 + html7 + html8 + html9 + html10;
 	//	String html = "<!DOCTYPE HTML><html><body><a href=\"https://www.google.com/\"></a></body></html>";
-		Map<String, Object> args = new HashMap<>();
-		
+		Map<String, Object> args = new HashMap<>();	
 		args.put("text", html);
-	/*	args.put("shape", "ellipse");
-		args.put("colorScaleLow", "0");
-		args.put("colorScaleHigh", "555"); */
-		
+
+		//JFrame
+		JFrame fr = new JFrame("volcano plot interface");
+        HeatMapScreen sc = new HeatMapScreen();
+        fr.add(sc);
+        fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        fr.pack();
+        fr.setVisible(true);
+        
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
 		sTM.execute(ti);
 	}
