@@ -83,7 +83,7 @@ public class HeatMapTask extends AbstractTask {
         String html = html1 + html4 + html5 + html6 + html7 + html8 + html9 + html10;
 	//	String html = "<!DOCTYPE HTML><html><body><a href=\"https://www.google.com/\"></a></body></html>";
 		Map<String, Object> args = new HashMap<>();	
-		args.put("text", html);
+		args.put("text", html); 
 
 		//JFrame
 		JFrame fr = new JFrame("volcano plot interface");
