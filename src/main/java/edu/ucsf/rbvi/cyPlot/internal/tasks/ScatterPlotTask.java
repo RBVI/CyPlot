@@ -47,8 +47,12 @@ public class ScatterPlotTask extends AbstractTask {
 		
 		List<String> headers = new ArrayList();
 		for(CyColumn each : columns) {
-			String header = each.getName();
-			headers.add(header);
+			if(!each.getType().isAssignableFrom(String.class) && 
+					!each.getName().equals(CyNetwork.SUID) && 
+					!each.getName().equals(CyNetwork.SELECTED)) {
+				String header = each.getName();
+				headers.add(header);
+			}
 		}
 		
 		xCol = new ListSingleSelection(headers);
@@ -77,7 +81,7 @@ public class ScatterPlotTask extends AbstractTask {
 		String html6 = "var trace2 = { x: [0, 1, 2, 3, 4, 5, 6, 7, 8], y: [0, 1, 2, 3, 4, 5, 6, 7, 8], type:'scatter'};";
 		String html7 = "var data = [trace1, trace2];";
 		String html8 = "var layout = { xaxis: {range: [2,5]}, yaxis: {range: [2,5]}};";
-		String html9 = "Plotly.react('myDiv', data).then(function(){ Plotly.react('myDiv', data, layout); })";
+		String html9 = "Plotly.react('scattertest', data, layout);";
 		String html10 = "</script></body></html>";
 		
         String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html10;
@@ -86,7 +90,7 @@ public class ScatterPlotTask extends AbstractTask {
 		
 		args.put("text", html);
 		args.put("title", "Plot");
-		args.put("url", "https://unpkg.com/react@16.2.0/umd/react.production.min.js");
+		//args.put("url", "https://unpkg.com/react@16.2.0/umd/react.production.min.js");
 		args.put("id", "01");
 		
 		//JFrame
