@@ -11,7 +11,6 @@
 	</properties>
 
 	<groupId>edu.ucsf.rbvi</groupId>
-	<artifactId>stringApp</artifactId>
 	<packaging>bundle</packaging>
 	<name>${bundle.symbolicName}</name>
 
@@ -145,4 +144,5 @@
 
 	</dependencies>
 
+	<artifactId>cyPlot</artifactId>
 </project>
