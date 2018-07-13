@@ -26,7 +26,7 @@ public class HeatMapScreen extends JPanel implements ActionListener {
 		this.add(thickness);
 		thickness.setVisible(true);
 	} 
-	
+	 
 	public Dimension getPreferredSize() {
         Dimension windowSize = new Dimension(800,600);
         return windowSize;

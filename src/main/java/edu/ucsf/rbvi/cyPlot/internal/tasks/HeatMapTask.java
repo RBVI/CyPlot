@@ -79,7 +79,7 @@ public class HeatMapTask extends AbstractTask {
 		String html8 = "var layout = { xaxis: {range: [2,5]}, yaxis: {range: [2,5]}};";
 		String html9 = "Plotly.react('myDiv', data).then(function(){ Plotly.react('myDiv', data, layout); })";
 		String html10 = "</script></body></html>";
-		
+		 
         String html = html1 + html4 + html5 + html6 + html7 + html8 + html9 + html10;
 	//	String html = "<!DOCTYPE HTML><html><body><a href=\"https://www.google.com/\"></a></body></html>";
 		Map<String, Object> args = new HashMap<>();	
