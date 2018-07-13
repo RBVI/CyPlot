@@ -87,6 +87,7 @@ public class ScatterPlotTask extends AbstractTask {
 		
 		CyColumn xColumn = table.getColumn(getXSelection());
 		CyColumn yColumn = table.getColumn(getYSelection());
+		CyColumn nameColumn = table.getColumn("shared name");
 		
 		String xArray = "[";
 		List<Object> list1 = xColumn.getValues(xColumn.getType());
@@ -110,17 +111,27 @@ public class ScatterPlotTask extends AbstractTask {
 			}
 		}
 		
+		String nameArray = "[";
+		List<Object> nameList = nameColumn.getValues(nameColumn.getType());
+		for(int i = 0; i<nameList.size(); i++) {
+			if(i != nameList.size()-1) {
+				nameArray += ("'" + nameList.get(i) + "', ");
+			}else {
+				nameArray += ("'" + nameList.get(i) + "']");
+			}
+		}
+		
 
 		String html1 = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>";
 		String html2 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react@16.2.0/umd/react.production.min.js\"></script>";
 		String html3 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script></head>";
-		String html4 = "<body><div id=\"scattertest\" style=\"width:600px;height:600px;\"></div>";
-		String html5 = "<script> var trace1 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter', mode: '" + this.getModeSelection() + "'};";
+		String html4 = "<body><div id=\"scatterplot\" style=\"width:600px;height:600px;\"></div>";
+		String html5 = "<script> var trace1 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter', mode: '" + this.getModeSelection() + "', text: " + nameArray + "};";
 		String html6 = "var trace2 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter'};";
 		String html7 = "var data = [trace1];";
 		//String html8 = "var layout = { xaxis: {range: [0,5]}, yaxis: {range: [0,5]}};";
-		String html8 = "var layout = {};";
-		String html9 = "Plotly.react('scattertest', data, layout);";
+		String html8 = "var layout = {title: 'Scatter Plot'};";
+		String html9 = "Plotly.react('scatterplot', data, layout);";
 		String html10 = "</script></body></html>";
 		
         String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html10;
@@ -131,12 +142,13 @@ public class ScatterPlotTask extends AbstractTask {
 		args.put("id", "01");
 		
 		//JFrame
-		JFrame fr = new JFrame("Scatter plot interface");
-        ScatterPlotScreen sc = new ScatterPlotScreen();
-        fr.add(sc);
-        fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        fr.pack();
-        fr.setVisible(true);
+//		JFrame fr = new JFrame("Scatter plot interface");
+//        ScatterPlotScreen sc = new ScatterPlotScreen();
+//        fr.add(sc);
+//        fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        fr.pack();
+//        fr.setVisible(true);
+		//
 		
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
 		sTM.execute(ti);
