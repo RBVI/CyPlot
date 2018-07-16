@@ -127,34 +127,31 @@ public class ScatterPlotTask extends AbstractTask {
 		String html2 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react@16.2.0/umd/react.production.min.js\"></script>";
 		String html3 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script></head>";
 		String html4 = "<body><div id=\"scatterplot\" style=\"width:600px;height:600px;\"></div>";
-		String html5 = "<script> var trace1 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter', mode: '" + this.getModeSelection() + "', text: " + nameArray + "};";
+		String html5 = "<script> var trace1 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter', mode: '" + this.getModeSelection() + "', text: " + nameArray + ", SUID: " + nameArray + "};";
 		String html6 = "var trace2 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter'};";
 		String html7 = "var data = [trace1];";
 		//String html8 = "var layout = { xaxis: {range: [0,5]}, yaxis: {range: [0,5]}};"; (code for manually setting the range, if I decide to do that.)
 		String html8 = "var layout = {hovermode: 'closest', title: 'Scatter Plot'};";
-		
 		String html9 = "Plotly.newPlot('scatterplot', data, layout);";
+		String html10 = "var myPlot = document.getElementById('scatterplot');";
 		
 		//on click stuff
-		String html91 = "var myPlot = document.getElementById('scatterplot');";
-		String html10 = "myPlot.on('plotly_click', function(){ \n ;";
-		String html11 = "alert('You clicked me!'); \n });";
+		String html11 = "myPlot.on('plotly_click', function(data){ \n ;";
+		//String html12 = "alert('You clicked me!, point = '+data.points[0].text);";
+		String html12 = "cybrowser.executeCyCommand('network select nodeList = '+data.points[0].text);\n });";
 		
-//		String html10 = "myPlot.on('plotly_click', function(data){ var pts = '';";
-//		String html11 = "for(var i=0; i<data.points.length; i++) {";
-//		String html12 = "pts = 'x= ' +data.points[i].x + '\ny = ' + data.points[i].y.toPrecision(4) + '\n\n';}";
-//		String html13 = "alert('Closest point clicked:\n\n'+pts);});";
-		
+		//lasso stuff
+		String html13 = "myPlot.on('plotly_selected', function(data) { \n ;";
+		String html14 = "cybrowser.executeCyCommand('network select nodeList = '+data.points[0].text);\n});";
 		//important: always keep at bottom of HTML
-		String html14 = "Plotly.react();";
-		String html15 = "</script></body></html>";
+		String html15 = "Plotly.react();";
+		String html16 = "</script></body></html>";
 		
-        String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html91 + html10 + html11 + html14 + html15;
+        String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html10 + html11 + html12 + html13 + html14 + html15 + html16;
 		Map<String, Object> args = new HashMap<>();
 		
 		args.put("text", html);
 		args.put("title", "Plot");
-		args.put("id", "01");
 		
 		//JFrame
 //		JFrame fr = new JFrame("Scatter plot interface");
