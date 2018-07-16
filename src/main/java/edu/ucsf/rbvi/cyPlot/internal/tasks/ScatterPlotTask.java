@@ -55,6 +55,7 @@ public class ScatterPlotTask extends AbstractTask {
 		for(CyColumn each : columns) {
 			if(!each.getType().isAssignableFrom(String.class) && 
 					!each.getType().isAssignableFrom(Boolean.class) &&
+					!each.getType().isAssignableFrom(List.class) &&
 					!each.getName().equals(CyNetwork.SUID) && 
 					!each.getName().equals(CyNetwork.SELECTED)) {
 				String header = each.getName();
@@ -132,16 +133,23 @@ public class ScatterPlotTask extends AbstractTask {
 		//String html8 = "var layout = { xaxis: {range: [0,5]}, yaxis: {range: [0,5]}};"; (code for manually setting the range, if I decide to do that.)
 		String html8 = "var layout = {hovermode: 'closest', title: 'Scatter Plot'};";
 		
-//		String html9 = "var myPlot = document.getElementById('scatterplot');";
+		String html9 = "Plotly.newPlot('scatterplot', data, layout);";
+		
+		//on click stuff
+		String html91 = "var myPlot = document.getElementById('scatterplot');";
+		String html10 = "myPlot.on('plotly_click', function(){ \n ;";
+		String html11 = "alert('You clicked me!'); \n });";
+		
 //		String html10 = "myPlot.on('plotly_click', function(data){ var pts = '';";
 //		String html11 = "for(var i=0; i<data.points.length; i++) {";
 //		String html12 = "pts = 'x= ' +data.points[i].x + '\ny = ' + data.points[i].y.toPrecision(4) + '\n\n';}";
 //		String html13 = "alert('Closest point clicked:\n\n'+pts);});";
 		
-		String html9 = "Plotly.react('scatterplot', data, layout);";
-		String html10 = "</script></body></html>";
+		//important: always keep at bottom of HTML
+		String html14 = "Plotly.react();";
+		String html15 = "</script></body></html>";
 		
-        String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html10;
+        String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html91 + html10 + html11 + html14 + html15;
 		Map<String, Object> args = new HashMap<>();
 		
 		args.put("text", html);
