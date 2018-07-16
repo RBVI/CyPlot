@@ -129,8 +129,15 @@ public class ScatterPlotTask extends AbstractTask {
 		String html5 = "<script> var trace1 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter', mode: '" + this.getModeSelection() + "', text: " + nameArray + "};";
 		String html6 = "var trace2 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter'};";
 		String html7 = "var data = [trace1];";
-		//String html8 = "var layout = { xaxis: {range: [0,5]}, yaxis: {range: [0,5]}};";
-		String html8 = "var layout = {title: 'Scatter Plot'};";
+		//String html8 = "var layout = { xaxis: {range: [0,5]}, yaxis: {range: [0,5]}};"; (code for manually setting the range, if I decide to do that.)
+		String html8 = "var layout = {hovermode: 'closest', title: 'Scatter Plot'};";
+		
+//		String html9 = "var myPlot = document.getElementById('scatterplot');";
+//		String html10 = "myPlot.on('plotly_click', function(data){ var pts = '';";
+//		String html11 = "for(var i=0; i<data.points.length; i++) {";
+//		String html12 = "pts = 'x= ' +data.points[i].x + '\ny = ' + data.points[i].y.toPrecision(4) + '\n\n';}";
+//		String html13 = "alert('Closest point clicked:\n\n'+pts);});";
+		
 		String html9 = "Plotly.react('scatterplot', data, layout);";
 		String html10 = "</script></body></html>";
 		
