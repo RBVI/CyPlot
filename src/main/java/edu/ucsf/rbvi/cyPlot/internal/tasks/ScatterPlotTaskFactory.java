@@ -1,3 +1,4 @@
+//NOTE THAT THIS IS COPY AND PASTED FROM THE VOLCANO PLOT STUFF FOR USE AS A TEMPLATE.
 package edu.ucsf.rbvi.cyPlot.internal.tasks;
 
 import org.cytoscape.service.util.CyServiceRegistrar;

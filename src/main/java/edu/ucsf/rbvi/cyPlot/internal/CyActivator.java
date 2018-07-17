@@ -18,9 +18,6 @@ public class CyActivator extends AbstractCyActivator {
 	public void start(BundleContext context) throws Exception {
 		//creating menu for CyPlot
 		Properties props = new Properties();
-//		props.put(ServiceProperties.PREFERRED_MENU, "Apps");
-//		props.put(ServiceProperties.TITLE, "CyPlot");
-//		props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 		
 		//adding in the various types of plots
 		Properties props1 = new Properties();
@@ -37,6 +34,31 @@ public class CyActivator extends AbstractCyActivator {
 		props3.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
 		props3.put(ServiceProperties.TITLE, "Heat map");
 		props3.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		
+		//adding CyPlot commands
+		props1.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+		props1.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+		props1.setProperty(ServiceProperties.COMMAND, "volcano");
+		props1.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a volcano plot from node or edge table data");
+		props1.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
+		props1.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+		props1.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
+		
+		props2.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+		props2.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+		props2.setProperty(ServiceProperties.COMMAND, "scatter");
+		props2.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a scatter plot from node or edge table data");
+		props2.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
+		props2.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+		props2.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
+		
+		props3.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+		props3.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+		props3.setProperty(ServiceProperties.COMMAND, "heat");
+		props3.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a heat map from node or edge table data");
+		props3.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
+		props3.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+		props3.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
 
 		//registering all services
 		CyServiceRegistrar sr = getService(context, CyServiceRegistrar.class);
