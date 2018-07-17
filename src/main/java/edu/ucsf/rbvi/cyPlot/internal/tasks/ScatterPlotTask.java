@@ -150,6 +150,8 @@ public class ScatterPlotTask extends AbstractTask {
         String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html10 + html11 + html12 + html13 + html14 + html15 + html16;
 		Map<String, Object> args = new HashMap<>();
 		
+		System.out.println(html);
+		
 		args.put("text", html);
 		args.put("title", "Plot");
 		
