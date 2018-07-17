@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 public class HeatMapScreen extends JPanel implements ActionListener {
 
 	public JButton color, thickness;
-	
 	public HeatMapScreen() {
 		setFocusable(true);
 		
@@ -25,8 +24,8 @@ public class HeatMapScreen extends JPanel implements ActionListener {
 		thickness.addActionListener(this);
 		this.add(thickness);
 		thickness.setVisible(true);
-	} 
-	 
+	}
+	
 	public Dimension getPreferredSize() {
         Dimension windowSize = new Dimension(800,600);
         return windowSize;
