@@ -20,6 +20,9 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
+
+import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
+
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
@@ -46,6 +49,8 @@ public class ScatterPlotTask extends AbstractTask {
 	public CyTable table;
 	public Collection<CyColumn> columns;
 	
+	public ModelUtils mUtils;
+	
 	public ScatterPlotTask(final CyServiceRegistrar sr) {
 		super();
 		this.sr = sr; 
@@ -55,25 +60,9 @@ public class ScatterPlotTask extends AbstractTask {
 		table = network.getDefaultNodeTable();
 		columns = table.getColumns();
 		
-		List<String> headers = new ArrayList<>();
-		for(CyColumn each : columns) {
-			if(!each.getType().isAssignableFrom(String.class) && 
-					!each.getType().isAssignableFrom(Boolean.class) &&
-					!each.getType().isAssignableFrom(List.class) &&
-					!each.getName().equals(CyNetwork.SUID) && 
-					!each.getName().equals(CyNetwork.SELECTED)) {
-				String header = each.getName();
-				headers.add(header);
-			}
-		}
+		List<String> headers = mUtils.getNumericOptions(columns);
 		
-		List<String> names = new ArrayList<>();
-		for(CyColumn each : columns) {
-			if(each.getType().isAssignableFrom(String.class)) {
-				String header = each.getName();
-				names.add(header);
-			}
-		}
+		List<String> names = mUtils.getStringOptions(columns);
 		
 		xCol = new ListSingleSelection<>(headers);
 		yCol = new ListSingleSelection<>(headers);
@@ -107,37 +96,14 @@ public class ScatterPlotTask extends AbstractTask {
 		CyColumn yColumn = table.getColumn(getYSelection());
 		CyColumn nameColumn = table.getColumn(getNameSelection());
 		
-		String xArray = "[";
 		List<Object> list1 = xColumn.getValues(xColumn.getType());
-		for(int i = 0; i<list1.size(); i++) {
-			xArray += (""+list1.get(i));
-			if(i != list1.size()-1) {
-				xArray += ", ";
-			}else {
-				xArray += "]"; 
-			}
-		}
+		String xArray = mUtils.numColtoArray(list1);
 		
-		String yArray = "[";
 		List<Object> list2 = yColumn.getValues(yColumn.getType());
-		for(int i = 0; i<list2.size(); i++) {
-			yArray += (""+list2.get(i));
-			if(i != list2.size()-1) {
-				yArray += ", ";
-			}else {
-				yArray += "]"; 
-			}
-		}
+		String yArray = mUtils.numColtoArray(list2);
 		
-		String nameArray = "[";
 		List<Object> nameList = nameColumn.getValues(nameColumn.getType());
-		for(int i = 0; i<nameList.size(); i++) {
-			if(i != nameList.size()-1) {
-				nameArray += ("'" + nameList.get(i) + "', ");
-			}else {
-				nameArray += ("'" + nameList.get(i) + "']");
-			}
-		}
+		String nameArray = mUtils.stringColtoArray(nameList);
 
 		String html1 = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>";
 		String html2 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react@16.2.0/umd/react.production.min.js\"></script>";
