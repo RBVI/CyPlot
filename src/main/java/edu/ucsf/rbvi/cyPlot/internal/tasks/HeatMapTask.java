@@ -24,6 +24,9 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 
+import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
+
+
 public class HeatMapTask extends AbstractTask {
 	
 	final CyServiceRegistrar sr;
@@ -52,6 +55,8 @@ public class HeatMapTask extends AbstractTask {
 	public CyTable table;
 	public Collection<CyColumn> columns;
 	
+	public ModelUtils mUtils;
+	
 	public HeatMapTask(final CyServiceRegistrar sr) {
 		super();
 		this.sr = sr; 
@@ -61,16 +66,18 @@ public class HeatMapTask extends AbstractTask {
 		table = network.getDefaultNodeTable();
 		columns = table.getColumns();
 		
-		List<String> headers = new ArrayList<>();
-		for(CyColumn each : columns) {
-			if(!each.getType().isAssignableFrom(String.class) && 
-					!each.getType().isAssignableFrom(Boolean.class) &&
-					!each.getName().equals(CyNetwork.SUID) && 
-					!each.getName().equals(CyNetwork.SELECTED)) {
-				String header = each.getName();
-				headers.add(header);
-			}
-		}
+		List<String> headers = mUtils.getColOptions(columns, "num");
+		
+//		List<String> headers = new ArrayList<>();
+//		for(CyColumn each : columns) {
+//			if(!each.getType().isAssignableFrom(String.class) && 
+//					!each.getType().isAssignableFrom(Boolean.class) &&
+//					!each.getName().equals(CyNetwork.SUID) && 
+//					!each.getName().equals(CyNetwork.SELECTED)) {
+//				String header = each.getName();
+//				headers.add(header);
+//			}
+//		}
 		
 		col1 = new ListSingleSelection<>(headers);
 		col2 = new ListSingleSelection<>(headers);
@@ -114,38 +121,44 @@ public class HeatMapTask extends AbstractTask {
 		CyColumn column2 = table.getColumn(getCol2Selection());
 		CyColumn column3 = table.getColumn(getCol3Selection());
 		
-		String col1Array = "[";
 		List<Object> list1 = column1.getValues(column1.getType());
-		for(int i = 0; i<list1.size(); i++) {
-			col1Array += (""+list1.get(i));
-			if(i != list1.size()-1) {
-				col1Array += ", ";
-			}else {
-				col1Array += "]"; 
-			}
-		}
+		String col1Array = mUtils.colToArray(list1, "num");
+//		String col1Array = "[";
+//		List<Object> list1 = column1.getValues(column1.getType());
+//		for(int i = 0; i<list1.size(); i++) {
+//			col1Array += (""+list1.get(i));
+//			if(i != list1.size()-1) {
+//				col1Array += ", ";
+//			}else {
+//				col1Array += "]"; 
+//			}
+//		}
 		
-		String col2Array = "[";
 		List<Object> list2 = column2.getValues(column2.getType());
-		for(int i = 0; i<list2.size(); i++) {
-			col2Array += (""+list2.get(i));
-			if(i != list2.size()-1) {
-				col2Array += ", ";
-			}else {
-				col2Array += "]"; 
-			}
-		}
+		String col2Array = mUtils.colToArray(list2, "num");
+//		String col2Array = "[";
+//		List<Object> list2 = column2.getValues(column2.getType());
+//		for(int i = 0; i<list2.size(); i++) {
+//			col2Array += (""+list2.get(i));
+//			if(i != list2.size()-1) {
+//				col2Array += ", ";
+//			}else {
+//				col2Array += "]"; 
+//			}
+//		}
 		
-		String col3Array = "[";
 		List<Object> list3 = column3.getValues(column3.getType());
-		for(int i = 0; i<list3.size(); i++) {
-			col3Array += (""+list3.get(i));
-			if(i != list3.size()-1) {
-				col3Array += ", ";
-			}else {
-				col3Array += "]"; 
-			}
-		}
+		String col3Array = mUtils.colToArray(list3, "num");
+//		String col3Array = "[";
+//		List<Object> list3 = column3.getValues(column3.getType());
+//		for(int i = 0; i<list3.size(); i++) {
+//			col3Array += (""+list3.get(i));
+//			if(i != list3.size()-1) {
+//				col3Array += ", ";
+//			}else {
+//				col3Array += "]"; 
+//			}
+//		}
 		
 		String dataArray = "[" + col1Array + "," + col2Array + "," + col3Array + "]";
 				

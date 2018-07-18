@@ -60,9 +60,10 @@ public class ScatterPlotTask extends AbstractTask {
 		table = network.getDefaultNodeTable();
 		columns = table.getColumns();
 		
-		List<String> headers = mUtils.getNumericOptions(columns);
+		List<String> headers = mUtils.getColOptions(columns, "num");
 		
-		List<String> names = mUtils.getStringOptions(columns);
+		List<String> names = mUtils.getColOptions(columns, "string");
+
 		
 		xCol = new ListSingleSelection<>(headers);
 		yCol = new ListSingleSelection<>(headers);
@@ -97,13 +98,13 @@ public class ScatterPlotTask extends AbstractTask {
 		CyColumn nameColumn = table.getColumn(getNameSelection());
 		
 		List<Object> list1 = xColumn.getValues(xColumn.getType());
-		String xArray = mUtils.numColtoArray(list1);
+		String xArray = mUtils.colToArray(list1, "num");
 		
 		List<Object> list2 = yColumn.getValues(yColumn.getType());
-		String yArray = mUtils.numColtoArray(list2);
+		String yArray = mUtils.colToArray(list2, "num");
 		
 		List<Object> nameList = nameColumn.getValues(nameColumn.getType());
-		String nameArray = mUtils.stringColtoArray(nameList);
+		String nameArray = mUtils.colToArray(nameList, "string");
 
 		String html1 = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>";
 		String html2 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react@16.2.0/umd/react.production.min.js\"></script>";
@@ -132,10 +133,7 @@ public class ScatterPlotTask extends AbstractTask {
 		String html17 = "</script></body></html>";
 		
         String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html10 + html11 + html12 + html13 + html14 + html15 + html16 + html17;
-		Map<String, Object> args = new HashMap<>();
-		
-		System.out.println(html);
-		
+		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("title", "Plot");
 		
