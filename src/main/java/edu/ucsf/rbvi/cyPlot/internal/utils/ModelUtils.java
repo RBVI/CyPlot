@@ -6,8 +6,14 @@ import java.util.List;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.work.util.ListSingleSelection;
 
 public class ModelUtils {
+	
+	//Returns the selection for a String tunable.
+	public static String getTunableSelection(ListSingleSelection<String> tunable) {
+		return tunable.getSelectedValue();
+	}
 	
 	//Returns an array-formatted String of column data depending on the specified data type.
 	public static String colToArray(List<Object> list, String type) {
