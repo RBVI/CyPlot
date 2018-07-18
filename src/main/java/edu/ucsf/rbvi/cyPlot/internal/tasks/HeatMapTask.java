@@ -29,11 +29,23 @@ public class HeatMapTask extends AbstractTask {
 	public CyNetworkView netView;
 	final CyServiceRegistrar sr;
 	
-	@Tunable (description="X-axis column")
-	public ListSingleSelection<String> xCol;
+	@Tunable (description="Column 1")
+	public ListSingleSelection<String> col1;
 	
-	@Tunable (description="Number of rows")
-	public ListSingleSelection numRows;
+	@Tunable (description="Column 2")
+	public ListSingleSelection<String> col2;
+	
+	@Tunable (description="Column 3")
+	public ListSingleSelection<String> col3;
+	
+	@Tunable (description="Low color")
+	public ListSingleSelection<String> lColor;
+	
+	@Tunable (description="Middle color")
+	public ListSingleSelection<String> mColor;
+	
+	@Tunable (description="High color")
+	public ListSingleSelection<String> hColor;
 	
 	public CyNetwork network;
 	public CyTable table;
@@ -59,16 +71,36 @@ public class HeatMapTask extends AbstractTask {
 			}
 		}
 		
-		xCol = new ListSingleSelection<>(headers);
-		numRows = new ListSingleSelection(1, 2, 3, 4);
+		col1 = new ListSingleSelection<>(headers);
+		col2 = new ListSingleSelection<>(headers);
+		col3 = new ListSingleSelection<>(headers);
+		lColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
+		mColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
+		hColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
 	}
 	
-	public String getXSelection() {
-		return xCol.getSelectedValue();
+	public String getCol1Selection() {
+		return col1.getSelectedValue();
 	}
 	
-	public int getNumRowsSelection() {
-		return (int) numRows.getSelectedValue();
+	public String getCol2Selection() {
+		return col2.getSelectedValue();
+	}
+	
+	public String getCol3Selection() {
+		return col3.getSelectedValue();
+	}
+	
+	public String getLowSelection() {
+		return lColor.getSelectedValue();
+	}
+	
+	public String getMedSelection() {
+		return mColor.getSelectedValue();
+	}
+	
+	public String getHighSelection() {
+		return hColor.getSelectedValue();
 	}
 	
 	public void run(TaskMonitor monitor) { 
@@ -77,10 +109,97 @@ public class HeatMapTask extends AbstractTask {
 		AvailableCommands ac = sr.getService(AvailableCommands.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		
-		CyColumn xColumn = table.getColumn(getXSelection());
+		CyColumn column1 = table.getColumn(getCol1Selection());
+		CyColumn column2 = table.getColumn(getCol2Selection());
+		CyColumn column3 = table.getColumn(getCol3Selection());
 		
-		System.out.println("runmethod");
+		String col1Array = "[";
+		List<Object> list1 = column1.getValues(column1.getType());
+		for(int i = 0; i<list1.size(); i++) {
+			col1Array += (""+list1.get(i));
+			if(i != list1.size()-1) {
+				col1Array += ", ";
+			}else {
+				col1Array += "]"; 
+			}
+		}
 		
+		String col2Array = "[";
+		List<Object> list2 = column2.getValues(column2.getType());
+		for(int i = 0; i<list2.size(); i++) {
+			col2Array += (""+list2.get(i));
+			if(i != list2.size()-1) {
+				col2Array += ", ";
+			}else {
+				col2Array += "]"; 
+			}
+		}
+		
+		String col3Array = "[";
+		List<Object> list3 = column3.getValues(column3.getType());
+		for(int i = 0; i<list3.size(); i++) {
+			col3Array += (""+list3.get(i));
+			if(i != list3.size()-1) {
+				col3Array += ", ";
+			}else {
+				col3Array += "]"; 
+			}
+		}
+		
+		String dataArray = "[" + col1Array + "," + col2Array + "," + col3Array + "]";
+				
+		String lowRGB = "";
+		if (getLowSelection().equals("Red")) {
+			lowRGB = "rgb(255, 0, 0)";
+		}
+		if (getLowSelection().equals("Yellow")) {
+			lowRGB = "rgb(255, 255, 0)";
+		}
+		if (getLowSelection().equals("Blue")) {
+			lowRGB = "rgb(0, 0, 255)";
+		}
+		if (getLowSelection().equals("Black")) {
+			lowRGB = "rgb(0, 0, 0)";
+		}
+		if (getLowSelection().equals("White")) {
+			lowRGB = "rgb(255, 255, 255)";
+		}
+		
+		String medRGB = "";
+		if (getMedSelection().equals("Red")) {
+			medRGB = "rgb(255, 0, 0)";
+		}
+		if (getMedSelection().equals("Yellow")) {
+			medRGB = "rgb(255, 255, 0)";
+		}
+		if (getMedSelection().equals("Blue")) {
+			medRGB = "rgb(0, 0, 255)";
+		}
+		if (getMedSelection().equals("Black")) {
+			medRGB = "rgb(0, 0, 0)";
+		}
+		if (getMedSelection().equals("White")) {
+			medRGB = "rgb(255, 255, 255)";
+		}
+		
+		String highRGB = "";
+		if (getHighSelection().equals("Red")) {
+			highRGB = "rgb(255, 0, 0)";
+		}
+		if (getHighSelection().equals("Yellow")) {
+			highRGB = "rgb(255, 255, 0)";
+		}
+		if (getHighSelection().equals("Blue")) {
+			highRGB = "rgb(0, 0, 255)";
+		}
+		if (getHighSelection().equals("Black")) {
+			highRGB = "rgb(0, 0, 0)";
+		}
+		if (getHighSelection().equals("White")) {
+			highRGB = "rgb(255, 255, 255)";
+		}
+		
+		/**
 		String dataArray = "[";
 		List<Object> list1 = xColumn.getValues(xColumn.getType());
 		int numRows = getNumRowsSelection();
@@ -103,13 +222,12 @@ public class HeatMapTask extends AbstractTask {
 			else {
 				dataArray+="]";
 			}
-		}
-			
+		}**/
 			String html1 = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>";
 			String html2 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react@16.2.0/umd/react.production.min.js\"></script>";
 			String html3 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script>";
 			String html4 = "<body><div id=\"heatmap\" style=\"width:600px;height:600px;\"></div>";
-			String html5 = "<script> var colorscaleValue = [[-3, 'rgb(166,206,227)'], [-2, 'rgb(31,120,180)'], [-1, 'rgb(178,223,138)'], [1, 'rgb(51,160,44)'], [2, 'rgb(251,154,153)'], [3, 'rgb(227,26,28)']]; var i = 0; var j = 0; var z = []; for (i = 0; i < 5; i += 1) {z[i] = []; for (j = 0; j < 5; j += 1) {z[i].push(Math.random());}}var data = [{z: z,type: \"heatmap\",colorscale: colorscaleValue}];";
+			String html5 = "<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", type: \"heatmap\",colorscale: colorscaleValue}];";
 					//"Plotly.newPlot(\"plot1\", data);";
 			//String html6 = "var trace2 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter'};";
 			//String html7 = "var data = [trace1];";
