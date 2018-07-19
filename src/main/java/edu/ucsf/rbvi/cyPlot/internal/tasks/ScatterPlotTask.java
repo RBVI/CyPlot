@@ -76,14 +76,11 @@ public class ScatterPlotTask extends AbstractTask {
 		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 		CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 		
-		List<Object> list1 = xColumn.getValues(xColumn.getType());
-		String xArray = ModelUtils.colToArray(list1, "num");
+		String xArray = ModelUtils.colToArray(xColumn, "num");
 		
-		List<Object> list2 = yColumn.getValues(yColumn.getType());
-		String yArray = ModelUtils.colToArray(list2, "num");
+		String yArray = ModelUtils.colToArray(yColumn, "num");
 		
-		List<Object> nameList = nameColumn.getValues(nameColumn.getType());
-		String nameArray = ModelUtils.colToArray(nameList, "string");
+		String nameArray = ModelUtils.colToArray(nameColumn, "string");
 		
 		String html = JSUtils.getScatterPlot(xArray, yArray, ModelUtils.getTunableSelection(mode), ModelUtils.getTunableSelection(nameCol), nameArray);
 		Map<String, Object> args = new HashMap<>();		

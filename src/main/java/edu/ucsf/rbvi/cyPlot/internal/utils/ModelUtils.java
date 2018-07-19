@@ -16,7 +16,9 @@ public class ModelUtils {
 	}
 	
 	//Returns an array-formatted String of column data depending on the specified data type.
-	public static String colToArray(List<Object> list, String type) {
+	public static String colToArray(CyColumn column, String type) {
+		List<Object> list = column.getValues(column.getType());
+		
 		if(type.equals("string")) {
 			String array = "[";
 			for(int i = 0; i<list.size(); i++) {
