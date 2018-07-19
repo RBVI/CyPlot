@@ -80,7 +80,6 @@ public class VolcanoPlotTask extends AbstractTask {
 	}
 
 	public void run(TaskMonitor monitor) { 
-		//SynchronousTaskManager sTM = sr.getService(SynchronousTaskManager.class);
 		TaskManager sTM = sr.getService(TaskManager.class);
 		AvailableCommands ac = sr.getService(AvailableCommands.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
@@ -121,27 +120,35 @@ public class VolcanoPlotTask extends AbstractTask {
 			}
 		}
 		
-
 		String html1 = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>";
 		String html2 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react@16.2.0/umd/react.production.min.js\"></script>";
 		String html3 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script></head>";
 		String html4 = "<body><div id=\"scatterplot\" style=\"width:600px;height:600px;\"></div>";
-		String html5 = "<script> var trace1 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter', mode: '" + this.getModeSelection() + "', text: " + nameArray + "};";
-		String html6 = "var trace2 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter'};";
-		String html7 = "var data = [trace1];";
+		
+		String html5 = "<script> var xArr = " + xArray + ";";
+		String html6 = "for (var i = 0; i < xArr.length; i++ ) { ";
+	    String html7 = "xArr[i] = ((Math.log10(xArr[i])) / (Math.log(2))); }";
+	    
+	    String html8 = "var yArr = " + yArray + ";";
+		String html9 = "for (var i = 0; i < yArr.length; i++ ) { ";
+	    String html10 = "yArr[i] = Math.log10(yArr[i]) * -1; } ";
+	    
+		String html11 = "var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: '" + this.getModeSelection() + "', text: " + nameArray + "};";
+		String htmll2 = "var trace2 = { x: xArr , y:  yArr , type: 'scatter'};";
+		String html13 = "var data = [trace1];";
 		//String html8 = "var layout = { xaxis: {range: [0,5]}, yaxis: {range: [0,5]}};"; (code for manually setting the range, if I decide to do that.)
-		String html8 = "var layout = {hovermode: 'closest', title: 'Scatter Plot'};";
+		String html14 = "var layout = {hovermode: 'closest', title: 'Volcano Plot'};";
 		
 //		String html9 = "var myPlot = document.getElementById('scatterplot');";
 //		String html10 = "myPlot.on('plotly_click', function(data){ var pts = '';";
 //		String html11 = "for(var i=0; i<data.points.length; i++) {";
-//		String html12 = "pts = 'x= ' +data.points[i].x + '\ny = ' + data.points[i].y.toPrecision(4) + '\n\n';}";
+//		String html12 = "pts = 'x= ' + data.points[i].x + '\ny = ' + data.points[i].y.toPrecision(4) + '\n\n';}";
 //		String html13 = "alert('Closest point clicked:\n\n'+pts);});";
 		
-		String html9 = "Plotly.react('scatterplot', data, layout);";
-		String html10 = "</script></body></html>";
+		String html15 = "Plotly.react('scatterplot', data, layout);";
+		String html16 = "</script></body></html>";
 		
-        String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html10;
+        String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html10 + html11 + htmll2 + html13 + html14 + html15 + html16;
 		Map<String, Object> args = new HashMap<>();
 		
 		args.put("text", html);
