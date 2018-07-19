@@ -15,13 +15,53 @@ public class JSUtils {
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', mode: '" + mode + "', text: " + nameArray + "};");
 		builder.append("var data = [trace1];");
-		builder.append("var layout = {hovermode: 'closest', title: 'Scatter Plot'};");
+		builder.append("var layout = {hovermode: 'closest'};");
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
+		//attempting resize
+		builder.append(getResizeCode("myPlot"));
+		
 		builder.append(getClickCode("myPlot", nameSelection));
 		builder.append(getLassoCode("myPlot", nameSelection));
 		builder.append(getPlotly());
 
+		return builder.toString();
+	}
+	
+	public static String getResizeCode(String name) {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("(function() { ");
+		builder.append("var d3 = Plotly.d3;");
+		builder.append("var WIDTH_IN_PERCENT_OF_PARENT = 94;");
+		builder.append("var HEIGHT_IN_PERCENT_OF_PARENT = 95;");
+		builder.append("var gd3 = d3.select(\"div[id='CyPlot']\")");
+		//builder.append("var gd3 = d3.select('body').append('CyPlot')");
+		builder.append(".style({ width: WIDTH_IN_PERCENT_OF_PARENT + '%',\n" + 
+				"        'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',\n" + 
+				"\n" + 
+				"        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',\n" + 
+				"        'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'\n" + 
+				"    });");
+		builder.append("var gd = gd3.node();");
+		builder.append("window.onresize = function() {Plotly.Plots.resize(gd);};");
+		builder.append("})();");
+		
+//		builder.append("(function() { ");
+//		builder.append("var d3 = Plotly.d3;");
+//		builder.append("var WIDTH_IN_PERCENT_OF_PARENT = 60;");
+//		builder.append("var HEIGHT_IN_PERCENT_OF_PARENT = 80;");
+//		builder.append("var gd3 = d3.select('body').append('div')");
+//		builder.append(".style({ width: WIDTH_IN_PERCENT_OF_PARENT + '%',\n" + 
+//				"        'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',\n" + 
+//				"\n" + 
+//				"        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',\n" + 
+//				"        'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'\n" + 
+//				"    });");
+//		builder.append("var gd = gd3.node();");
+//		builder.append("window.onresize = function() {Plotly.Plots.resize(gd);};");
+//		builder.append("});");
+		
 		return builder.toString();
 	}
 
