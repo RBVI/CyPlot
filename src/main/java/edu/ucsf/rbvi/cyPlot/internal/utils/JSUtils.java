@@ -25,11 +25,11 @@ public class JSUtils {
 		return builder.toString();
 	}
 
-	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray) {
+	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray, String colNames) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-		builder.append("<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];");
+		builder.append("<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", x: " + colNames + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];");
 		//builder.append("var data = [trace1];");
 		//builder.append("var layout = {autosize: true};");
 		builder.append("Plotly.newPlot('CyPlot', data);");
