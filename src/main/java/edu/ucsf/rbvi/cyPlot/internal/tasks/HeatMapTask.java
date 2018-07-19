@@ -24,6 +24,7 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 
+import edu.ucsf.rbvi.cyPlot.internal.utils.JSUtils;
 import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
 
 
@@ -55,8 +56,6 @@ public class HeatMapTask extends AbstractTask {
 	public CyTable table;
 	public Collection<CyColumn> columns;
 	
-	public ModelUtils mUtils;
-	
 	public HeatMapTask(final CyServiceRegistrar sr) {
 		super();
 		this.sr = sr; 
@@ -66,7 +65,7 @@ public class HeatMapTask extends AbstractTask {
 		table = network.getDefaultNodeTable();
 		columns = table.getColumns();
 		
-		List<String> headers = mUtils.getColOptions(columns, "num");
+		List<String> headers = ModelUtils.getColOptions(columns, "num");
 		
 //		List<String> headers = new ArrayList<>();
 //		for(CyColumn each : columns) {
@@ -122,7 +121,7 @@ public class HeatMapTask extends AbstractTask {
 		CyColumn column3 = table.getColumn(getCol3Selection());
 		
 		List<Object> list1 = column1.getValues(column1.getType());
-		String col1Array = mUtils.colToArray(list1, "num");
+		String col1Array = ModelUtils.colToArray(list1, "num");
 //		String col1Array = "[";
 //		List<Object> list1 = column1.getValues(column1.getType());
 //		for(int i = 0; i<list1.size(); i++) {
@@ -135,7 +134,7 @@ public class HeatMapTask extends AbstractTask {
 //		}
 		
 		List<Object> list2 = column2.getValues(column2.getType());
-		String col2Array = mUtils.colToArray(list2, "num");
+		String col2Array = ModelUtils.colToArray(list2, "num");
 //		String col2Array = "[";
 //		List<Object> list2 = column2.getValues(column2.getType());
 //		for(int i = 0; i<list2.size(); i++) {
@@ -148,7 +147,7 @@ public class HeatMapTask extends AbstractTask {
 //		}
 		
 		List<Object> list3 = column3.getValues(column3.getType());
-		String col3Array = mUtils.colToArray(list3, "num");
+		String col3Array = ModelUtils.colToArray(list3, "num");
 //		String col3Array = "[";
 //		List<Object> list3 = column3.getValues(column3.getType());
 //		for(int i = 0; i<list3.size(); i++) {
@@ -213,50 +212,29 @@ public class HeatMapTask extends AbstractTask {
 			highRGB = "rgb(255, 255, 255)";
 		}
 		
-		/**String dataArray = "[";
-		List<Object> list1 = xColumn.getValues(xColumn.getType());
-		int numRows = getNumRowsSelection();
-		int numCols = list1.size()/numRows;
-		int dataArrInd = 0;
-		for(int r = 0; r<numRows; r++) {
-			dataArray+="[";
-			for(int c = 0; c<numCols; c++) {
-				dataArray+=list1.get(dataArrInd);
-				if(c!=numCols-1) {
-					dataArrInd++;
-					dataArray+=", ";
-				}else {
-					dataArray += "]";
-				}
-			}
-			if (dataArrInd!=list1.size()-1) {
-				dataArray+=", ";
-			}
-			else {
-				dataArray+="]";
-		}
-		}**/
-			String html1 = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>";
-			String html2 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react@16.2.0/umd/react.production.min.js\"></script>";
-			String html3 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script>";
-			String html4 = "<body><div id=\"heatmap\" style=\"width:600px;height:600px;\"></div>";
-			String html5 = "<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", type: \"heatmap\",colorscale: colorscaleValue}];";
-					//"Plotly.newPlot(\"plot1\", data);";
-			//String html6 = "var trace2 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter'};";
-			//String html7 = "var data = [trace1];";
-			//String html8 = "var layout = { xaxis: {range: [0,5]}, yaxis: {range: [0,5]}};"; (code for manually setting the range, if I decide to do that.)
-			//String html8 = "var layout = {hovermode: 'closest', title: 'Heat Map'};";
-			
-//			String html9 = "var myPlot = document.getElementById('scatterplot');";
-//			String html10 = "myPlot.on('plotly_click', function(data){ var pts = '';";
-//			String html11 = "for(var i=0; i<data.points.length; i++) {";
-//			String html12 = "pts = 'x= ' +data.points[i].x + '\ny = ' + data.points[i].y.toPrecision(4) + '\n\n';}";
-//			String html13 = "alert('Closest point clicked:\n\n'+pts);});";
-			
-			String html9 = "Plotly.react('heatmap', data);";
-			String html10 = "</script></body></html>";
-			
-	        String html = html1 + html2 + html3 + html4 + html5 +  html9 + html10;
+//			String html1 = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>";
+//			String html2 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react@16.2.0/umd/react.production.min.js\"></script>";
+//			String html3 = "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script>";
+//			String html4 = "<body><div id=\"heatmap\" style=\"width:600px;height:600px;\"></div>";
+//			String html5 = "<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", type: \"heatmap\",colorscale: colorscaleValue}];";
+//			//String html6 = "Plotly.newPlot(\"plot1\", data);";
+//			//String html6 = "var trace2 = { x: " + xArray + ", y: " + yArray + ", type: 'scatter'};";
+//			//String html7 = "var data = [trace1];";
+//			//String html8 = "var layout = { xaxis: {range: [0,5]}, yaxis: {range: [0,5]}};"; (code for manually setting the range, if I decide to do that.)
+//			//String html8 = "var layout = {hovermode: 'closest', title: 'Heat Map'};";
+//			
+////			String html9 = "var myPlot = document.getElementById('scatterplot');";
+////			String html10 = "myPlot.on('plotly_click', function(data){ var pts = '';";
+////			String html11 = "for(var i=0; i<data.points.length; i++) {";
+////			String html12 = "pts = 'x= ' +data.points[i].x + '\ny = ' + data.points[i].y.toPrecision(4) + '\n\n';}";
+////			String html13 = "alert('Closest point clicked:\n\n'+pts);});";
+//			
+//			String html9 = "Plotly.react('heatmap', data);";
+//			String html10 = "</script></body></html>";
+//			
+//	        String html = html1 + html2 + html3 + html4 + html5 + html9 + html10;
+		
+			String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataArray);
 			Map<String, Object> args = new HashMap<>();
 			
 			System.out.println(html);
