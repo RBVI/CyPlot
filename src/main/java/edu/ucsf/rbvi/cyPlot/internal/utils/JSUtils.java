@@ -21,14 +21,8 @@ public class JSUtils {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<html><head>");
 		builder.append("<script>");
-		URL plotly = JSUtils.class.getClassLoader().getResource("/js/plotly.js");
-		try (Stream<String> stream = new BufferedReader(new InputStreamReader(plotly.openConnection().getInputStream())).lines()) {
-			stream.forEach((s) -> {
-				builder.append(s+"\n");
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		loadJS(builder, "/js/plotly.min.js");
+		loadJS(builder, "/js/react-dom.production.min.js");
 		builder.append("</script>");
 		builder.append("<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\">>");
 		builder.append("</script></head>");
@@ -128,5 +122,16 @@ public class JSUtils {
 	public static String getPlotly() {
 		return "Plotly.react();"+
 		       "</script></body></html>";
+	}
+
+	private static void loadJS(StringBuilder builder, String js) {
+		URL plotly = JSUtils.class.getClassLoader().getResource(js);
+		try (Stream<String> stream = new BufferedReader(new InputStreamReader(plotly.openConnection().getInputStream())).lines()) {
+			stream.forEach((s) -> {
+				builder.append(s+"\n");
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
