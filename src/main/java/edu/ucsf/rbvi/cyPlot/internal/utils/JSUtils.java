@@ -1,13 +1,40 @@
 package edu.ucsf.rbvi.cyPlot.internal.utils;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class JSUtils {
 	
+	/*
 	static String preamble = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>"+
-            "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>"+
 									 "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script></head>";
-	public static String getPreamble() { return preamble; }
+	*/
+	public static String getPreamble() { 
+		StringBuilder builder = new StringBuilder();
+		builder.append("<html><head>");
+		builder.append("<script>");
+		URL plotly = JSUtils.class.getClassLoader().getResource("/js/plotly.js");
+		try (Stream<String> stream = new BufferedReader(new InputStreamReader(plotly.openConnection().getInputStream())).lines()) {
+			stream.forEach((s) -> {
+				builder.append(s+"\n");
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		builder.append("</script>");
+		builder.append("<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\">>");
+		builder.append("</script></head>");
+
+		return builder.toString(); 
+	}
 
 	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray) {
 		StringBuilder builder = new StringBuilder();
@@ -24,6 +51,12 @@ public class JSUtils {
 		builder.append(getClickCode("myPlot", nameSelection));
 		builder.append(getLassoCode("myPlot", nameSelection));
 		builder.append(getPlotly());
+
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter("/tmp/output.html"));
+			writer.write(builder.toString());
+			writer.close();
+		} catch (Exception e) { e.printStackTrace(); }
 
 		return builder.toString();
 	}
