@@ -1,34 +1,13 @@
 package edu.ucsf.rbvi.cyPlot.internal.utils;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.io.File;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class JSUtils {
 	
-	/*
 	static String preamble = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>"+
+            "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>"+
 									 "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script></head>";
-	*/
-	public static String getPreamble() { 
-		StringBuilder builder = new StringBuilder();
-		builder.append("<html><head>");
-		builder.append("<script>");
-		loadJS(builder, "/js/plotly.min.js");
-		loadJS(builder, "/js/react-dom.production.min.js");
-		builder.append("</script>");
-		builder.append("<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\">>");
-		builder.append("</script></head>");
-
-		return builder.toString(); 
-	}
+	public static String getPreamble() { return preamble; }
 
 	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray) {
 		StringBuilder builder = new StringBuilder();
@@ -46,11 +25,30 @@ public class JSUtils {
 		builder.append(getLassoCode("myPlot", nameSelection));
 		builder.append(getPlotly());
 
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("/tmp/output.html"));
-			writer.write(builder.toString());
-			writer.close();
-		} catch (Exception e) { e.printStackTrace(); }
+		return builder.toString();
+	}
+	
+	public static String getVolcanoPlot(String x, String y, String mode, String nameArray) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getPreamble());
+		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
+		builder.append("<script> var xArr = " + x + ";");
+		builder.append("for(var i = 0; i < xArr.length; i++) { ");
+		builder.append("xArr[i] = ((Math.log10(xArr[i])) / (Math.log(2))); } " );
+		builder.append("var yArr = " + y + ";");
+		builder.append("for(var i = 0; i < yArr.length; i++) {");
+		builder.append("yArr[i] = Math.log10(yArr[i]) * -1; }");		
+		builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: '" + mode + "', text: " + nameArray + "};");
+		builder.append("var data = [trace1];");
+		builder.append("var layout = {hovermode: 'closest'};");
+		builder.append("Plotly.newPlot('CyPlot', data, layout);");
+		builder.append("var myPlot = document.getElementById('CyPlot');");
+		//attempting resize
+		builder.append(getResizeCode("myPlot"));
+
+	//	builder.append(getClickCode("myPlot", nameSelection));
+	//	builder.append(getLassoCode("myPlot", nameSelection));
+		builder.append(getPlotly());
 
 		return builder.toString();
 	}
@@ -122,16 +120,5 @@ public class JSUtils {
 	public static String getPlotly() {
 		return "Plotly.react();"+
 		       "</script></body></html>";
-	}
-
-	private static void loadJS(StringBuilder builder, String js) {
-		URL plotly = JSUtils.class.getClassLoader().getResource(js);
-		try (Stream<String> stream = new BufferedReader(new InputStreamReader(plotly.openConnection().getInputStream())).lines()) {
-			stream.forEach((s) -> {
-				builder.append(s+"\n");
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }

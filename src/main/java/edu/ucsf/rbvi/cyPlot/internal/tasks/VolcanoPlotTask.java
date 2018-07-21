@@ -20,6 +20,10 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
+
+import edu.ucsf.rbvi.cyPlot.internal.utils.JSUtils;
+import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
+
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
@@ -81,14 +85,19 @@ public class VolcanoPlotTask extends AbstractTask {
 
 	public void run(TaskMonitor monitor) { 
 		TaskManager sTM = sr.getService(TaskManager.class);
-		AvailableCommands ac = sr.getService(AvailableCommands.class);
+	    //AvailableCommands ac = sr.getService(AvailableCommands.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		
 		CyColumn xColumn = table.getColumn(getXSelection());
 		CyColumn yColumn = table.getColumn(getYSelection());
 		CyColumn nameColumn = table.getColumn("shared name");
 		
-		String xArray = "[";
+        String xArray = ModelUtils.colToArray(xColumn, "num");
+        String yArray = ModelUtils.colToArray(yColumn, "num");
+        String nameArray = ModelUtils.colToArray(nameColumn, "string");
+        
+        
+	/*	String xArray = "[";
 		List<Object> list1 = xColumn.getValues(xColumn.getType());
 		for(int i = 0; i<list1.size(); i++) {
 			xArray += (""+list1.get(i));
@@ -146,14 +155,17 @@ public class VolcanoPlotTask extends AbstractTask {
 //		String html13 = "alert('Closest point clicked:\n\n'+pts);});";
 		
 		String html15 = "Plotly.react('scatterplot', data, layout);";
-		String html16 = "</script></body></html>";
+		String html16 = "</script></body></html>"; 
 		
         String html = html1 + html2 + html3 + html4 + html5 + html6 + html7 + html8 + html9 + html10 + html11 + htmll2 + html13 + html14 + html15 + html16;
 		Map<String, Object> args = new HashMap<>();
-		
-		args.put("text", html);
+		*/
+        
+        String html = JSUtils.getVolcanoPlot(xArray, yArray, ModelUtils.getTunableSelection(mode), nameArray);
+		Map<String, Object> args = new HashMap();        
+        args.put("text", html);
 		args.put("title", "Plot");
-		args.put("id", "01");
+	//	args.put("id", "01");
 		
 		//JFrame
 //		JFrame fr = new JFrame("Scatter plot interface");
