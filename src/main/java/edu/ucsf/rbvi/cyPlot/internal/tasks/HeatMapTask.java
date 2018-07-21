@@ -119,9 +119,10 @@ public class HeatMapTask extends AbstractTask {
 		CyColumn column1 = table.getColumn(getCol1Selection());
 		CyColumn column2 = table.getColumn(getCol2Selection());
 		CyColumn column3 = table.getColumn(getCol3Selection());
+		String colNamesArray = "[\"" + getCol1Selection() + "\", \"" + getCol1Selection() + "\", \"" + getCol3Selection() + "\"]";
 		
-		List<Object> list1 = column1.getValues(column1.getType());
-		String col1Array = ModelUtils.colToArray(list1, "num");
+		//List<Object> list1 = column1.getValues(column1.getType());
+		String col1Array = ModelUtils.colToArray(column1, "num");
 //		String col1Array = "[";
 //		List<Object> list1 = column1.getValues(column1.getType());
 //		for(int i = 0; i<list1.size(); i++) {
@@ -133,8 +134,8 @@ public class HeatMapTask extends AbstractTask {
 //			}
 //		}
 		
-		List<Object> list2 = column2.getValues(column2.getType());
-		String col2Array = ModelUtils.colToArray(list2, "num");
+		//List<Object> list2 = column2.getValues(column2.getType());
+		String col2Array = ModelUtils.colToArray(column2, "num");
 //		String col2Array = "[";
 //		List<Object> list2 = column2.getValues(column2.getType());
 //		for(int i = 0; i<list2.size(); i++) {
@@ -146,8 +147,8 @@ public class HeatMapTask extends AbstractTask {
 //			}
 //		}
 		
-		List<Object> list3 = column3.getValues(column3.getType());
-		String col3Array = ModelUtils.colToArray(list3, "num");
+		//List<Object> list3 = column3.getValues(column3.getType());
+		String col3Array = ModelUtils.colToArray(column3, "num");
 //		String col3Array = "[";
 //		List<Object> list3 = column3.getValues(column3.getType());
 //		for(int i = 0; i<list3.size(); i++) {
@@ -234,7 +235,7 @@ public class HeatMapTask extends AbstractTask {
 //			
 //	        String html = html1 + html2 + html3 + html4 + html5 + html9 + html10;
 		
-			String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataArray);
+			String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataArray, colNamesArray);
 			Map<String, Object> args = new HashMap<>();
 			
 			System.out.println(html);
