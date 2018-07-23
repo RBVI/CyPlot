@@ -13,10 +13,10 @@ public class JSUtils {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', mode: '" + mode + "', text: " + nameArray + "};");
+		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
 		builder.append("var data = [trace1];");
 	//	builder.append("var layout = {hovermode: 'closest'};");
-		builder.append("var layout = {hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
+		builder.append("var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
 		//attempting resize
@@ -39,9 +39,9 @@ public class JSUtils {
 		builder.append("var yArr = " + y + ";");
 		builder.append("for(var i = 0; i < yArr.length; i++) {");
 		builder.append("yArr[i] = Math.log10(yArr[i]) * -1; }");		
-		builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: 'markers', text: " + nameArray + "};");
+		builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: 'markers', name: 'trace', text: " + nameArray + "};");
 		builder.append("var data = [trace1];");
-		builder.append("var layout = {hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
+		builder.append("var layout = { showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
 		//attempting resize
