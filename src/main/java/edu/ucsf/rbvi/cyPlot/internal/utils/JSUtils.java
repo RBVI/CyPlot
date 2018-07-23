@@ -9,13 +9,14 @@ public class JSUtils {
 									 "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script></head>";
 	public static String getPreamble() { return preamble; }
 
-	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray) {
+	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', mode: '" + mode + "', text: " + nameArray + "};");
 		builder.append("var data = [trace1];");
-		builder.append("var layout = {hovermode: 'closest'};");
+	//	builder.append("var layout = {hovermode: 'closest'};");
+		builder.append("var layout = {hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
 		//attempting resize
@@ -28,7 +29,7 @@ public class JSUtils {
 		return builder.toString();
 	}
 	
-	public static String getVolcanoPlot(String x, String y, String nameArray) {
+	public static String getVolcanoPlot(String x, String y, String nameArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
@@ -40,7 +41,7 @@ public class JSUtils {
 		builder.append("yArr[i] = Math.log10(yArr[i]) * -1; }");		
 		builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: 'markers', text: " + nameArray + "};");
 		builder.append("var data = [trace1];");
-		builder.append("var layout = {hovermode: 'closest', title: 'Volcano Plot'};");
+		builder.append("var layout = {hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
 		//attempting resize
@@ -90,14 +91,15 @@ public class JSUtils {
 		return builder.toString();
 	}
 
-	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray, String colNames) {
+	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray, String colNames, String title) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", x: " + colNames + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];");
 		//builder.append("var data = [trace1];");
 		//builder.append("var layout = {autosize: true};");
-		builder.append("Plotly.newPlot('CyPlot', data);");
+		builder.append("var layout = {title: '" + title + "'};");
+		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		//builder.append("var myPlot = document.getElementById('CyPlot');");
 		//builder.append(getClickCode("myPlot", nameSelection));
 		//builder.append(getLassoCode("myPlot", nameSelection));

@@ -82,7 +82,10 @@ public class ScatterPlotTask extends AbstractTask {
 		
 		String nameArray = ModelUtils.colToArray(nameColumn, "string");
 		
-		String html = JSUtils.getScatterPlot(xArray, yArray, ModelUtils.getTunableSelection(mode), ModelUtils.getTunableSelection(nameCol), nameArray);
+		String xLabel = xColumn.getName();
+        String yLabel = yColumn.getName();
+        
+		String html = JSUtils.getScatterPlot(xArray, yArray, ModelUtils.getTunableSelection(mode), ModelUtils.getTunableSelection(nameCol), nameArray, xLabel, yLabel);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("title", "Scatter Plot");

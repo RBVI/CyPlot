@@ -93,6 +93,8 @@ public class VolcanoPlotTask extends AbstractTask {
         String yArray = ModelUtils.colToArray(yColumn, "num");
         String nameArray = ModelUtils.colToArray(nameColumn, "string");
         
+        String xLabel = xColumn.getName();
+        String yLabel = yColumn.getName();
         
 	/*	String xArray = "[";
 		List<Object> list1 = xColumn.getValues(xColumn.getType());
@@ -158,7 +160,7 @@ public class VolcanoPlotTask extends AbstractTask {
 		Map<String, Object> args = new HashMap<>();
 		*/
         
-        String html = JSUtils.getVolcanoPlot(xArray, yArray, nameArray);
+        String html = JSUtils.getVolcanoPlot(xArray, yArray, nameArray, xLabel, yLabel);
 		Map<String, Object> args = new HashMap();        
         args.put("text", html);
 		args.put("title", "Plot");
