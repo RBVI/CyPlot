@@ -28,7 +28,7 @@ public class JSUtils {
 		return builder.toString();
 	}
 	
-	public static String getVolcanoPlot(String x, String y, String mode, String nameArray) {
+	public static String getVolcanoPlot(String x, String y, String nameArray) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
@@ -38,9 +38,9 @@ public class JSUtils {
 		builder.append("var yArr = " + y + ";");
 		builder.append("for(var i = 0; i < yArr.length; i++) {");
 		builder.append("yArr[i] = Math.log10(yArr[i]) * -1; }");		
-		builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: '" + mode + "', text: " + nameArray + "};");
+		builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: 'markers', text: " + nameArray + "};");
 		builder.append("var data = [trace1];");
-		builder.append("var layout = {hovermode: 'closest'};");
+		builder.append("var layout = {hovermode: 'closest', title: 'Volcano Plot'};");
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
 		//attempting resize
