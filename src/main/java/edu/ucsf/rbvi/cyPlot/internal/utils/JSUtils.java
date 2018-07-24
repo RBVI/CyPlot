@@ -68,11 +68,19 @@ public class JSUtils {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'violin', name: 'trace', , text:" + nameArray + "};");
-		builder.append("var data = [trace1];");
+		builder.append("<script>Plotly.d3.csv(\"https://raw.githubusercontent.com/plotly/datasets/master/violin_data.csv\", function(err, rows){" );
+		builder.append("function unpack(rows, key) {");
+		builder.append("return rows.map(function(row) { return row[key]; });}" );
+		builder.append("var data = [{ type: 'violin', x: unpack(rows, 'total_bill'), points: 'none', box: { visible: true}, boxpoints: false, line: { color:'black'}, fillcolor: '#8dd3c7', opacity: 0.6, meanline: { visible: true }, y0:\"total bill\" }];");
+		builder.append("var layout = { title:\"violin plot\", xaxis: { zeroline: false }};");
+	//	builder.append("var data = [{ type: 'violin', x: unpack(rows, '" + x + "'), y: unpack(rows,'" + y +  "')}];");
+	//	builder.append("var layout = { title:\"" + xLabel + " vs " + yLabel +  "\"};");
+		builder.append("Plotly.newPlot('CyPlot', data, layout);});");
+	//	builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'violin', name: 'trace', , text:" + nameArray + "};");
+	//	builder.append("var data = [trace1];");
 	//	builder.append("var layout = {hovermode: 'closest'};");
-		builder.append("var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
-		builder.append("Plotly.newPlot('CyPlot', data, layout);");
+	//	builder.append("var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
+	//	builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
 		//attempting resize
 		builder.append(getResizeCode("myPlot"));

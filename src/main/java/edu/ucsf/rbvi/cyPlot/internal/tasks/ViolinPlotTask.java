@@ -37,9 +37,6 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 		@Tunable (description="P-val column")
 		public ListSingleSelection<String> yCol;
 		
-		@Tunable (description="Markers?")
-		public ListSingleSelection<String> mode;
-		
 		public CyApplicationManager appManager;
 		public CyNetworkView netView;
 		public CyNetwork network;
@@ -68,7 +65,6 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			
 			xCol = new ListSingleSelection<>(headers);
 			yCol = new ListSingleSelection<>(headers);
-			mode = new ListSingleSelection<>("lines", "markers");
 		}
 		
 		public String getXSelection() {
@@ -77,10 +73,6 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 		
 		public String getYSelection() {
 			return yCol.getSelectedValue();
-		}
-		
-		public String getModeSelection() {
-			return mode.getSelectedValue();
 		}
 
 		public void run(TaskMonitor monitor) { 
