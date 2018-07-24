@@ -37,9 +37,6 @@ public class VolcanoPlotTask extends AbstractTask {
 	@Tunable (description="P-val column")
 	public ListSingleSelection<String> yCol;
 	
-	@Tunable (description="Markers?")
-	public ListSingleSelection<String> mode;
-	
 	public CyApplicationManager appManager;
 	public CyNetworkView netView;
 	public CyNetwork network;
@@ -68,7 +65,7 @@ public class VolcanoPlotTask extends AbstractTask {
 		
 		xCol = new ListSingleSelection<>(headers);
 		yCol = new ListSingleSelection<>(headers);
-		mode = new ListSingleSelection<>("lines", "markers");
+	//	mode = new ListSingleSelection<>("markers", "markers");
 	}
 	
 	public String getXSelection() {
@@ -79,9 +76,9 @@ public class VolcanoPlotTask extends AbstractTask {
 		return yCol.getSelectedValue();
 	}
 	
-	public String getModeSelection() {
+/*	public String getModeSelection() {
 		return mode.getSelectedValue();
-	}
+	} */
 
 	public void run(TaskMonitor monitor) { 
 		TaskManager sTM = sr.getService(TaskManager.class);
@@ -96,6 +93,8 @@ public class VolcanoPlotTask extends AbstractTask {
         String yArray = ModelUtils.colToArray(yColumn, "num");
         String nameArray = ModelUtils.colToArray(nameColumn, "string");
         
+        String xLabel = xColumn.getName();
+        String yLabel = yColumn.getName();
         
 	/*	String xArray = "[";
 		List<Object> list1 = xColumn.getValues(xColumn.getType());
@@ -161,7 +160,7 @@ public class VolcanoPlotTask extends AbstractTask {
 		Map<String, Object> args = new HashMap<>();
 		*/
         
-        String html = JSUtils.getVolcanoPlot(xArray, yArray, ModelUtils.getTunableSelection(mode), nameArray);
+        String html = JSUtils.getVolcanoPlot(xArray, yArray, nameArray, xLabel, yLabel);
 		Map<String, Object> args = new HashMap();        
         args.put("text", html);
 		args.put("title", "Plot");

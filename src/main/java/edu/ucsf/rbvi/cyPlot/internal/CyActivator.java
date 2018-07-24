@@ -10,6 +10,7 @@ import org.osgi.framework.BundleContext;
 
 import edu.ucsf.rbvi.cyPlot.internal.tasks.VolcanoPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ScatterPlotTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.tasks.ViolinPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapTaskFactory;
 
 public class CyActivator extends AbstractCyActivator {
@@ -35,6 +36,11 @@ public class CyActivator extends AbstractCyActivator {
 		props3.put(ServiceProperties.TITLE, "Heat map");
 		props3.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 		
+		Properties props4 = new Properties();
+		props4.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+		props4.put(ServiceProperties.TITLE, "Violin Plot");
+		props4.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		
 		//adding CyPlot commands
 		props1.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 		props1.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
@@ -59,6 +65,14 @@ public class CyActivator extends AbstractCyActivator {
 		props3.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
 		props3.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
 		props3.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
+		
+		props4.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+		props4.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+		props4.setProperty(ServiceProperties.COMMAND, "violin");
+		props4.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a violin plot from node or edge table data");
+		props4.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
+		props4.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+		props4.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
 
 		//registering all services
 		CyServiceRegistrar sr = getService(context, CyServiceRegistrar.class);
@@ -71,6 +85,9 @@ public class CyActivator extends AbstractCyActivator {
 		
 		TaskFactory htf = new HeatMapTaskFactory(sr);
 		registerService(context, htf, TaskFactory.class, props3);
+		
+		TaskFactory vlnTF = new ViolinPlotTaskFactory(sr);
+		registerService(context, vlnTF, TaskFactory.class, props4);
 	}
 }
 //package edu.ucsf.rbvi.cyPlot.internal;
