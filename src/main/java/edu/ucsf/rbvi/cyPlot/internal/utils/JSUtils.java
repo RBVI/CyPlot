@@ -5,7 +5,6 @@ import java.util.Map;
 public class JSUtils {
 	
 	static String preamble = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>"+
-            "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>"+
 									 "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script></head>";
 	public static String getPreamble() { return preamble; }
 
@@ -15,11 +14,9 @@ public class JSUtils {
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
 		builder.append("var data = [trace1];");
-	//	builder.append("var layout = {hovermode: 'closest'};");
-		builder.append("var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
+		builder.append(getLabelCode(xLabel, yLabel));
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
-		//attempting resize
 		builder.append(getResizeCode("myPlot"));
 
 		builder.append(getClickCode("myPlot", nameSelection));
@@ -41,7 +38,7 @@ public class JSUtils {
 		builder.append("yArr[i] = Math.log10(yArr[i]) * -1; }");		
 		builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: 'markers', name: 'trace', text: " + nameArray + "};");
 		builder.append("var data = [trace1];");
-		builder.append("var layout = { showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
+		builder.append(getLabelCode(xLabel, yLabel));
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
 		//attempting resize
@@ -49,6 +46,18 @@ public class JSUtils {
 
 	//	builder.append(getClickCode("myPlot", nameSelection));
 	//	builder.append(getLassoCode("myPlot", nameSelection));
+		builder.append(getPlotly());
+
+		return builder.toString();
+	}
+	
+	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray, String colNames, String title) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getPreamble());
+		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
+		builder.append("<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", x: " + colNames + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];");
+		builder.append("var layout = {title: '" + title + "'};");
+		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append(getPlotly());
 
 		return builder.toString();
@@ -94,40 +103,9 @@ public class JSUtils {
 		builder.append("window.onresize = function() {Plotly.Plots.resize(gd);};");
 		builder.append("})();");
 
-//		builder.append("(function() { ");
-//		builder.append("var d3 = Plotly.d3;");
-//		builder.append("var WIDTH_IN_PERCENT_OF_PARENT = 60;");
-//		builder.append("var HEIGHT_IN_PERCENT_OF_PARENT = 80;");
-//		builder.append("var gd3 = d3.select('body').append('div')");
-//		builder.append(".style({ width: WIDTH_IN_PERCENT_OF_PARENT + '%',\n" +
-//				"        'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',\n" +
-//				"\n" +
-//				"        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',\n" +
-//				"        'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'\n" +
-//				"    });");
-//		builder.append("var gd = gd3.node();");
-//		builder.append("window.onresize = function() {Plotly.Plots.resize(gd);};");
-//		builder.append("});");
-
 		return builder.toString();
 	}
 
-	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray, String colNames, String title) {
-		StringBuilder builder = new StringBuilder();
-		builder.append(getPreamble());
-		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-		builder.append("<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", x: " + colNames + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];");
-		//builder.append("var data = [trace1];");
-		//builder.append("var layout = {autosize: true};");
-		builder.append("var layout = {title: '" + title + "'};");
-		builder.append("Plotly.newPlot('CyPlot', data, layout);");
-		//builder.append("var myPlot = document.getElementById('CyPlot');");
-		//builder.append(getClickCode("myPlot", nameSelection));
-		//builder.append(getLassoCode("myPlot", nameSelection));
-		builder.append(getPlotly());
-
-		return builder.toString();
-	}
 
 	public static String getClickCode(String plot, String nameSelection) {
 		return plot+".on('plotly_click', function(data){ \n ;" +
@@ -138,6 +116,10 @@ public class JSUtils {
 		return	plot+".on('plotly_selected', function(data) { \n ;"+
 		        "var nodelist = ''; for(var i = 0; i<data.points.length; i++) { nodelist+= (', "+nameSelection+ ":' +data.points[i].text);};" +
 		        "cybrowser.executeCyCommand('network select nodeList = \"'+nodelist+'\"');});";
+	}
+	
+	public static String getLabelCode(String xLabel, String yLabel) {
+		return "var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};";
 	}
 
 	public static String getPlotly() {
