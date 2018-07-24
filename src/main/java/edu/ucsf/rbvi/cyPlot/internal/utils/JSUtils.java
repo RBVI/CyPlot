@@ -54,6 +54,27 @@ public class JSUtils {
 		return builder.toString();
 	}
 
+	
+	public static String getViolinPlot(String x, String y, String nameArray, String xLabel, String yLabel) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getPreamble());
+		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
+		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'violin', name: 'trace', , text:" + nameArray + "};");
+		builder.append("var data = [trace1];");
+	//	builder.append("var layout = {hovermode: 'closest'};");
+		builder.append("var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};");
+		builder.append("Plotly.newPlot('CyPlot', data, layout);");
+		builder.append("var myPlot = document.getElementById('CyPlot');");
+		//attempting resize
+		builder.append(getResizeCode("myPlot"));
+
+	//	builder.append(getClickCode("myPlot", nameSelection));
+	//	builder.append(getLassoCode("myPlot", nameSelection));
+		builder.append(getPlotly());
+
+		return builder.toString();
+	}
+	
 	public static String getResizeCode(String name) {
 		StringBuilder builder = new StringBuilder();
 
