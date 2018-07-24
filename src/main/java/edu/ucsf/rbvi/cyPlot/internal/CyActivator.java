@@ -12,6 +12,7 @@ import edu.ucsf.rbvi.cyPlot.internal.tasks.VolcanoPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ScatterPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ViolinPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.tasks.LineGraphTaskFactory;
 
 public class CyActivator extends AbstractCyActivator {
   
@@ -38,8 +39,13 @@ public class CyActivator extends AbstractCyActivator {
 		
 		Properties props4 = new Properties();
 		props4.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-		props4.put(ServiceProperties.TITLE, "Violin Plot");
+		props4.put(ServiceProperties.TITLE, "Violin plot");
 		props4.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		
+		Properties props5 = new Properties();
+		props5.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+		props5.put(ServiceProperties.TITLE, "Line graph");
+		props5.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 		
 		//adding CyPlot commands
 		props1.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -73,6 +79,14 @@ public class CyActivator extends AbstractCyActivator {
 		props4.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
 		props4.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
 		props4.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
+		
+		props5.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+		props5.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+		props5.setProperty(ServiceProperties.COMMAND, "line");
+		props5.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a line graph from node or edge table data");
+		props5.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
+		props5.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+		props5.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
 
 		//registering all services
 		CyServiceRegistrar sr = getService(context, CyServiceRegistrar.class);
@@ -88,6 +102,9 @@ public class CyActivator extends AbstractCyActivator {
 		
 		TaskFactory vlnTF = new ViolinPlotTaskFactory(sr);
 		registerService(context, vlnTF, TaskFactory.class, props4);
+		
+		TaskFactory ltf = new LineGraphTaskFactory(sr);
+		registerService(context, ltf, TaskFactory.class, props5);
 	}
 }
 //package edu.ucsf.rbvi.cyPlot.internal;
