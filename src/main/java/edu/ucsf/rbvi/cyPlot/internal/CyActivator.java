@@ -11,6 +11,8 @@ import org.osgi.framework.BundleContext;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.VolcanoPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ScatterPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ViolinPlotTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.tasks.BarChartTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.tasks.FilledAreaTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.LineGraphTaskFactory;
 
@@ -46,6 +48,16 @@ public class CyActivator extends AbstractCyActivator {
 		props5.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
 		props5.put(ServiceProperties.TITLE, "Line graph");
 		props5.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		
+		Properties props6 = new Properties();
+		props6.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+		props6.put(ServiceProperties.TITLE, "Bar chart");
+		props6.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		
+		Properties props7 = new Properties();
+		props7.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+		props7.put(ServiceProperties.TITLE, "Filled area plot");
+		props7.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 		
 		//adding CyPlot commands
 		props1.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -87,6 +99,22 @@ public class CyActivator extends AbstractCyActivator {
 		props5.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
 		props5.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
 		props5.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
+		
+		props6.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+		props6.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+		props6.setProperty(ServiceProperties.COMMAND, "bar");
+		props6.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a bar chart from node or edge table data");
+		props6.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
+		props6.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+		props6.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
+		
+		props7.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+		props7.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+		props7.setProperty(ServiceProperties.COMMAND, "filled");
+		props7.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a filled area plot from node or edge table data");
+		props7.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
+		props7.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+		props7.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
 
 		//registering all services
 		CyServiceRegistrar sr = getService(context, CyServiceRegistrar.class);
@@ -105,6 +133,12 @@ public class CyActivator extends AbstractCyActivator {
 		
 		TaskFactory ltf = new LineGraphTaskFactory(sr);
 		registerService(context, ltf, TaskFactory.class, props5);
+		
+		TaskFactory btf = new BarChartTaskFactory(sr);
+		registerService(context, btf, TaskFactory.class, props6);
+		
+		TaskFactory ftf = new FilledAreaTaskFactory(sr);
+		registerService(context, ftf, TaskFactory.class, props7);
 	}
 }
 //package edu.ucsf.rbvi.cyPlot.internal;
