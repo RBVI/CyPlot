@@ -74,6 +74,7 @@ public class JSUtils {
 		builder.append("<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", x: " + colNames + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];");
 		builder.append("var layout = {title: '" + title + "'};");
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
+		builder.append(getResizeCode());
 		builder.append(getPlotly());
 
 		return builder.toString();

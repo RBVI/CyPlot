@@ -19,6 +19,7 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
@@ -32,15 +33,15 @@ public class HeatMapTask extends AbstractTask {
 	
 	final CyServiceRegistrar sr;
 	
-	@Tunable (description="Column 1")
-	public ListSingleSelection<String> col1;
+	@Tunable (description="Columns")
+	public ListMultipleSelection<String> cols;
 	
-	@Tunable (description="Column 2")
-	public ListSingleSelection<String> col2;
-	
-	@Tunable (description="Column 3")
-	public ListSingleSelection<String> col3;
-	
+//	@Tunable (description="Column 2")
+//	public ListSingleSelection<String> col2;
+//	
+//	@Tunable (description="Column 3")
+//	public ListSingleSelection<String> col3;
+//	
 	@Tunable (description="Low color")
 	public ListSingleSelection<String> lColor;
 	
@@ -78,25 +79,25 @@ public class HeatMapTask extends AbstractTask {
 //			}
 //		}
 		
-		col1 = new ListSingleSelection<>(headers);
-		col2 = new ListSingleSelection<>(headers);
-		col3 = new ListSingleSelection<>(headers);
+		cols = new ListMultipleSelection<>(headers);
+//		col2 = new ListSingleSelection<>(headers);
+//		col3 = new ListSingleSelection<>(headers);
 		lColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
 		mColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
 		hColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
 	}
 	
-	public String getCol1Selection() {
-		return col1.getSelectedValue();
+	public List<String> getColsSelection() {
+		return cols.getSelectedValues();
 	}
 	
-	public String getCol2Selection() {
-		return col2.getSelectedValue();
-	}
-	
-	public String getCol3Selection() {
-		return col3.getSelectedValue();
-	}
+//	public String getCol2Selection() {
+//		return col2.getSelectedValue();
+//	}
+//	
+//	public String getCol3Selection() {
+//		return col3.getSelectedValue();
+//	}
 	
 	public String getLowSelection() {
 		return lColor.getSelectedValue();
@@ -116,13 +117,26 @@ public class HeatMapTask extends AbstractTask {
 		AvailableCommands ac = sr.getService(AvailableCommands.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		
-		CyColumn column1 = table.getColumn(getCol1Selection());
-		CyColumn column2 = table.getColumn(getCol2Selection());
-		CyColumn column3 = table.getColumn(getCol3Selection());
-		String colNamesArray = "[\"" + getCol1Selection() + "\", \"" + getCol1Selection() + "\", \"" + getCol3Selection() + "\"]";
+//		CyColumn column1 = table.getColumn(getCol1Selection());
+//		CyColumn column2 = table.getColumn(getCol2Selection());
+//		CyColumn column3 = table.getColumn(getCol3Selection());
+//		String colNamesArray = "[\"" + getCol1Selection() + "\", \"" + getCol1Selection() + "\", \"" + getCol3Selection() + "\"]";
+//		
 		
+		String colNamesArray = "[";
+		List<String> colNames = getColsSelection();
+		for (int i = 0; i < colNames.size(); i++) {
+			if (i != colNames.size() - 1) {
+				colNamesArray += "\"" + colNames.get(i) + "\", ";
+			}
+			else {
+				colNamesArray += "\"" + colNames.get(i) + "\"]";
+			}	
+		}
+		
+		System.out.println(colNamesArray);
 		//List<Object> list1 = column1.getValues(column1.getType());
-		String col1Array = ModelUtils.colToArray(column1, "num");
+		//String col1Array = ModelUtils.colToArray(column1, "num");
 //		String col1Array = "[";
 //		List<Object> list1 = column1.getValues(column1.getType());
 //		for(int i = 0; i<list1.size(); i++) {
@@ -135,7 +149,7 @@ public class HeatMapTask extends AbstractTask {
 //		}
 		
 		//List<Object> list2 = column2.getValues(column2.getType());
-		String col2Array = ModelUtils.colToArray(column2, "num");
+		//String col2Array = ModelUtils.colToArray(column2, "num");
 //		String col2Array = "[";
 //		List<Object> list2 = column2.getValues(column2.getType());
 //		for(int i = 0; i<list2.size(); i++) {
@@ -148,7 +162,7 @@ public class HeatMapTask extends AbstractTask {
 //		}
 		
 		//List<Object> list3 = column3.getValues(column3.getType());
-		String col3Array = ModelUtils.colToArray(column3, "num");
+		//String col3Array = ModelUtils.colToArray(column3, "num");
 //		String col3Array = "[";
 //		List<Object> list3 = column3.getValues(column3.getType());
 //		for(int i = 0; i<list3.size(); i++) {
@@ -160,8 +174,19 @@ public class HeatMapTask extends AbstractTask {
 //			}
 //		}
 		
-		String dataArray = "[" + col1Array + "," + col2Array + "," + col3Array + "]";
-				
+		//String dataArray = "[" + col1Array + "," + col2Array + "," + col3Array + "]";
+		
+		String dataArray = "[";
+		for (int i = 0; i < colNames.size(); i++) {
+			String colDataArray = ModelUtils.colToArray(table.getColumn(colNames.get(i)), "num");
+			if (i != colNames.size() - 1) {
+				dataArray += colDataArray+ ", ";
+			}
+			else {
+				dataArray += colDataArray + "]";
+			}	
+			
+		}
 		String lowRGB = "";
 		if (getLowSelection().equals("Red")) {
 			lowRGB = "rgb(255, 0, 0)";
