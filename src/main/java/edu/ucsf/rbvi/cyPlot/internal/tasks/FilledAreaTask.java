@@ -17,6 +17,7 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
 import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
@@ -38,7 +39,6 @@ public class FilledAreaTask extends AbstractTask {
 	@Tunable (description="Name selection column")
 	public ListSingleSelection<String> nameCol;
 	
-	
 	public CyApplicationManager appManager;
 	public CyNetworkView netView;
 	public CyNetwork network;
@@ -57,7 +57,6 @@ public class FilledAreaTask extends AbstractTask {
 		List<String> headers = ModelUtils.getColOptions(columns, "num");
 		
 		List<String> names = ModelUtils.getColOptions(columns, "string");
-
 		
 		xCol = new ListSingleSelection<>(headers);
 		yCol = new ListSingleSelection<>(headers);
