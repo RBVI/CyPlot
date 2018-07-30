@@ -12,6 +12,7 @@ import edu.ucsf.rbvi.cyPlot.internal.tasks.VolcanoPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ScatterPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ViolinPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.BarChartTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.tasks.DotPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.FilledAreaTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.LineGraphTaskFactory;
@@ -58,6 +59,11 @@ public class CyActivator extends AbstractCyActivator {
 		props7.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
 		props7.put(ServiceProperties.TITLE, "Filled area plot");
 		props7.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		
+		Properties props8 = new Properties();
+		props8.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+		props8.put(ServiceProperties.TITLE, "Dot plot");
+		props8.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 		
 		//adding CyPlot commands
 		props1.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -116,6 +122,14 @@ public class CyActivator extends AbstractCyActivator {
 		props7.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
 		props7.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
 
+		props8.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+		props8.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+		props8.setProperty(ServiceProperties.COMMAND, "dot");
+		props8.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a dot area plot from node or edge table data");
+		props8.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
+		props8.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+		props8.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
+		
 		//registering all services
 		CyServiceRegistrar sr = getService(context, CyServiceRegistrar.class);
 		
@@ -139,6 +153,9 @@ public class CyActivator extends AbstractCyActivator {
 		
 		TaskFactory ftf = new FilledAreaTaskFactory(sr);
 		registerService(context, ftf, TaskFactory.class, props7);
+		
+		TaskFactory dtf = new DotPlotTaskFactory(sr);
+		registerService(context, dtf, TaskFactory.class, props8);
 	}
 }
 //package edu.ucsf.rbvi.cyPlot.internal;
