@@ -102,7 +102,7 @@ public class JSUtils {
 		builder.append("var layout = {title: '" + title + "'};");
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append(getPlotly());
-
+		
 		return builder.toString();
 	}
 
