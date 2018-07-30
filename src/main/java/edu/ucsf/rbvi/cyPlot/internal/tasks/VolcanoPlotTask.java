@@ -52,16 +52,7 @@ public class VolcanoPlotTask extends AbstractTask {
 		table = network.getDefaultNodeTable();
 		columns = table.getColumns();
 		
-		List<String> headers = new ArrayList<>();
-		for(CyColumn each : columns) {
-			if(!each.getType().isAssignableFrom(String.class) && 
-					!each.getType().isAssignableFrom(Boolean.class) &&
-					!each.getName().equals(CyNetwork.SUID) && 
-					!each.getName().equals(CyNetwork.SELECTED)) {
-				String header = each.getName();
-				headers.add(header);
-			}
-		}
+		List<String> headers = ModelUtils.getColOptions(columns, "num");
 		
 		xCol = new ListSingleSelection<>(headers);
 		yCol = new ListSingleSelection<>(headers);
