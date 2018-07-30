@@ -58,7 +58,7 @@ public class ScatterPlotTask extends AbstractTask {
 		
 		List<String> names = ModelUtils.getColOptions(columns, "string");
 
-		
+
 		xCol = new ListSingleSelection<>(headers);
 		yCol = new ListSingleSelection<>(headers);
 		nameCol = new ListSingleSelection<>(names);
