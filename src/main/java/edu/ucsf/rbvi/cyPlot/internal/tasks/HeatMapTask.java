@@ -38,6 +38,9 @@ public class HeatMapTask extends AbstractTask {
 	
 	@Tunable (description="Columns")
 	public ListMultipleSelection<String> cols;
+	
+	@Tunable (description="y-axis label")
+	public ListSingleSelection<String> yAxis;
 		
 	@Tunable (description="Low color")
 	public ListSingleSelection<String> lColor;
@@ -64,8 +67,12 @@ public class HeatMapTask extends AbstractTask {
 		columns = table.getColumns();
 		
 		List<String> headers = ModelUtils.getColOptions(columns, "num");
+
+		List<String> names = ModelUtils.getColOptions(columns, "string");
 		
 		cols = new ListMultipleSelection<>(headers);
+		
+		yAxis = new ListSingleSelection<>(names);
 		
 		lColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
 		mColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
@@ -94,6 +101,8 @@ public class HeatMapTask extends AbstractTask {
 		AvailableCommands ac = sr.getService(AvailableCommands.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);	
 		
+		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yAxis));
+		
 		String colNamesArray = "[";
 		List<String> colNames = getColsSelection();
 		for (int i = 0; i < colNames.size(); i++) {
@@ -104,6 +113,8 @@ public class HeatMapTask extends AbstractTask {
 				colNamesArray += "\"" + colNames.get(i) + "\"]";
 			}	
 		}
+		
+		String yAxisArray = ModelUtils.colToArray(yColumn, "string");
 		
 		String dataArray = "[";
 		for (int i = 0; i < colNames.size(); i++) {
@@ -167,7 +178,7 @@ public class HeatMapTask extends AbstractTask {
 			highRGB = "rgb(255, 255, 255)";
 		}
 		
-			String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataArray, colNamesArray, title);
+			String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataArray, colNamesArray, yAxisArray, title);
 			Map<String, Object> args = new HashMap<>();
 			
 			System.out.println(html);

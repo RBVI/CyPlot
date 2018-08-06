@@ -115,15 +115,17 @@ public class JSUtils {
 		return builder.toString();
 	}
 	
-	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray, String colNames, String title) {
+	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray, String colNames, String yAxisArray, String title) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-		builder.append("<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", x: " + colNames + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];");
+		builder.append("<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", x: " + colNames + ", y: " + yAxisArray + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];");
 		builder.append("var layout = {title: '" + title + "'};");
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
+		builder.append(getResizeCode());
+		//builder.append(getClickCode("myPlot", yAxisArray));
+		//builder.append(getLassoCode("myPlot", yAxisArray));
 		builder.append(getPlotly());
-		
 		return builder.toString();
 	}
 
