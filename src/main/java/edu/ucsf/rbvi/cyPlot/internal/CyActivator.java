@@ -170,7 +170,7 @@ public class CyActivator extends AbstractCyActivator {
 		TaskFactory dtf = new DotPlotTaskFactory(sr);
 		registerService(context, dtf, TaskFactory.class, props8);
 	
-		TaskFactory dtf = new GraphEditorTaskFactory(sr);
+		TaskFactory getf = new GraphEditorTaskFactory(sr);
 		registerService(context, dtf, TaskFactory.class, props9);
 	}
 }
