@@ -14,6 +14,7 @@ import edu.ucsf.rbvi.cyPlot.internal.tasks.ViolinPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.BarChartTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.DotPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.FilledAreaTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.tasks.GraphEditorTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.LineGraphTaskFactory;
 
@@ -170,7 +171,7 @@ public class CyActivator extends AbstractCyActivator {
 		TaskFactory dtf = new DotPlotTaskFactory(sr);
 		registerService(context, dtf, TaskFactory.class, props8);
 	
-		TaskFactory dtf = new GraphEditorTaskFactory(sr);
-		registerService(context, dtf, TaskFactory.class, props9);
+		TaskFactory getf = new GraphEditorTaskFactory(sr);
+		registerService(context, getf, TaskFactory.class, props9);
 	}
 }
