@@ -65,6 +65,11 @@ public class CyActivator extends AbstractCyActivator {
 		props8.put(ServiceProperties.TITLE, "Dot plot");
 		props8.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 		
+		Properties props9 = new Properties();
+		props1.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+		props1.put(ServiceProperties.TITLE, "Graph editor");
+		props1.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		
 		//adding CyPlot commands
 		props1.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 		props1.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
@@ -130,6 +135,14 @@ public class CyActivator extends AbstractCyActivator {
 		props8.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
 		props8.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
 		
+		props9.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+		props9.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+		props9.setProperty(ServiceProperties.COMMAND, "editor");
+		props9.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Access the graph editor");
+		props9.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
+		props9.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+		props9.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
+		
 		//registering all services
 		CyServiceRegistrar sr = getService(context, CyServiceRegistrar.class);
 		
@@ -156,6 +169,9 @@ public class CyActivator extends AbstractCyActivator {
 		
 		TaskFactory dtf = new DotPlotTaskFactory(sr);
 		registerService(context, dtf, TaskFactory.class, props8);
+	
+		TaskFactory dtf = new GraphEditorTaskFactory(sr);
+		registerService(context, dtf, TaskFactory.class, props9);
 	}
 }
 //package edu.ucsf.rbvi.cyPlot.internal;
