@@ -31,6 +31,7 @@ public class JSUtils {
 	
 	public static String getChartEditor() {
 		StringBuilder builder = new StringBuilder();
+		//builder.append("<html><head>");
 		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> const dataSources = {cy1: [1, 2, 3], cy2: [4, 3, 2], cy3: [17, 13, 9]}");
@@ -44,6 +45,7 @@ public class JSUtils {
 		builder.append("function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }");
 		builder.append("_reactDom2.default.render(_react2.default.createElement(_App2.default, {dataSources: this.dataSources}), document.getElementById('root'));");
 		builder.append(getPlotly());
+		//builder.append("</script></body></html>");
 		
 		return builder.toString();
 	}

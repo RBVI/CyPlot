@@ -67,9 +67,9 @@ public class CyActivator extends AbstractCyActivator {
 		props8.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 		
 		Properties props9 = new Properties();
-		props1.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-		props1.put(ServiceProperties.TITLE, "Graph editor");
-		props1.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+		props9.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+		props9.put(ServiceProperties.TITLE, "Graph editor");
+		props9.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 		
 		//adding CyPlot commands
 		props1.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
