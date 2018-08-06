@@ -3,23 +3,25 @@ import plotly from 'plotly.js/dist/plotly';
 import PlotlyEditor from 'react-chart-editor';
 import 'react-chart-editor/lib/react-chart-editor.css';
 
-const dataSources = {
+/*const dataSources = {
   cy1: [1, 2, 3], // eslint-disable-line no-magic-numbers
   cy2: [4, 3, 2], // eslint-disable-line no-magic-numbers
   cy3: [17, 13, 9], // eslint-disable-line no-magic-numbers
-};
+};*/
 
-const dataSourceOptions = Object.keys(dataSources).map(name => ({
-  value: name,
-  label: name,
-}));
+
 
 const config = {editable: true};
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {data: [], layout: {}, frames: []};
+    this.dataSources = props.dataSources;
+    this.dataSourceOptions = Object.keys(dataSources).map(name => ({
+      value: name,
+      label: name,
+    }));
   }
 
   render() {
@@ -30,8 +32,8 @@ class App extends Component {
           layout={this.state.layout}
           config={config}
           frames={this.state.frames}
-          dataSources={dataSources}
-          dataSourceOptions={dataSourceOptions}
+          dataSources={this.dataSources}
+          dataSourceOptions={this.dataSourceOptions}
           plotly={plotly}
           onUpdate={(data, layout, frames) =>
             this.setState({data, layout, frames})

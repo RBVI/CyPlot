@@ -28,6 +28,25 @@ public class JSUtils {
 
 			return builder.toString(); 
 		}
+	
+	public static String getChartEditor() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getPreamble());
+		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
+		builder.append("<script> const dataSources = {cy1: [1, 2, 3], cy2: [4, 3, 2], cy3: [17, 13, 9]}");
+		builder.append("var _react = require('react');");
+		builder.append("var _react2 = _interopRequireDefault(_react);");
+		builder.append("var _reactDom = require('react-dom');");
+		builder.append("var _reactDom2 = _interopRequireDefault(_reactDom);");
+		builder.append("require('./index.css');");
+		builder.append("var _App = require('./App');");
+		builder.append("var _App2 = _interopRequireDefault(_App);");
+		builder.append("function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }");
+		builder.append("_reactDom2.default.render(_react2.default.createElement(_App2.default, {dataSources: this.dataSources}), document.getElementById('root'));");
+		builder.append(getPlotly());
+		
+		return builder.toString();
+	}
 		
 	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
@@ -175,7 +194,6 @@ public class JSUtils {
 		builder.append("var WIDTH_IN_PERCENT_OF_PARENT = 94;");
 		builder.append("var HEIGHT_IN_PERCENT_OF_PARENT = 95;");
 		builder.append("var gd3 = d3.select(\"div[id='CyPlot']\")");
-		//builder.append("var gd3 = d3.select('body').append('CyPlot')");
 		builder.append(".style({ width: WIDTH_IN_PERCENT_OF_PARENT + '%',\n" +
 				"        'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',\n" +
 				"\n" +
