@@ -22,6 +22,8 @@ public class JSUtils {
 			builder.append("<script>");
 			loadJS(builder, "/js/plotly.min.js");
 			loadJS(builder, "/js/react-dom.production.min.js");
+			loadJS(builder, "/js/main.e236ec29.js");
+			loadJS(builder, "/css/main.cf05ff36.css");
 			builder.append("</script>");
 			builder.append("<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\">>");
 			builder.append("</script></head>");
