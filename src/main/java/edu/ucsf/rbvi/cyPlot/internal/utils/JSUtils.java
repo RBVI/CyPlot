@@ -10,8 +10,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
  
 public class JSUtils {
+	
 	
 /*	static String preamble = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>"+
 									 "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script></head>";*/
@@ -31,11 +37,13 @@ public class JSUtils {
 			builder.append("</script></head>");
 
 			return builder.toString(); 
-		}
+	}
+	
 	
 	public static String getChartEditor() {
+		
+		
 		StringBuilder builder = new StringBuilder();
-		//builder.append("<html><head>");
 		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> const dataSources = {cy1: [1, 2, 3], cy2: [4, 3, 2], cy3: [17, 13, 9]}");
@@ -49,9 +57,40 @@ public class JSUtils {
 		builder.append("function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }");
 		builder.append("_reactDom2.default.render(_react2.default.createElement(_App2.default, {dataSources: this.dataSources}), document.getElementById('root'));");
 		builder.append(getPlotly());
-		//builder.append("</script></body></html>");
 		
+		
+		writeDebugFile(builder.toString());
+
 		return builder.toString();
+	}
+	
+	public static void writeDebugFile(String string) {
+		
+		File file = null;
+		FileOutputStream fos = null;
+		
+		try {
+			//naturally, this next line needs to be modified for individual users.
+			file = new File("/Users/liammagee/Desktop/file.html");
+			fos = new FileOutputStream(file);
+			if(!file.exists()) {
+				file.createNewFile();
+			}
+			byte[] bytesArray = string.getBytes();
+			fos.write(bytesArray);
+			fos.flush();
+			System.out.println("Write successful.");
+		}catch(IOException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(fos != null) {
+					fos.close();
+				}
+			}catch (IOException e) {
+				System.out.println("Error...");
+			}
+		}
 	}
 		
 	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel) {
