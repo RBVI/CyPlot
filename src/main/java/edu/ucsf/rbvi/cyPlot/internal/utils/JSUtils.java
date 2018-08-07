@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Stream;
-
+ 
 public class JSUtils {
 	
 /*	static String preamble = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>"+
@@ -20,12 +20,14 @@ public class JSUtils {
 			StringBuilder builder = new StringBuilder();
 			builder.append("<html><head>");
 			builder.append("<script>");
-			loadJS(builder, "/js/plotly.min.js");
-			loadJS(builder, "/js/react-dom.production.min.js");
+			//loadJS(builder, "/js/plotly.min.js");
+			//loadJS(builder, "/js/react-dom.production.min.js");
 			loadJS(builder, "/js/main.e236ec29.js");
-			loadJS(builder, "/css/main.cf05ff36.css");
 			builder.append("</script>");
-			builder.append("<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\">>");
+			builder.append("<style>");
+			loadJS(builder, "/css/main.cf05ff36.css");
+			builder.append("</style>");
+			//builder.append("<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\">>");
 			builder.append("</script></head>");
 
 			return builder.toString(); 
