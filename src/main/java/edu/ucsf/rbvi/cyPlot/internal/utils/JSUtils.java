@@ -18,23 +18,18 @@ import java.io.IOException;
  
 public class JSUtils {
 	
-	
-/*	static String preamble = "<html><head><script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script></head>"+
-									 "<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\"></script></head>";*/
-		
 	public static String getPreamble() { 
 			StringBuilder builder = new StringBuilder();
 			builder.append("<html><head>");
 			builder.append("<script>");
-			//loadJS(builder, "/js/plotly.min.js");
-			//loadJS(builder, "/js/react-dom.production.min.js");
-			//loadJS(builder, "/js/main.e236ec29.js");
+			loadJS(builder, "/js/react.production.min.js");
+			loadJS(builder, "/js/react-dom.production.min.js");
+			loadJS(builder, "/js/plotly.min.js");
 			loadJS(builder, "/js/vendors~app~index.bundle.js");
 			loadJS(builder, "/js/app-index.bundle.js");
-			loadJS(builder, "app.bundle.js");
+			loadJS(builder, "/js/app.bundle.js");
 			builder.append("</script>");
 			builder.append("<style>");
-			//loadJS(builder, "/css/main.cf05ff36.css");
 			loadJS(builder, "/css/main.752d5eb7.css");
 			builder.append("</style>");
 			//builder.append("<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\">>");
@@ -42,28 +37,6 @@ public class JSUtils {
 
 			return builder.toString(); 
 	}
-	
-	
-//	public static String getChartEditor() {
-//		StringBuilder builder = new StringBuilder();
-//		builder.append(getPreamble());
-//		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-//		builder.append("<script> const dataSources = {cy1: [1, 2, 3], cy2: [4, 3, 2], cy3: [17, 13, 9]}");
-//		builder.append("var _react = require('react');");
-//		builder.append("var _react2 = _interopRequireDefault(_react);");
-//		builder.append("var _reactDom = require('react-dom');");
-//		builder.append("var _reactDom2 = _interopRequireDefault(_reactDom);");
-//		builder.append("require('./index.css');");
-//		builder.append("var _App = require('./App');");
-//		builder.append("var _App2 = _interopRequireDefault(_App);");
-//		builder.append("function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }");
-//		builder.append("_reactDom2.default.render(_react2.default.createElement(_App2.default, {dataSources: this.dataSources}), document.getElementById('root'));");
-//		builder.append(getPlotly());
-//
-//		writeDebugFile(builder.toString(), "getChartEditor.html");
-//
-//		return builder.toString();
-//	}
 
 	public static String getChartEditor() {
 		StringBuilder builder = new StringBuilder();
@@ -79,15 +52,9 @@ public class JSUtils {
 		builder.append("alert(\"app: \"+app.App.default.toSource());");
 		builder.append("var dataSources = {col1: [1, 2, 3], col2: [4, 3, 2], col3: [17, 13, 9] };");
 		builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources }), document.getElementById('root'));");
-		builder.append("</script></body></html>");
 		builder.append(getPlotly());
-		writeDebugFile(builder.toString(), "getIndex.html");
+		writeDebugFile(builder.toString(), "getChartEditor.html");
 		return builder.toString();
-				//could not find where/how to load these, unsure of importance(?)
-				//<link rel="manifest" href="file:///tmp/react-chart-editor/manifest.json"/>
-				//<link rel="shortcut icon" href="file:///tmp/react-chart-editor/favicon.ico"/>
-			 // <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-		  	//<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
 	}
 	
 
