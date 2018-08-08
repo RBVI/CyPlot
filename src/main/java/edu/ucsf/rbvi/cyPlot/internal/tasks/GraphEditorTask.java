@@ -33,7 +33,7 @@ public class GraphEditorTask extends AbstractTask {
 	public CyNetwork network;
 	public CyTable table;
 	public Collection<CyColumn> columns;
-	public List<CyColumn> selectedColumns;
+	public List<CyColumn> selectedColumnsList;
 	
 	@Tunable (description="Columns")
 	public ListMultipleSelection<String> cols;
@@ -57,19 +57,18 @@ public class GraphEditorTask extends AbstractTask {
 		List<String> names = ModelUtils.getColOptions(columns, "string");
 		nameCol = new ListSingleSelection<>(names);
 		
-		List<CyColumn> selectedColumnsList = new ArrayList<>();
-		for(int i = 0; i < headers.size(); i++) {
+		selectedColumnsList = new ArrayList<>();
+		for(int i = 0; i < cols.getSelectedValues().size(); i++) {
 			selectedColumnsList.add(table.getColumn(cols.getSelectedValues().get(i)));
 		}
 		
-		selectedColumns = selectedColumnsList;
 	}
 	
 	public void run(TaskMonitor monitor) { 
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		
-		String dataSourcesArray = ModelUtils.colsToDataSourcesArray(selectedColumns);
+		String dataSourcesArray = ModelUtils.colsToDataSourcesArray(selectedColumnsList);
 		
 		String html = JSUtils.getChartEditor(dataSourcesArray);
 		Map<String, Object> args = new HashMap<>();		
@@ -78,7 +77,7 @@ public class GraphEditorTask extends AbstractTask {
 
 		//args.put("debug", true);
 		
-		System.out.println(html);
+		//System.out.println(html);
 
 	
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
