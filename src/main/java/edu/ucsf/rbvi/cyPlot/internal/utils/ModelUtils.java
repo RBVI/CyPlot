@@ -15,6 +15,21 @@ public class ModelUtils {
 		return tunable.getSelectedValue();
 	}
 	
+	//Returns an array-formatted String of column data depending for the dataSources var.
+		public static String colsToDataSourcesArray(List<CyColumn> columns) {
+				String dataArray = "";
+				for(int i = 0; i<columns.size(); i++) {
+					String oneCol = columns.get(i).getName() + ": " + colToArray(columns.get(i),"num");
+					if (i != columns.size()-1) {
+						dataArray += oneCol + ",";
+					}
+					else {	
+					dataArray += oneCol;
+					}
+				}
+				return dataArray;
+		}
+	
 	//Returns an array-formatted String of column data depending on the specified data type.
 	public static String colToArray(CyColumn column, String type) {
 		List<Object> list = column.getValues(column.getType());
