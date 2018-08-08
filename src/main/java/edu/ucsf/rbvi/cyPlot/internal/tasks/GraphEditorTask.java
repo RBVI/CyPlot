@@ -1,5 +1,6 @@
 package edu.ucsf.rbvi.cyPlot.internal.tasks;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ public class GraphEditorTask extends AbstractTask {
 	public CyNetwork network;
 	public CyTable table;
 	public Collection<CyColumn> columns;
+	public List<CyColumn> selectedColumns;
 	
 	@Tunable (description="Columns")
 	public ListMultipleSelection<String> cols;
@@ -54,13 +56,22 @@ public class GraphEditorTask extends AbstractTask {
 		
 		List<String> names = ModelUtils.getColOptions(columns, "string");
 		nameCol = new ListSingleSelection<>(names);
+		
+		List<CyColumn> selectedColumnsList = new ArrayList<>();
+		for(int i = 0; i < headers.size(); i++) {
+			selectedColumnsList.add(table.getColumn(cols.getSelectedValues().get(i)));
+		}
+		
+		selectedColumns = selectedColumnsList;
 	}
 	
 	public void run(TaskMonitor monitor) { 
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		
-		String html = JSUtils.getChartEditor();
+		String dataSourcesArray = ModelUtils.colsToDataSourcesArray(selectedColumns);
+		
+		String html = JSUtils.getChartEditor(dataSourcesArray);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("title", "Graph Editor");
