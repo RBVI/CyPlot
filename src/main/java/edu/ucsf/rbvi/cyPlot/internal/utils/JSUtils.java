@@ -21,14 +21,12 @@ public class JSUtils {
 	public static String getPreamble() { 
 			StringBuilder builder = new StringBuilder();
 			builder.append("<html><head>");
-			builder.append("<script>");
-			loadJS(builder, "/js/react.production.min.js");
-			loadJS(builder, "/js/react-dom.production.min.js");
-			loadJS(builder, "/js/plotly.min.js");
-			loadJS(builder, "/js/vendors~app~index.bundle.js");
-			loadJS(builder, "/js/app-index.bundle.js");
-			loadJS(builder, "/js/app.bundle.js");
-			builder.append("</script>");
+			loadWithScript(builder, "/js/react.production.min.js");
+			loadWithScript(builder, "/js/react-dom.production.min.js");
+			loadWithScript(builder, "/js/plotly.min.js");
+			loadWithScript(builder, "/js/vendors~app~index.bundle.js");
+			loadWithScript(builder, "/js/app-index.bundle.js");
+			loadWithScript(builder, "/js/app.bundle.js");
 			builder.append("<style>");
 			loadJS(builder, "/css/main.752d5eb7.css");
 			builder.append("</style>");
@@ -57,6 +55,17 @@ public class JSUtils {
 		return builder.toString();
 	}
 	
+	public static void loadWithScript(StringBuilder builder, String js) {
+		builder.append("<script>");
+		loadJS(builder, js);
+		builder.append("</script>");
+	}
+	
+	public static String getPlotly() {
+		return "Plotly.react();"+
+		       "</script></body></html>";
+	}
+	
 
 
 	public static void writeDebugFile(String string, String name) {
@@ -66,8 +75,8 @@ public class JSUtils {
 		
 		try {
 			//naturally, this next line needs to be modified for individual users.
-			//file = new File("/Users/liammagee/Desktop/" + name);
-			file = new File("C:/Users/Lilly/Desktop/" + name);
+			file = new File("/Users/liammagee/Desktop/" + name);
+			//file = new File("C:/Users/Lilly/Desktop/" + name);
 			fos = new FileOutputStream(file);
 			if(!file.exists()) {
 				file.createNewFile();
@@ -99,13 +108,14 @@ public class JSUtils {
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
 		builder.append(getResizeCode());
-
 		builder.append(getClickCode("myPlot", nameSelection));
 		builder.append(getLassoCode("myPlot", nameSelection));
 		builder.append(getPlotly());
 
 		return builder.toString();
 	}
+	
+	
 	
 	public static String getFilledAreaPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
@@ -249,6 +259,7 @@ public class JSUtils {
 
 		return builder.toString();
 	}
+	
 
 	public static String getClickCode(String plot, String nameSelection) {
 		return plot+".on('plotly_click', function(data){ \n ;" +
@@ -265,10 +276,7 @@ public class JSUtils {
 		return "var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};";
 	}
 
-	public static String getPlotly() {
-		return "Plotly.react();"+
-		       "</script></body></html>";
-	}
+	
 	
 	private static void loadJS(StringBuilder builder, String js) {
 		URL plotly = JSUtils.class.getClassLoader().getResource(js);
