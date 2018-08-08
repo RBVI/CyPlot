@@ -103,6 +103,7 @@ public class HeatMapTask extends AbstractTask {
 		
 		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yAxis));
 		
+		
 		String colNamesArray = "[";
 		List<String> colNames = getColsSelection();
 		for (int i = 0; i < colNames.size(); i++) {
