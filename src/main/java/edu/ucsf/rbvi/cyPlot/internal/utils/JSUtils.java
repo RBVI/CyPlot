@@ -59,12 +59,12 @@ public class JSUtils {
 //		builder.append("function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }");
 //		builder.append("_reactDom2.default.render(_react2.default.createElement(_App2.default, {dataSources: this.dataSources}), document.getElementById('root'));");
 //		builder.append(getPlotly());
-//		
+//
 //		writeDebugFile(builder.toString(), "getChartEditor.html");
 //
 //		return builder.toString();
 //	}
-	
+
 	public static String getChartEditor() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
@@ -90,8 +90,8 @@ public class JSUtils {
 		  	//<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
 	}
 	
-	
-	
+
+
 	public static void writeDebugFile(String string, String name) {
 		
 		File file = null;
@@ -100,6 +100,7 @@ public class JSUtils {
 		try {
 			//naturally, this next line needs to be modified for individual users.
 			file = new File("/Users/liammagee/Desktop/" + name);
+			//file = new File("C:\\Users\\Lilly\\Desktop\\" + name);
 			fos = new FileOutputStream(file);
 			if(!file.exists()) {
 				file.createNewFile();
