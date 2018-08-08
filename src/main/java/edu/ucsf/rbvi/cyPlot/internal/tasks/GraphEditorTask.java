@@ -61,7 +61,6 @@ public class GraphEditorTask extends AbstractTask {
 		for(int i = 0; i < cols.getSelectedValues().size(); i++) {
 			selectedColumnsList.add(table.getColumn(cols.getSelectedValues().get(i)));
 		}
-		
 	}
 	
 	public void run(TaskMonitor monitor) { 
@@ -77,7 +76,7 @@ public class GraphEditorTask extends AbstractTask {
 
 		//args.put("debug", true);
 		
-		//System.out.println(html);
+		System.out.println(html);
 
 	
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
