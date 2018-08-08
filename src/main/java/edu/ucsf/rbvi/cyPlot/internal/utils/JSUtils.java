@@ -38,7 +38,7 @@ public class JSUtils {
 			return builder.toString(); 
 	}
 
-	public static String getChartEditor() {
+	public static String getChartEditor(String data) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
 		builder.append("<meta charset=\"utf-8\"/>");
@@ -50,7 +50,7 @@ public class JSUtils {
 		builder.append("<div id=\"root\"></div>");
 		builder.append("<script type=\"text/javascript\" >");
 		builder.append("alert(\"app: \"+app.App.default.toSource());");
-		builder.append("var dataSources = {col1: [1, 2, 3], col2: [4, 3, 2], col3: [17, 13, 9] };");
+		builder.append("var dataSources = {" + data + "};");
 		builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources }), document.getElementById('root'));");
 		builder.append(getPlotly());
 		writeDebugFile(builder.toString(), "getChartEditor.html");
@@ -66,8 +66,8 @@ public class JSUtils {
 		
 		try {
 			//naturally, this next line needs to be modified for individual users.
-			file = new File("/Users/liammagee/Desktop/" + name);
-			//file = new File("C:\\Users\\Lilly\\Desktop\\" + name);
+			//file = new File("/Users/liammagee/Desktop/" + name);
+			file = new File("C:/Users/Lilly/Desktop/" + name);
 			fos = new FileOutputStream(file);
 			if(!file.exists()) {
 				file.createNewFile();
