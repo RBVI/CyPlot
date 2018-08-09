@@ -75,9 +75,12 @@ public class GraphEditorTask extends AbstractTask {
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		
-		String dataSourcesArray = ModelUtils.colsToDataSourcesArray(selectedColumnsList);
+		CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 		
-		String html = JSUtils.getChartEditor(dataSourcesArray);
+		String dataSourcesArray = ModelUtils.colsToDataSourcesArray(selectedColumnsList);
+		String names = ModelUtils.colToDataArray(nameColumn);
+		
+		String html = JSUtils.getChartEditor(dataSourcesArray, names);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("title", "Graph Editor");
@@ -87,7 +90,7 @@ public class GraphEditorTask extends AbstractTask {
 		// System.out.println(html);
 
 	
-		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
+		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);
 	}
 }

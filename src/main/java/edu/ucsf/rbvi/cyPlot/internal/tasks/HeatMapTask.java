@@ -51,11 +51,15 @@ public class HeatMapTask extends AbstractTask {
 	@Tunable (description="High color")
 	public ListSingleSelection<String> hColor;
 	
+	@Tunable (description="Open in plot editor?")
+	public ListSingleSelection<String> editorCol;
+	
 	public CyApplicationManager appManager;
 	public CyNetworkView netView;
 	public CyNetwork network;
 	public CyTable table;
 	public Collection<CyColumn> columns;
+	public boolean editor;
 	
 	public HeatMapTask(final CyServiceRegistrar sr) {
 		super();
@@ -65,6 +69,7 @@ public class HeatMapTask extends AbstractTask {
 		network = netView.getModel();
 		table = network.getDefaultNodeTable();
 		columns = table.getColumns();
+		editor = true;
 		
 		List<String> headers = ModelUtils.getColOptions(columns, "num");
 
@@ -77,6 +82,7 @@ public class HeatMapTask extends AbstractTask {
 		lColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
 		mColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
 		hColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
+		editorCol = new ListSingleSelection("Yes", "No");
 	}
 	
 	public List<String> getColsSelection() {
@@ -179,7 +185,14 @@ public class HeatMapTask extends AbstractTask {
 			highRGB = "rgb(255, 255, 255)";
 		}
 		
-			String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataArray, colNamesArray, yAxisArray, title);
+		String editorSelection = ModelUtils.getTunableSelection(editorCol);
+		if(editorSelection.equals("Yes")) {
+			editor = true; //open the graph in the editor
+		}else {
+			editor = false; //don't open the graph in the editor
+		}
+		
+			String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataArray, colNamesArray, yAxisArray, title, editor);
 			Map<String, Object> args = new HashMap<>();
 			
 			System.out.println(html);
@@ -188,7 +201,7 @@ public class HeatMapTask extends AbstractTask {
 			args.put("title", "Plot");
 			args.put("id", "01");
 		
-		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
+		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);
 	}
 }
