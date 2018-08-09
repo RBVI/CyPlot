@@ -58,28 +58,39 @@ public class GraphEditorTask extends AbstractTask {
 		nameCol = new ListSingleSelection<>(names);
 		
 		selectedColumnsList = new ArrayList<>();
+		/*
+		 * This isn't defined until the run method
 		for(int i = 0; i < cols.getSelectedValues().size(); i++) {
 			selectedColumnsList.add(table.getColumn(cols.getSelectedValues().get(i)));
 		}
+		*/
 	}
 	
 	public void run(TaskMonitor monitor) { 
+		// Get the selected columns
+		for (String col: cols.getSelectedValues()) {
+			selectedColumnsList.add(table.getColumn(col));
+		}
+
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		
-		String dataSourcesArray = ModelUtils.colsToDataSourcesArray(selectedColumnsList);
+		CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 		
-		String html = JSUtils.getChartEditor(dataSourcesArray);
+		String dataSourcesArray = ModelUtils.colsToDataSourcesArray(selectedColumnsList);
+		String names = ModelUtils.colToDataArray(nameColumn);
+		
+		String html = JSUtils.getChartEditor(dataSourcesArray, names);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("title", "Graph Editor");
 
 		//args.put("debug", true);
 		
-		System.out.println(html);
+		// System.out.println(html);
 
 	
-		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
+		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);
 	}
 }
