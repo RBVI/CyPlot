@@ -39,7 +39,7 @@ public class JSUtils {
 			return builder.toString(); 
 	}
 
-	public static String getChartEditor(String data) {
+	public static String getChartEditor(String data, String names) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
 		builder.append("<body>");
