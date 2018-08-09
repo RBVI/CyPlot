@@ -11,6 +11,8 @@ driven by webpack
 
 ```
 npm install
+# To use with CyBrowser
+cp plotly*.js node_modules/plotly.js/dist/ # to use our CyBrowser version of plotly
 ./node_modules/.bin/webpack --mode=production
 ```
 
