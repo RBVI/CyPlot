@@ -47,7 +47,6 @@ public class JSUtils {
 		builder.append("<noscript>You need to enable JavaScript to run this app.</noscript>");
 		builder.append("<div id=\"root\"></div>");
 		builder.append("<script type=\"text/javascript\" >");
-		builder.append("alert(\"app: \"+app.App.default.toSource());");
 		builder.append("var dataSources = {" + data + "};");
 		builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources }), document.getElementById('root'));");
 		builder.append(getPlotly());
