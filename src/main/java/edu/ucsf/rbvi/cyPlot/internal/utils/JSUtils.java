@@ -89,22 +89,42 @@ public class JSUtils {
 		}
 	}
 		
-	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel) {
-		StringBuilder builder = new StringBuilder();
-		builder.append(getPreamble());
-		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
-		builder.append("var data = [trace1];");
-		builder.append(getLabelCode(xLabel, yLabel));
-		builder.append("Plotly.newPlot('CyPlot', data, layout);");
-		builder.append("var myPlot = document.getElementById('CyPlot');");
-		builder.append(getResizeCode());
+	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel, boolean editor, String data) {
+		if (editor) {
+			StringBuilder builder = new StringBuilder();
+			builder.append(getPreamble());
+			builder.append("<meta charset=\"utf-8\"/>");
+			builder.append("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,shrink-to-fit=no\"/>");
+			builder.append("<meta name=\"theme-color\" content=\"#000000\"/>");
+			builder.append("<title>Simple App</title>");
+			builder.append("<body>");
+			builder.append("<noscript>You need to enable JavaScript to run this app.</noscript>");
+			builder.append("<div id=\"root\"></div>");
+			builder.append("<script type=\"text/javascript\" >");
+			builder.append("alert(\"app: \"+app.App.default.toSource());");
+			builder.append("var dataSources = {" + data + "};");
+			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources }), document.getElementById('root'));");
+			builder.append(getPlotly());
+			writeDebugFile(builder.toString(), "getChartEditor.html");
+			return builder.toString();
+		}
+		else {
+			StringBuilder builder = new StringBuilder();
+			builder.append(getPreamble());
+			builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
+			builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
+			builder.append("var data = [trace1];");
+			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append("Plotly.newPlot('CyPlot', data, layout);");
+			builder.append("var myPlot = document.getElementById('CyPlot');");
+			builder.append(getResizeCode());
 
-		builder.append(getClickCode("myPlot", nameSelection));
-		builder.append(getLassoCode("myPlot", nameSelection));
-		builder.append(getPlotly());
+			builder.append(getClickCode("myPlot", nameSelection));
+			builder.append(getLassoCode("myPlot", nameSelection));
+			builder.append(getPlotly());
 
-		return builder.toString();
+			return builder.toString();
+		}
 	}
 	
 	public static String getFilledAreaPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel) {
