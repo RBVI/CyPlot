@@ -36,12 +36,16 @@ public class BarChartTask extends AbstractTask {
 	@Tunable (description="X-axis column")
 	public ListSingleSelection<String> xCol;
 	
+	@Tunable (description="Open in plot editor?")
+	public ListSingleSelection<String> editorCol;
+	
 	
 	public CyApplicationManager appManager;
 	public CyNetworkView netView;
 	public CyNetwork network;
 	public CyTable table;
 	public Collection<CyColumn> columns;
+	public boolean editor;
 		
 	public BarChartTask(final CyServiceRegistrar sr) {
 		super();
@@ -51,6 +55,7 @@ public class BarChartTask extends AbstractTask {
 		network = netView.getModel();
 		table = network.getDefaultNodeTable();
 		columns = table.getColumns();
+		editor = true;
 		
 		List<String> headers = ModelUtils.getColOptions(columns, "num");
 		
@@ -59,6 +64,7 @@ public class BarChartTask extends AbstractTask {
 		
 		yCol = new ListSingleSelection<>(headers);
 		xCol = new ListSingleSelection<>(names);
+		editorCol = new ListSingleSelection("Yes", "No");
 	}
 
 	public void run(TaskMonitor monitor) { 
@@ -75,12 +81,19 @@ public class BarChartTask extends AbstractTask {
 		String xLabel = xColumn.getName();
         String yLabel = yColumn.getName();
         
-		String html = JSUtils.getBarChart(xArray, yArray, xLabel, yLabel);
+        String editorSelection = ModelUtils.getTunableSelection(editorCol);
+		if(editorSelection.equals("Yes")) {
+			editor = true; //open the graph in the editor
+		}else {
+			editor = false; //don't open the graph in the editor
+		}
+        
+		String html = JSUtils.getBarChart(xArray, yArray, xLabel, yLabel, editor);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("title", "Bar Chart");
 
-		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
+		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);
 	}
 }

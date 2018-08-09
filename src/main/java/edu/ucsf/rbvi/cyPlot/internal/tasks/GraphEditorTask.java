@@ -87,7 +87,7 @@ public class GraphEditorTask extends AbstractTask {
 		// System.out.println(html);
 
 	
-		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
+		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);
 	}
 }
