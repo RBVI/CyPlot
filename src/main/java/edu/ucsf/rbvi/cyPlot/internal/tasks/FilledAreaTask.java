@@ -39,11 +39,15 @@ public class FilledAreaTask extends AbstractTask {
 	@Tunable (description="Name selection column")
 	public ListSingleSelection<String> nameCol;
 	
+	@Tunable (description="Open in plot editor?")
+	public ListSingleSelection<String> editorCol;
+	
 	public CyApplicationManager appManager;
 	public CyNetworkView netView;
 	public CyNetwork network;
 	public CyTable table;
 	public Collection<CyColumn> columns;
+	public boolean editor;
 		
 	public FilledAreaTask(final CyServiceRegistrar sr) {
 		super();
@@ -53,6 +57,7 @@ public class FilledAreaTask extends AbstractTask {
 		network = netView.getModel();
 		table = network.getDefaultNodeTable();
 		columns = table.getColumns();
+		editor = true;
 		
 		List<String> headers = ModelUtils.getColOptions(columns, "num");
 		
@@ -61,6 +66,7 @@ public class FilledAreaTask extends AbstractTask {
 		xCol = new ListSingleSelection<>(headers);
 		yCol = new ListSingleSelection<>(headers);
 		nameCol = new ListSingleSelection<>(names);
+		editorCol = new ListSingleSelection("Yes", "No");
 	}
 
 	public void run(TaskMonitor monitor) { 
@@ -80,12 +86,19 @@ public class FilledAreaTask extends AbstractTask {
 		String xLabel = xColumn.getName();
         String yLabel = yColumn.getName();
         
-		String html = JSUtils.getFilledAreaPlot(xArray, yArray, "markers", ModelUtils.getTunableSelection(nameCol), nameArray, xLabel, yLabel);
+        String editorSelection = ModelUtils.getTunableSelection(editorCol);
+		if(editorSelection.equals("Yes")) {
+			editor = true; //open the graph in the editor
+		}else {
+			editor = false; //don't open the graph in the editor
+		}
+        
+		String html = JSUtils.getFilledAreaPlot(xArray, yArray, "markers", ModelUtils.getTunableSelection(nameCol), nameArray, xLabel, yLabel, editor);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("title", "Filled Area Plot");
 
-		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
+		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);
 	}
 }

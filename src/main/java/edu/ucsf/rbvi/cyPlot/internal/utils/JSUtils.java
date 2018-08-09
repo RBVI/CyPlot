@@ -21,19 +21,20 @@ public class JSUtils {
 	public static String getPreamble() { 
 			StringBuilder builder = new StringBuilder();
 			builder.append("<html><head>");
-			builder.append("<script>");
-			loadJS(builder, "/js/react.production.min.js");
-			loadJS(builder, "/js/react-dom.production.min.js");
-			loadJS(builder, "/js/plotly.min.js");
-			loadJS(builder, "/js/vendors~app~index.bundle.js");
-			loadJS(builder, "/js/app-index.bundle.js");
-			loadJS(builder, "/js/app.bundle.js");
-			builder.append("</script>");
+			loadWithScript(builder, "/js/react.production.min.js");
+			loadWithScript(builder, "/js/react-dom.production.min.js");
+			loadWithScript(builder, "/js/plotly.min.js");
+			loadWithScript(builder, "/js/vendors~app~index.bundle.js");
+			loadWithScript(builder, "/js/app-index.bundle.js");
+			loadWithScript(builder, "/js/app.bundle.js");
 			builder.append("<style>");
 			loadJS(builder, "/css/main.752d5eb7.css");
 			builder.append("</style>");
+			builder.append("<meta charset=\"utf-8\"/>");
+			builder.append("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,shrink-to-fit=no\"/>");
+			builder.append("<meta name=\"theme-color\" content=\"#000000\"/>");
 			//builder.append("<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\">>");
-			builder.append("</script></head>");
+			builder.append("</head>");
 
 			return builder.toString(); 
 	}
@@ -41,20 +42,27 @@ public class JSUtils {
 	public static String getChartEditor(String data) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
-		builder.append("<meta charset=\"utf-8\"/>");
-		builder.append("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,shrink-to-fit=no\"/>");
-		builder.append("<meta name=\"theme-color\" content=\"#000000\"/>");
-		builder.append("<title>Simple App</title>");
 		builder.append("<body>");
 		builder.append("<noscript>You need to enable JavaScript to run this app.</noscript>");
 		builder.append("<div id=\"root\"></div>");
 		builder.append("<script type=\"text/javascript\" >");
-		builder.append("alert(\"app: \"+app.App.default.toSource());");
+		// builder.append("alert(\"app: \"+app.App.default.toSource());");
 		builder.append("var dataSources = {" + data + "};");
 		builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources }), document.getElementById('root'));");
 		builder.append(getPlotly());
 		writeDebugFile(builder.toString(), "getChartEditor.html");
 		return builder.toString();
+	}
+	
+	public static void loadWithScript(StringBuilder builder, String js) {
+		builder.append("<script>");
+		loadJS(builder, js);
+		builder.append("</script>");
+	}
+	
+	public static String getPlotly() {
+		return "Plotly.react();"+
+		       "</script></body></html>";
 	}
 	
 
@@ -66,8 +74,9 @@ public class JSUtils {
 		
 		try {
 			//naturally, this next line needs to be modified for individual users.
-			//file = new File("/Users/liammagee/Desktop/" + name);
-			file = new File("C:/Users/Lilly/Desktop/" + name);
+			String home = System.getProperty("user.home");
+			file = new File(home+"/" + name);
+			//file = new File("C:/Users/Lilly/Desktop/" + name);
 			fos = new FileOutputStream(file);
 			if(!file.exists()) {
 				file.createNewFile();
@@ -89,6 +98,7 @@ public class JSUtils {
 		}
 	}
 		
+<<<<<<< HEAD
 	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel, boolean editor, String data) {
 		if (editor) {
 			StringBuilder builder = new StringBuilder();
@@ -122,10 +132,27 @@ public class JSUtils {
 			builder.append(getClickCode("myPlot", nameSelection));
 			builder.append(getLassoCode("myPlot", nameSelection));
 			builder.append(getPlotly());
+=======
+	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getPreamble());
+		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
+		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
+		builder.append("var data = [trace1];");
+		builder.append(getLabelCode(xLabel, yLabel));
+		builder.append("Plotly.newPlot('CyPlot', data, layout);");
+		builder.append("var myPlot = document.getElementById('CyPlot');");
+		builder.append(getResizeCode());
+		builder.append(getClickCode("myPlot", nameSelection));
+		builder.append(getLassoCode("myPlot", nameSelection));
+		builder.append(getPlotly());
+>>>>>>> branch 'Develop' of https://github.com/RBVI/CyPlot.git
 
 			return builder.toString();
 		}
 	}
+	
+	
 	
 	public static String getFilledAreaPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
@@ -269,6 +296,7 @@ public class JSUtils {
 
 		return builder.toString();
 	}
+	
 
 	public static String getClickCode(String plot, String nameSelection) {
 		return plot+".on('plotly_click', function(data){ \n ;" +
@@ -285,10 +313,7 @@ public class JSUtils {
 		return "var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};";
 	}
 
-	public static String getPlotly() {
-		return "Plotly.react();"+
-		       "</script></body></html>";
-	}
+	
 	
 	private static void loadJS(StringBuilder builder, String js) {
 		URL plotly = JSUtils.class.getClassLoader().getResource(js);

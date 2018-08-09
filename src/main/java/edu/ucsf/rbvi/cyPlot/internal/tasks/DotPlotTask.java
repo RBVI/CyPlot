@@ -37,11 +37,15 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 		@Tunable (description="y column")
 		public ListSingleSelection<String> yCol;
 		
+		@Tunable (description="Open in plot editor?")
+		public ListSingleSelection<String> editorCol;
+		
 		public CyApplicationManager appManager;
 		public CyNetworkView netView;
 		public CyNetwork network;
 		public CyTable table;
 		public Collection<CyColumn> columns;
+		public boolean editor;
 		
 		public DotPlotTask(final CyServiceRegistrar sr) {
 			super();
@@ -51,11 +55,13 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			network = netView.getModel();
 			table = network.getDefaultNodeTable();
 			columns = table.getColumns();
+			editor = true;
 			
 			List<String> headers = ModelUtils.getColOptions(columns, "num");
 			
 			xCol = new ListSingleSelection<>(headers);
 			yCol = new ListSingleSelection<>(headers);
+			editorCol = new ListSingleSelection("Yes", "No");
 		}
 		
 		public String getXSelection() {
@@ -81,13 +87,20 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 	        
 	        String xLabel = xColumn.getName();
 	        String yLabel = yColumn.getName();
+	        
+	        String editorSelection = ModelUtils.getTunableSelection(editorCol);
+			if(editorSelection.equals("Yes")) {
+				editor = true; //open the graph in the editor
+			}else {
+				editor = false; //don't open the graph in the editor
+			}
  
-	        String html = JSUtils.getDotPlot(xArray, yArray, nameArray, xLabel, yLabel);
+	        String html = JSUtils.getDotPlot(xArray, yArray, nameArray, xLabel, yLabel, editor);
 			Map<String, Object> args = new HashMap();        
 	        args.put("text", html);
 			args.put("title", "Dot Plot");
 		
-			TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
+			TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 			sTM.execute(ti);
 		}
 }

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/>
+		<meta name="theme-color" content="#000000"/>
+		<title>Simple App</title>
+		<link href="file:///tmp/test2/static/main.752d5eb7.css" rel="stylesheet"/>
+	  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+  	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+		<script type="text/javascript" src="file:///tmp/test2/vendors~app~index.bundle.js"></script>
+		<script type="text/javascript" src="file:///tmp/test2/vendors~app~index~react.bundle.js"></script>
+		<script type="text/javascript" src="file:///tmp/test2/app-index.bundle.js"></script>
+		<script type="text/javascript" src="file:///tmp/test2/app.bundle.js"></script>
+	</head>
+	<body>
+		<noscript>You need to enable JavaScript to run this app.</noscript>
+		<div id="root"></div>
+		<script type="text/javascript" >
+
+			alert("app: "+app.App.default.toSource());
+			var dataSources = {
+				col1: [1, 2, 3],
+				col2: [4, 3, 2],
+				col3: [17, 13, 9] 
+			};
+			ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources }), document.getElementById('root'));
+
+		</script>
+		<!--script type="module" src="file:///tmp/test2/index.js"></script-->
+	</body>
+</html>
