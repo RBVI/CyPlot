@@ -30,8 +30,11 @@ public class JSUtils {
 			builder.append("<style>");
 			loadJS(builder, "/css/main.752d5eb7.css");
 			builder.append("</style>");
+			builder.append("<meta charset=\"utf-8\"/>");
+			builder.append("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,shrink-to-fit=no\"/>");
+			builder.append("<meta name=\"theme-color\" content=\"#000000\"/>");
 			//builder.append("<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\">>");
-			builder.append("</script></head>");
+			builder.append("</head>");
 
 			return builder.toString(); 
 	}
@@ -39,15 +42,11 @@ public class JSUtils {
 	public static String getChartEditor(String data) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getPreamble());
-		builder.append("<meta charset=\"utf-8\"/>");
-		builder.append("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,shrink-to-fit=no\"/>");
-		builder.append("<meta name=\"theme-color\" content=\"#000000\"/>");
-		builder.append("<title>Simple App</title>");
 		builder.append("<body>");
 		builder.append("<noscript>You need to enable JavaScript to run this app.</noscript>");
 		builder.append("<div id=\"root\"></div>");
 		builder.append("<script type=\"text/javascript\" >");
-		builder.append("alert(\"app: \"+app.App.default.toSource());");
+		// builder.append("alert(\"app: \"+app.App.default.toSource());");
 		builder.append("var dataSources = {" + data + "};");
 		builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources }), document.getElementById('root'));");
 		builder.append(getPlotly());
@@ -75,7 +74,8 @@ public class JSUtils {
 		
 		try {
 			//naturally, this next line needs to be modified for individual users.
-			file = new File("/Users/liammagee/Desktop/" + name);
+			String home = System.getProperty("user.home");
+			file = new File(home+"/" + name);
 			//file = new File("C:/Users/Lilly/Desktop/" + name);
 			fos = new FileOutputStream(file);
 			if(!file.exists()) {

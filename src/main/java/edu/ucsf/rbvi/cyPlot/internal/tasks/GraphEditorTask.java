@@ -58,12 +58,20 @@ public class GraphEditorTask extends AbstractTask {
 		nameCol = new ListSingleSelection<>(names);
 		
 		selectedColumnsList = new ArrayList<>();
+		/*
+		 * This isn't defined until the run method
 		for(int i = 0; i < cols.getSelectedValues().size(); i++) {
 			selectedColumnsList.add(table.getColumn(cols.getSelectedValues().get(i)));
 		}
+		*/
 	}
 	
 	public void run(TaskMonitor monitor) { 
+		// Get the selected columns
+		for (String col: cols.getSelectedValues()) {
+			selectedColumnsList.add(table.getColumn(col));
+		}
+
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		
@@ -76,7 +84,7 @@ public class GraphEditorTask extends AbstractTask {
 
 		//args.put("debug", true);
 		
-		System.out.println(html);
+		// System.out.println(html);
 
 	
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "show", args, null);
