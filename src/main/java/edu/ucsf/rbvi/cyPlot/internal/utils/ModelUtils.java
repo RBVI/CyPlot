@@ -29,6 +29,11 @@ public class ModelUtils {
 				}
 				return dataArray;
 		}
+		
+		public static String colToDataArray(CyColumn column) {
+			String dataArray = column.getName() + ": " + colToArray(column, "string");
+			return dataArray;
+		}
 	
 	//Returns an array-formatted String of column data depending on the specified data type.
 	public static String colToArray(CyColumn column, String type) {
