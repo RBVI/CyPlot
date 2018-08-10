@@ -19,7 +19,6 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListMultipleSelection;
-import org.cytoscape.work.util.ListSingleSelection;
 
 import edu.ucsf.rbvi.cyPlot.internal.utils.JSUtils;
 import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
@@ -48,17 +47,13 @@ public class GraphEditorTask extends AbstractTask {
 		table = network.getDefaultNodeTable();
 		columns = table.getColumns();
 		
+		//List<String> headers = ModelUtils.getColOptions(columns, "all");
+		//Looks like the editor can only take in numeric data under dataSources! Previous line broke the program.
 		List<String> headers = ModelUtils.getColOptions(columns, "all");
 		cols = new ListMultipleSelection<>(headers);
 		
 		
 		selectedColumnsList = new ArrayList<>();
-		/*
-		 * This isn't defined until the run method
-		for(int i = 0; i < cols.getSelectedValues().size(); i++) {
-			selectedColumnsList.add(table.getColumn(cols.getSelectedValues().get(i)));
-		}
-		*/
 	}
 	
 	public void run(TaskMonitor monitor) { 
