@@ -18,52 +18,43 @@ import java.io.IOException;
  
 public class JSUtils {
 	
-	public static void getPreamble(StringBuilder builder, boolean editor) { 
+	public static String getPreamble() { 
+			StringBuilder builder = new StringBuilder();
 			builder.append("<html><head>");
-			builder.append("<meta charset=\"utf-8\"/>");
-			builder.append("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,shrink-to-fit=no\"/>");
-			builder.append("<meta name=\"theme-color\" content=\"#000000\"/>");
-			loadWithScript(builder, "/js/react.production.min.js");
-			loadWithScript(builder, "/js/react-dom.production.min.js");
-			if (editor) {
-				loadWithScript(builder, "/js/vendors~app~index.bundle.js");
-				loadWithScript(builder, "/js/app-index.bundle.js");
-				loadWithScript(builder, "/js/app.bundle.js");
-				builder.append("<style>");
-				loadJS(builder, "/css/main.752d5eb7.css");
-				builder.append("</style>");
-			} else {
-				loadWithScript(builder, "/js/plotly.min.js");
-			}
-			builder.append("</head>");
+			builder.append("<script>");
+			loadJS(builder, "/js/react.production.min.js");
+			loadJS(builder, "/js/react-dom.production.min.js");
+			loadJS(builder, "/js/plotly.min.js");
+			loadJS(builder, "/js/vendors~app~index.bundle.js");
+			loadJS(builder, "/js/app-index.bundle.js");
+			loadJS(builder, "/js/app.bundle.js");
+			builder.append("</script>");
+			builder.append("<style>");
+			loadJS(builder, "/css/main.752d5eb7.css");
+			builder.append("</style>");
+			//builder.append("<script type=\"text/javascript\" src=\"https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js\">>");
+			builder.append("</script></head>");
 
-			return;
+			return builder.toString(); 
 	}
 
 	public static String getChartEditor(String data) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, true);
+		builder.append(getPreamble());
+		builder.append("<meta charset=\"utf-8\"/>");
+		builder.append("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,shrink-to-fit=no\"/>");
+		builder.append("<meta name=\"theme-color\" content=\"#000000\"/>");
+		builder.append("<title>Simple App</title>");
 		builder.append("<body>");
 		builder.append("<noscript>You need to enable JavaScript to run this app.</noscript>");
 		builder.append("<div id=\"root\"></div>");
 		builder.append("<script type=\"text/javascript\" >");
-		// builder.append("alert(\"app: \"+app.App.default.toSource());");
+		builder.append("alert(\"app: \"+app.App.default.toSource());");
 		builder.append("var dataSources = {" + data + "};");
 		builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources }), document.getElementById('root'));");
 		builder.append(getPlotly());
 		writeDebugFile(builder.toString(), "getChartEditor.html");
 		return builder.toString();
-	}
-	
-	public static void loadWithScript(StringBuilder builder, String js) {
-		builder.append("<script>");
-		loadJS(builder, js);
-		builder.append("</script>");
-	}
-	
-	public static String getPlotly() {
-		return "Plotly.react();"+
-		       "</script></body></html>";
 	}
 	
 
@@ -75,9 +66,8 @@ public class JSUtils {
 		
 		try {
 			//naturally, this next line needs to be modified for individual users.
-			String home = System.getProperty("user.home");
-			file = new File(home+"/" + name);
-			//file = new File("C:/Users/Lilly/Desktop/" + name);
+			//file = new File("/Users/liammagee/Desktop/" + name);
+			file = new File("C:/Users/Lilly/Desktop/" + name);
 			fos = new FileOutputStream(file);
 			if(!file.exists()) {
 				file.createNewFile();
@@ -99,46 +89,27 @@ public class JSUtils {
 		}
 	}
 		
-	public static String getScatterPlot(String x, String y, String mode, String nameSelection, 
-									                    String nameArray, String xLabel, String yLabel, boolean editor) {
+	public static String getScatterPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
-		if (!editor) {
-			builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-			builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
-			builder.append("var data = [trace1];");
-			builder.append(getLabelCode(xLabel, yLabel));
-			builder.append("Plotly.newPlot('CyPlot', data, layout);");
-			builder.append("var myPlot = document.getElementById('CyPlot');");
-			builder.append(getResizeCode());
-			builder.append(getClickCode("myPlot", nameSelection));
-			builder.append(getLassoCode("myPlot", nameSelection));
-			builder.append(getPlotly());
-		} else {
-			builder.append("<body>");
-			builder.append("<div id=\"CyPlot\"></div>");
-			builder.append("<script type=\"text/javascript\" >");
-			builder.append("var dataSources = {" + xLabel + ": "+x+", "+yLabel +": "+y+"};");
-			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
-			builder.append("var data = [trace1];");
-			builder.append("var myPlot = document.getElementById('CyPlot');");
-			builder.append(getLabelCode(xLabel, yLabel));
-			// builder.append(getClickCode("myPlot", nameSelection));
-			// builder.append(getLassoCode("myPlot", nameSelection));
-			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));");
-			builder.append("</script></body></html>");
-			writeDebugFile(builder.toString(), "CyPlot.html");
-		}
+		builder.append(getPreamble());
+		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
+		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
+		builder.append("var data = [trace1];");
+		builder.append(getLabelCode(xLabel, yLabel));
+		builder.append("Plotly.newPlot('CyPlot', data, layout);");
+		builder.append("var myPlot = document.getElementById('CyPlot');");
+		builder.append(getResizeCode());
+
+		builder.append(getClickCode("myPlot", nameSelection));
+		builder.append(getLassoCode("myPlot", nameSelection));
+		builder.append(getPlotly());
 
 		return builder.toString();
 	}
 	
-	
-	
-	public static String getFilledAreaPlot(String x, String y, String mode, String nameSelection, 
-	                                       String nameArray, String xLabel, String yLabel, boolean editor) {
+	public static String getFilledAreaPlot(String x, String y, String mode, String nameSelection, String nameArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", fill: 'tonexty', type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
 		builder.append("var data = [trace1];");
@@ -150,9 +121,9 @@ public class JSUtils {
 		return builder.toString();
 	}
 	
-	public static String getBarChart(String xArray, String yArray, String xLabel, String yLabel, boolean editor) {
+	public static String getBarChart(String xArray, String yArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> var data = [{ x: " + xArray + ", y: " + yArray + ", type: 'bar'}];");
 		builder.append(getLabelCode(xLabel, yLabel));
@@ -162,10 +133,9 @@ public class JSUtils {
 		return builder.toString();
 	}
 	
-	public static String getVolcanoPlot(String x, String y, String nameSelection, String nameArray, 
-	                                    String xLabel, String yLabel, boolean editor) {
+	public static String getVolcanoPlot(String x, String y, String nameSelection, String nameArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> var xArr = " + x + ";");
 	//	builder.append("for(var i = 0; i < xArr.length; i++) { ");
@@ -186,10 +156,9 @@ public class JSUtils {
 		return builder.toString();
 	}
 	
-	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray, 
-	                                String colNames, String yAxisArray, String title, boolean editor) {
+	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray, String colNames, String yAxisArray, String title) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']]; var data = [{z: " + dataArray + ", x: " + colNames + ", y: " + yAxisArray + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];");
 		builder.append("var layout = {title: '" + title + "'};");
@@ -202,9 +171,9 @@ public class JSUtils {
 	}
 
 	
-	public static String getViolinPlot(String x, String y, String nameArray, String xLabel, String yLabel, boolean editor) {
+	public static String getViolinPlot(String x, String y, String nameArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");		
 		builder.append("<script> var xArr = " + x + ";");
 		builder.append("var xOpp = [];");
@@ -227,9 +196,9 @@ public class JSUtils {
 		return builder.toString();
 	}
 	
-	public static String getDotPlot(String x, String y, String nameArray, String xLabel, String yLabel, boolean editor) {
+	public static String getDotPlot(String x, String y, String nameArray, String xLabel, String yLabel) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		builder.append(getPreamble());
 		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
 		builder.append("<script> var myPlot = document.getElementById(\"CyPlot\");");
 		builder.append( "var trace1 = {");
@@ -280,7 +249,6 @@ public class JSUtils {
 
 		return builder.toString();
 	}
-	
 
 	public static String getClickCode(String plot, String nameSelection) {
 		return plot+".on('plotly_click', function(data){ \n ;" +
@@ -297,7 +265,10 @@ public class JSUtils {
 		return "var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};";
 	}
 
-	
+	public static String getPlotly() {
+		return "Plotly.react();"+
+		       "</script></body></html>";
+	}
 	
 	private static void loadJS(StringBuilder builder, String js) {
 		URL plotly = JSUtils.class.getClassLoader().getResource(js);
