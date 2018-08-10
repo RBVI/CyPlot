@@ -77,11 +77,11 @@ public class FilledAreaTask extends AbstractTask {
 		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 		CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 		
-		String xArray = ModelUtils.colToArray(xColumn, "num");
+		String xArray = ModelUtils.colToArray(xColumn);
 		
-		String yArray = ModelUtils.colToArray(yColumn, "num");
+		String yArray = ModelUtils.colToArray(yColumn);
 		
-		String nameArray = ModelUtils.colToArray(nameColumn, "string");
+		String nameArray = ModelUtils.colToArray(nameColumn);
 		
 		String xLabel = xColumn.getName();
         String yLabel = yColumn.getName();

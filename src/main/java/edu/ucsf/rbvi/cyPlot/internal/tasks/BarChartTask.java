@@ -74,9 +74,9 @@ public class BarChartTask extends AbstractTask {
 		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 		CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
 		
-		String xArray = ModelUtils.colToArray(xColumn, "string");
+		String xArray = ModelUtils.colToArray(xColumn);
 		
-		String yArray = ModelUtils.colToArray(yColumn, "num");
+		String yArray = ModelUtils.colToArray(yColumn);
 				
 		String xLabel = xColumn.getName();
         String yLabel = yColumn.getName();

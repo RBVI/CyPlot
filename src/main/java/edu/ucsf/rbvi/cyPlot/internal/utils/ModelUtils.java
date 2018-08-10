@@ -17,52 +17,36 @@ public class ModelUtils {
 	
 	//Returns an array-formatted String of column data depending for the dataSources var.
 		public static String colsToDataSourcesArray(List<CyColumn> columns) {
-				String dataArray = "";
-				for(int i = 0; i<columns.size(); i++) {
-					String oneCol = columns.get(i).getName() + ": " + colToArray(columns.get(i),"num");
-					if (i != columns.size()-1) {
-						dataArray += oneCol + ",";
-					}
-					else {	
-					dataArray += oneCol;
-					}
+			String dataArray = "";
+			for(int i = 0; i<columns.size(); i++) {
+				String oneCol = "'" + columns.get(i).getName() + "' : " + colToArray(columns.get(i));
+				if (i != columns.size()-1) {
+					dataArray += oneCol + ",";
 				}
-				return dataArray;
+				else {	
+				dataArray += oneCol;
+				}
+			}
+			return dataArray;
 		}
 		
 		public static String colToDataArray(CyColumn column) {
-			String dataArray = column.getName() + ": " + colToArray(column, "string");
+			String dataArray = column.getName() + ": " + colToArray(column);
 			return dataArray;
 		}
 	
 	//Returns an array-formatted String of column data depending on the specified data type.
-	public static String colToArray(CyColumn column, String type) {
+	public static String colToArray(CyColumn column) {
 		List<Object> list = column.getValues(column.getType());
-		
-		if(type.equals("string")) {
-			String array = "[";
-			for(int i = 0; i<list.size(); i++) {
-				if(i != list.size()-1) {
-					array += ("'" + list.get(i) + "', ");
-				}else {
-					array += ("'" + list.get(i) + "']");
-				}
+		String array = "[";
+		for(int i = 0; i<list.size(); i++) {
+			if(i != list.size()-1) {
+				array += ("'" + list.get(i) + "', ");
+			}else {
+				array += ("'" + list.get(i) + "']");
 			}
-			return array;
-		}else if(type.equals("num")) {
-			String array = "[";
-			for(int i = 0; i<list.size(); i++) {
-				array += (""+list.get(i));
-				if(i != list.size()-1) {
-					array += ", ";
-				}else {
-					array += "]"; 
-				}
-			}
-			return array;
-		}else {
-			return null;
 		}
+		return array;
 	}
 	
 	//Returns a list of the names of columns with a certain type of value (currently only Strings or nums)

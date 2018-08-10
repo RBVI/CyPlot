@@ -121,11 +121,11 @@ public class HeatMapTask extends AbstractTask {
 			}	
 		}
 		
-		String yAxisArray = ModelUtils.colToArray(yColumn, "string");
+		String yAxisArray = ModelUtils.colToArray(yColumn);
 		
 		String dataArray = "[";
 		for (int i = 0; i < colNames.size(); i++) {
-			String colDataArray = ModelUtils.colToArray(table.getColumn(colNames.get(i)), "num");
+			String colDataArray = ModelUtils.colToArray(table.getColumn(colNames.get(i)));
 			if (i != colNames.size() - 1) {
 				dataArray += colDataArray+ ", ";
 			}

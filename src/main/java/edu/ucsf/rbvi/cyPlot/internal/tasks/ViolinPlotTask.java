@@ -81,9 +81,9 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			CyColumn yColumn = table.getColumn(getYSelection());
 			CyColumn nameColumn = table.getColumn("shared name");
 			
-	        String xArray = ModelUtils.colToArray(xColumn, "num");
-	        String yArray = ModelUtils.colToArray(yColumn, "num");
-	        String nameArray = ModelUtils.colToArray(nameColumn, "string");
+	        String xArray = ModelUtils.colToArray(xColumn);
+	        String yArray = ModelUtils.colToArray(yColumn);
+	        String nameArray = ModelUtils.colToArray(nameColumn);
 	        
 	        String xLabel = xColumn.getName();
 	        String yLabel = yColumn.getName();
