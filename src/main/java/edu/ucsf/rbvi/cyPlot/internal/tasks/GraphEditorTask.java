@@ -38,9 +38,6 @@ public class GraphEditorTask extends AbstractTask {
 	@Tunable (description="Columns")
 	public ListMultipleSelection<String> cols;
 	
-	@Tunable (description="Name selection column")
-	public ListSingleSelection<String> nameCol;
-	
 	public GraphEditorTask(final CyServiceRegistrar sr) {
 		super();
 		this.sr = sr; 
@@ -51,11 +48,9 @@ public class GraphEditorTask extends AbstractTask {
 		table = network.getDefaultNodeTable();
 		columns = table.getColumns();
 		
-		List<String> headers = ModelUtils.getColOptions(columns, "num");
+		List<String> headers = ModelUtils.getColOptions(columns, "all");
 		cols = new ListMultipleSelection<>(headers);
 		
-		List<String> names = ModelUtils.getColOptions(columns, "string");
-		nameCol = new ListSingleSelection<>(names);
 		
 		selectedColumnsList = new ArrayList<>();
 		/*
@@ -75,12 +70,9 @@ public class GraphEditorTask extends AbstractTask {
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		
-		CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
-		
 		String dataSourcesArray = ModelUtils.colsToDataSourcesArray(selectedColumnsList);
-		String names = ModelUtils.colToDataArray(nameColumn);
 		
-		String html = JSUtils.getChartEditor(dataSourcesArray, names);
+		String html = JSUtils.getChartEditor(dataSourcesArray);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("title", "Graph Editor");

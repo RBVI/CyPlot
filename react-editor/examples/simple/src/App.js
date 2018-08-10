@@ -23,9 +23,30 @@ const config = {editable: true};
 class App extends Component {
   constructor(props) {
     super(props);
+		// alert("props: "+props.toSource());
 		this.dataSources = props.dataSources;
-		this.dataSourceOptions = props.dataSourceOptions;
+		// alert("dataSources: "+dataSources.toSource());
+		if ("dataSourceOptions" in props) {
+			this.dataSourceOptions = props.dataSourceOptions;
+		} else {
+			this.dataSourceOptions = Object.keys(dataSources).map(name => ({
+  				value: name,
+  				label: name,
+			}));
+		}
+
     this.state = {data: [], layout: {}, frames: []};
+		if ("data" in props) {
+    	this.state.data = props.data;
+			// alert("data: "+data.toSource());
+		}
+		if ("layout" in props) {
+    	this.state.layout = props.layout;
+		}
+		if ("frames" in props) {
+    	this.state.frames = props.frames;
+		}
+		// alert("data: "+this.state.toSource());
   }
 
   getChildContext() {

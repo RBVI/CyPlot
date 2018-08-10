@@ -89,6 +89,13 @@ public class ModelUtils {
 				}
 			}
 			return strings;
+		}else if(type.equals("all")) {
+			List<String> strings = new ArrayList<>();
+			for(CyColumn each : columns) {
+				String header = each.getName();
+				strings.add(header);
+			}
+			return strings;
 		}else {
 			return null;
 		}
