@@ -105,7 +105,7 @@ public class JSUtils {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor);
 		if (!editor) {
-			builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
+			builder.append("<body><div id=\"CyPlot\"></div>");
 			builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
 			builder.append("var data = [trace1];");
 			builder.append(getLabelCode(xLabel, yLabel));
@@ -125,11 +125,14 @@ public class JSUtils {
 			builder.append("var dataSources = {" + xLabel + ": "+x+", "+yLabel +": "+y+"};");
 			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};");
 			builder.append("var data = [trace1];");
-			builder.append("var myPlot = document.getElementById('CyPlot');");
 			builder.append(getLabelCode(xLabel, yLabel));
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));");
-			builder.append(getClickCode("myPlot", nameSelection, true));
+			if (nameSelection != null && nameArray != null) {
+				builder.append("</script><script>");
+				builder.append("var myPlot = document.getElementById('CyPlot');");
+				builder.append(getClickCode("myPlot", nameSelection, true));
 			// builder.append(getLassoCode("myPlot", nameSelection, true));
+			}
 			builder.append("</script></body></html>");
 			writeDebugFile(builder.toString(), "CyPlot.html");
 		}
@@ -292,11 +295,14 @@ public class JSUtils {
 
 	public static String getClickCode(String plot, String nameSelection, boolean isEditor) {
 		if (isEditor) {
-			String command = "var plots = "+plot+".getElementsByClassName(\""+PLOT_CLASS+"\");\n";
-			command += "alert('plots: '+plots);";
-			command += "for (var plplot in plots) {\n";
-			command += "    alert('plplot: '+plplot);\n";
+			String command = "var plots = "+plot+".getElementsByClassName('"+PLOT_CLASS+"');\n";
+			command += "// alert('plots: '+plots);";
+			command += "// alert('plots.length: '+plots.length);";
+			command += "for (var i = 0; i < plots.length; i++) {\n";
+			command += "    var plplot = plots[i];\n";
+			command += "    // alert('plplot: '+plplot);\n";
 			command += "    plplot.on('plotly_click', function (data) { \n";
+			command += "        alert('clicked!');\n";
 			command += "        cybrowser.executeCyCommand('network select nodeList = \"" + nameSelection + ":' +data.points[0].text+'\"');\n";
 			command += "    });\n";
 			command += "}\n";
