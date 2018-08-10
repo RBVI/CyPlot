@@ -137,6 +137,30 @@ public class JSUtils {
 		return builder.toString();
 	}
 	
+	public static String getVolcanoPlot(String x, String y, String nameSelection, String nameArray, 
+        String xLabel, String yLabel, boolean editor) {
+		StringBuilder builder = new StringBuilder();
+		getPreamble(builder, editor);
+		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
+		builder.append("<script> var xArr = " + x + ";");
+		//	builder.append("for(var i = 0; i < xArr.length; i++) { ");
+		//	builder.append("xArr[i] = ((Math.log10(xArr[i])) / (Math.log(2))); } " );
+		builder.append("var yArr = " + y + ";");
+		//	builder.append("for(var i = 0; i < yArr.length; i++) {");
+		//	builder.append("yArr[i] = Math.log10(yArr[i]) * -1; }");		
+		builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: 'markers', name: 'trace', text: " + nameArray + "};");
+		builder.append("var data = [trace1];");
+		builder.append(getLabelCode(xLabel, yLabel));
+		builder.append("Plotly.newPlot('CyPlot', data, layout);");
+		builder.append("var myPlot = document.getElementById('CyPlot');");
+		builder.append(getResizeCode());
+		builder.append(getClickCode("myPlot", nameSelection));
+		builder.append(getLassoCode("myPlot", nameSelection));
+		builder.append(getPlotly());
+		
+		return builder.toString();
+	}
+	
 	
 	
 	public static String getFilledAreaPlot(String x, String y, String mode, String nameSelection, 
@@ -163,30 +187,6 @@ public class JSUtils {
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append(getResizeCode());
 		builder.append(getPlotly());
-		return builder.toString();
-	}
-	
-	public static String getVolcanoPlot(String x, String y, String nameSelection, String nameArray, 
-	                                    String xLabel, String yLabel, boolean editor) {
-		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
-		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-		builder.append("<script> var xArr = " + x + ";");
-	//	builder.append("for(var i = 0; i < xArr.length; i++) { ");
-	//	builder.append("xArr[i] = ((Math.log10(xArr[i])) / (Math.log(2))); } " );
-		builder.append("var yArr = " + y + ";");
-	//	builder.append("for(var i = 0; i < yArr.length; i++) {");
-	//	builder.append("yArr[i] = Math.log10(yArr[i]) * -1; }");		
-		builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: 'markers', name: 'trace', text: " + nameArray + "};");
-		builder.append("var data = [trace1];");
-		builder.append(getLabelCode(xLabel, yLabel));
-		builder.append("Plotly.newPlot('CyPlot', data, layout);");
-		builder.append("var myPlot = document.getElementById('CyPlot');");
-		builder.append(getResizeCode());
-		builder.append(getClickCode("myPlot", nameSelection));
-		builder.append(getLassoCode("myPlot", nameSelection));
-		builder.append(getPlotly());
-		
 		return builder.toString();
 	}
 	
