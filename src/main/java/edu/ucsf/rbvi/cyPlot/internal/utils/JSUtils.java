@@ -296,8 +296,8 @@ public class JSUtils {
 	public static String getClickCode(String plot, String nameSelection, boolean isEditor) {
 		if (isEditor) {
 			String command = "var plots = "+plot+".getElementsByClassName('"+PLOT_CLASS+"');\n";
-			command += "// alert('plots: '+plots);";
-			command += "// alert('plots.length: '+plots.length);";
+			command += "// alert('plots: '+plots);\n";
+			command += "// alert('plots.length: '+plots.length);\n";
 			command += "for (var i = 0; i < plots.length; i++) {\n";
 			command += "    var plplot = plots[i];\n";
 			command += "    // alert('plplot: '+plplot);\n";
