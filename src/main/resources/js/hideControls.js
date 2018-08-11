@@ -7,6 +7,7 @@ var controls = myPlot.getElementsByClassName('editor_controls');
 var control = controls[0];
 var hidden = false;
 var hideElement = document.createElement('A');
+hideElement.href = '#foo'; // We really don't want to go anywhere
 hideElement.innerHTML = '&nbsp;<&nbsp;';
 hideElement.style.position = 'absolute';
 hideElement.style.top = '15px';
@@ -28,4 +29,5 @@ function hideControls() {
         hideElement.style.left = '20px';
         hidden = true;
     }
+		return false;
 }

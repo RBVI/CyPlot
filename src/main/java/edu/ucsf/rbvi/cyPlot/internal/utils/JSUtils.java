@@ -186,8 +186,8 @@ public class JSUtils {
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append("var myPlot = document.getElementById('CyPlot');");
 		builder.append(getResizeCode());
-		getClickCode(builder, "myPlot", nameSelection);
-		getLassoCode(builder, "myPlot", nameSelection);
+		getClickCode(builder, "myPlot", nameSelection, false);
+		getLassoCode(builder, "myPlot", nameSelection, false);
 		builder.append(getPlotly());
 		
 		return builder.toString();
@@ -202,8 +202,8 @@ public class JSUtils {
 		builder.append("var layout = {title: '" + title + "'};");
 		builder.append("Plotly.newPlot('CyPlot', data, layout);");
 		builder.append(getResizeCode());
-		getClickCode(builder, "myPlot", yAxisArray);
-		getLassoCode(builder, "myPlot", yAxisArray);
+		getClickCode(builder, "myPlot", yAxisArray, false);
+		getLassoCode(builder, "myPlot", yAxisArray, false);
 		builder.append(getPlotly());
 		return builder.toString();
 	}
@@ -269,39 +269,45 @@ public class JSUtils {
 	public static String getResizeCode() {
 		StringBuilder builder = new StringBuilder();
 
-		builder.append("(function() { ");
-		builder.append("var d3 = Plotly.d3;");
-		builder.append("var WIDTH_IN_PERCENT_OF_PARENT = 94;");
-		builder.append("var HEIGHT_IN_PERCENT_OF_PARENT = 95;");
-		builder.append("var gd3 = d3.select(\"div[id='CyPlot']\")");
-		builder.append(".style({ width: WIDTH_IN_PERCENT_OF_PARENT + '%',\n" +
-				"        'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',\n" +
-				"\n" +
-				"        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',\n" +
-				"        'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'\n" +
-				"    });");
-		builder.append("var gd = gd3.node();");
-		builder.append("window.onresize = function() {Plotly.Plots.resize(gd);};");
+		builder.append("(function() { \n");
+		builder.append("    var d3 = Plotly.d3;\n");
+		builder.append("    var WIDTH_IN_PERCENT_OF_PARENT = 94;\n");
+		builder.append("    var HEIGHT_IN_PERCENT_OF_PARENT = 95;\n");
+		builder.append("    var gd3 = d3.select(\"div[id='CyPlot']\")\n");
+		builder.append("        .style({ width: WIDTH_IN_PERCENT_OF_PARENT + '%',\n");
+		builder.append("        '    margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',\n");
+		builder.append("\n");
+		builder.append("        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',\n");
+		builder.append("        'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'\n");
+		builder.append("    });\n");
+		builder.append("    var gd = gd3.node();");
+		builder.append("    window.onresize = function() {Plotly.Plots.resize(gd);};\n");
 		builder.append("})();");
 
 		return builder.toString();
 	}
 	
-
-	public static void getClickCode(StringBuilder builder, String plot, String nameSelection) {
-		getClickCode(builder, plot, nameSelection, false);
-	}
-
-	public static void getClickCode(StringBuilder builder, String plot, String nameSelection, boolean isEditor) {
+	/**
+	 * Generate the string necessary to support integrating the plotly
+	 * click selection with Cytoscape.  This is not in an independent
+	 * javascript file because we need to construct the script from
+	 * our current java objects.
+	 *
+	 * @param builder the StringBuilder we'll write the javascript into
+	 * @param plot the variable that points to the div containing the
+	 * plotly plot.
+	 * @param nameSelection the column we used to show the names of points
+	 * @param isEditor if <b>true</b> we'll be integrating this into the
+	 * PlotlyEditor.  This means we have to find the appropriate div by
+	 * searching for a particular CSS class.
+	 */
+	public static void getClickCode(StringBuilder builder, String plot, 
+	                                String nameSelection, boolean isEditor) {
 		if (isEditor) {
 			builder.append("var plots = "+plot+".getElementsByClassName('"+PLOT_CLASS+"');\n");
-			builder.append("// alert('plots: '+plots);\n");
-			builder.append("// alert('plots.length: '+plots.length);\n");
 			builder.append("for (var i = 0; i < plots.length; i++) {\n");
 			builder.append("    var plplot = plots[i];\n");
-			builder.append("    // alert('plplot: '+plplot);\n");
 			builder.append("    plplot.on('plotly_click', function (data) { \n");
-			builder.append("        alert('clicked!');\n");
 			builder.append("        cybrowser.executeCyCommand('network select nodeList = \"" + nameSelection + ":' +data.points[0].text+'\"');\n");
 			builder.append("    });\n");
 			builder.append("}\n");
@@ -314,16 +320,27 @@ public class JSUtils {
 		}
 	}
 
-	public static void getLassoCode(StringBuilder builder, String plot, String nameSelection) {
-		getLassoCode(builder, plot, nameSelection, false);
-	}
-
-	public static void getLassoCode(StringBuilder builder, String plot, String nameSelection, boolean isEditor) {
+	/**
+	 * Generate the string necessary to support integrating the plotly
+	 * Lasso selection with Cytoscape.  This is not in an independent
+	 * javascript file because we need to construct the script from
+	 * our current java objects.
+	 *
+	 * @param builder the StringBuilder we'll write the javascript into
+	 * @param plot the variable that points to the div containing the
+	 * plotly plot.
+	 * @param nameSelection the column we used to show the names of points
+	 * @param isEditor if <b>true</b> we'll be integrating this into the
+	 * PlotlyEditor.  This means we have to find the appropriate div by
+	 * searching for a particular CSS class.
+	 */
+	public static void getLassoCode(StringBuilder builder, 
+	                                String plot, String nameSelection, 
+	                                boolean isEditor) {
 		if (isEditor) {
 			builder.append("var plots = "+plot+".getElementsByClassName('"+PLOT_CLASS+"');\n");
 			builder.append("for (var i = 0; i < plots.length; i++) {\n");
 			builder.append("    var plplot = plots[i];\n");
-			builder.append("    // alert('plplot: '+plplot);\n");
 			builder.append("    plplot.on('plotly_selected', function (data) { \n");
 		  builder.append("        var nodelist = ''; \n");
 			builder.append("        for(var i = 0; i<data.points.length; i++) { \n");
@@ -345,15 +362,47 @@ public class JSUtils {
 		}
 	}
 	
+	/**
+	 * FIXME:  Note that since this overwrites layout, we probably don't
+	 * want to do it this way.  I think we should assemble the layout object
+	 * more incrementally.  Perhaps we should create a PlotlyLayout class
+	 * so we can add features to it over time?  The ".toString()" method of
+	 * the class would return the constructed layout string.
+	 *
+	 * This method creates the layout object that we'll pass to plotly.  It
+	 * adds support for title, axes and legend.
+	 *
+	 * @param xLabel the label to show for the X axis
+	 * @param yLabel the label to show for the Y axis
+	 * @return the assembled label code
+	 *
+	 */
 	public static String getLabelCode(String xLabel, String yLabel) {
 		return "var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};";
 	}
 
+	/**
+	 * Load the code that adds a link to hide and show the controls
+	 * panel in the editor view.
+	 *
+	 * @param builder the StringBuilder that we'll write the code into
+	 */
 	public static void addHideControlsCode(StringBuilder builder) {
 		loadWithScript(builder, "/js/hideControls.js");
 	}
 	
 	
+	/**
+	 * This method loads data from the resources in the CyPlot
+	 * jar file.  While the title is loadJS, we also use it for
+	 * css and other files we don't want to inject directly via
+	 * strings.
+	 *
+	 * @param builder This is the {@link StringBuilder} that we use
+	 * to write the embedded content into.
+	 * @param js The name of the file, including the prefix that 
+	 * we're going to look for in the resources
+	 */
 	private static void loadJS(StringBuilder builder, String js) {
 		URL plotly = JSUtils.class.getClassLoader().getResource(js);
 		try (Stream<String> stream = new BufferedReader(new InputStreamReader(plotly.openConnection().getInputStream())).lines()) {
