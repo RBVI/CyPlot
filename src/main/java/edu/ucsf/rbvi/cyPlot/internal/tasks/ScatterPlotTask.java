@@ -98,6 +98,7 @@ public class ScatterPlotTask extends AbstractTask {
 		String html = JSUtils.getScatterPlot(xArray, yArray, "markers", ModelUtils.getTunableSelection(nameCol), nameArray, xLabel, yLabel, editor);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
+		args.put("debug", "true");
 		args.put("title", "Scatter Plot");
 
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);

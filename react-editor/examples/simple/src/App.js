@@ -70,7 +70,7 @@ class App extends Component {
             this.setState({data, layout, frames})
           }
           useResizeHandler
-          debug
+          // debug
           advancedTraceTypeSelector
         >
         </PlotlyEditor>
