@@ -10,32 +10,44 @@ import org.cytoscape.work.util.ListSingleSelection;
 
 public class ModelUtils {
 	
-	//Returns the selection for a String tunable.
+	/**
+	 * Get the user selection for a tunable.
+	 *
+	 * @param tunable the list of options for the user to choose from
+	 * @return the value from the list selected by the user
+	 */
 	public static String getTunableSelection(ListSingleSelection<String> tunable) {
 		return tunable.getSelectedValue();
 	}
 	
-	//Returns an array-formatted String of column data depending for the dataSources var.
-		public static String colsToDataSourcesArray(List<CyColumn> columns) {
-			String dataArray = "";
-			for(int i = 0; i<columns.size(); i++) {
-				String oneCol = "'" + columns.get(i).getName() + "' : " + colToArray(columns.get(i));
-				if (i != columns.size()-1) {
-					dataArray += oneCol + ",";
-				}
-				else {	
-				dataArray += oneCol;
-				}
+	/**
+	 * Get a JSON-formatted String of column data from a List of CyColumns. This is generally passed in as the 
+	 * dataSources var within JSUtils methods.
+	 *
+	 * @param columns the List of CyColumns
+	 * @return the String of column data formatted as JSON
+	 */
+	public static String colsToDataSourcesArray(List<CyColumn> columns) {
+		String dataArray = "";
+		for(int i = 0; i<columns.size(); i++) {
+			String oneCol = "'" + columns.get(i).getName() + "' : " + colToArray(columns.get(i));
+			if (i != columns.size()-1) {
+				dataArray += oneCol + ",";
 			}
-			return dataArray;
+			else {	
+			dataArray += oneCol;
+			}
 		}
-		
-		public static String colToDataArray(CyColumn column) {
-			String dataArray = column.getName() + ": " + colToArray(column);
-			return dataArray;
-		}
+		return dataArray;
+	}
 	
 	//Returns an array-formatted String of column data depending on the specified data type.
+	/**
+	 * Get a JSON-formatted String of column data from a single CyColumn.
+	 *
+	 * @param column the CyColumn in question
+	 * @return the String of column data formatted as JSON
+	 */
 	public static String colToArray(CyColumn column) {
 		List<Object> list = column.getValues(column.getType());
 		String array = "[";
@@ -49,7 +61,14 @@ public class ModelUtils {
 		return array;
 	}
 	
-	//Returns a list of the names of columns with a certain type of value (currently only Strings or nums)
+	/**
+	 * Get a list of names of either numeric or string-based columns, or a list of all column names in a collection.
+	 *
+	 * @param columns the Collection of CyColumns
+	 * @param type the type of data we want the column to contain, either "string," "num," or "all" (if we do not want
+	 * to discriminate)
+	 * @return a list of the names of columns with a certain type of value (or a list of all column names within the collection)
+	 */
 	public static List<String> getColOptions(Collection<CyColumn> columns, String type) {
 		if(type.equals("num")) {
 			List<String> headers = new ArrayList<>();

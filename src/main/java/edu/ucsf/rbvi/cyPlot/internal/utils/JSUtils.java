@@ -56,6 +56,7 @@ public class JSUtils {
 	 *
 	 * @param data the String representation of user-selected column data
 	 * from cytoscape
+	 * @return the assembled graph editor code
 	 */
 	public static String getChartEditor(String data) {
 		StringBuilder builder = new StringBuilder();
@@ -89,6 +90,7 @@ public class JSUtils {
 	 * Generate the string necessary to complete the code for a plotly graph,
 	 * implement Plotly.react() and closing off outstanding tags.
 	 * 
+	 * @return the assembled completion code
 	 */
 	public static String getPlotly() {
 		return "Plotly.react();"+
@@ -141,6 +143,7 @@ public class JSUtils {
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
+	 * @return the assembled scatter plot code
 	 */
 	public static String getScatterPlot(String x, String y, String mode, String nameSelection, 
 									                    String nameArray, String xLabel, String yLabel, boolean editor) {
@@ -199,6 +202,7 @@ public class JSUtils {
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
+	 * @return the assembled filled area plot code
 	 */
 	public static String getFilledAreaPlot(String x, String y, String mode, String nameSelection, 
         String nameArray, String xLabel, String yLabel, boolean editor) {
@@ -253,6 +257,7 @@ public class JSUtils {
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
+	 * @return the assembled volcano plot code
 	 */
 	public static String getVolcanoPlot(String x, String y, String nameSelection, String nameArray, 
         String xLabel, String yLabel, boolean editor) {
@@ -284,6 +289,7 @@ public class JSUtils {
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
+	 * @return the assembled bar chart code
 	 */
 	public static String getBarChart(String x, String y, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
@@ -311,6 +317,7 @@ public class JSUtils {
 	 * @param title the title of the map
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
+	 * @return the assembled heat map code
 	 */
 	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, String dataArray, 
 	                                String colNames, String yAxisArray, String title, boolean editor) {
@@ -338,6 +345,7 @@ public class JSUtils {
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
+	 * @return the assembled violin plot code
 	 */
 	public static String getViolinPlot(String x, String y, String nameArray, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
@@ -375,6 +383,7 @@ public class JSUtils {
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
+	 * @return the assembled dot plot code
 	 */
 	public static String getDotPlot(String x, String y, String nameArray, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
