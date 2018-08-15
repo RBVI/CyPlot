@@ -27,7 +27,6 @@ public class JSUtils {
 	 * @param editor the boolean which determines whether the graph will
 	 * utilize the plotly graph editor
 	 */
-	
 	public static void getPreamble(StringBuilder builder, boolean editor) { 
 			builder.append("<html><head>");
 			builder.append("<meta charset=\"utf-8\"/>");
@@ -68,7 +67,7 @@ public class JSUtils {
 		builder.append("var dataSources = {" + data + "};");
 		builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources }), document.getElementById('root'));");
 		builder.append(getPlotly());
-		writeDebugFile(builder.toString(), "getChartEditor.html");
+		//writeDebugFile(builder.toString(), "getChartEditor.html");
 		return builder.toString();
 	}
 	
@@ -97,17 +96,23 @@ public class JSUtils {
 		       "</script></body></html>";
 	}
 	
-
+	/**
+	 * Generate an HTML file representation of the code being fed to cybrowser. File
+	 * path can be customized by altering "user.home" to suit individual needs. Useful for
+	 * opening the code in external browsers for debugging purposes, but not essential to the 
+	 * functionality of the app. 
+	 * 
+	 * @param string the Java string of HTML that will be written into the file
+	 * @param the desired name of the HTML file generated
+	 */
 	public static void writeDebugFile(String string, String name) {
 		
 		File file = null;
 		FileOutputStream fos = null;
 		
 		try {
-			//naturally, this next line needs to be modified for individual users.
 			String home = System.getProperty("user.home");
 			file = new File(home+"/" + name);
-			//file = new File("C:/Users/Lilly/Desktop/" + name);
 			fos = new FileOutputStream(file);
 			if(!file.exists()) {
 				file.createNewFile();
@@ -156,14 +161,14 @@ public class JSUtils {
 			builder.append("var data = [trace1];\n");
 			builder.append(getLabelCode(xLabel, yLabel));
 			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
-			builder.append("var myPlot = document.getElementById('CyPlot');\n");
 			getResizeCode(builder);
 			if (nameSelection != null && nameArray != null) {
+				builder.append("var myPlot = document.getElementById('CyPlot');");
 				getClickCode(builder, "myPlot", nameSelection, false);
 				getLassoCode(builder, "myPlot", nameSelection, false);
 			}
 			builder.append(getPlotly());
-			writeDebugFile(builder.toString(), "ScatterPlot.html");
+			//writeDebugFile(builder.toString(), "ScatterPlot.html");
 		} else {
 			builder.append("<body>");
 			builder.append("<div id=\"CyPlot\"></div>\n");
@@ -182,7 +187,7 @@ public class JSUtils {
 			builder.append("</script>\n");
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
-			writeDebugFile(builder.toString(), "CyPlot.html");
+			//writeDebugFile(builder.toString(), "CyPlot.html");
 		}
 
 		return builder.toString();
@@ -214,9 +219,9 @@ public class JSUtils {
 			builder.append("var data = [trace1];");
 			builder.append(getLabelCode(xLabel, yLabel));
 			builder.append("Plotly.newPlot('CyPlot', data, layout);");
-			builder.append("var myPlot = document.getElementById('CyPlot');");
 			getResizeCode(builder);
 			if(nameSelection != null && nameArray != null) {
+				builder.append("var myPlot = document.getElementById('CyPlot');");
 				getClickCode(builder, "myPlot", nameSelection, false);
 				getLassoCode(builder, "myPlot", nameSelection, false);
 			}
@@ -239,7 +244,7 @@ public class JSUtils {
 			builder.append("</script>\n");
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
-			writeDebugFile(builder.toString(), "CyPlot.html");
+			//writeDebugFile(builder.toString(), "CyPlot.html");
 		}
 
 		return builder.toString();
@@ -259,22 +264,46 @@ public class JSUtils {
 	 * graph editor 
 	 * @return the assembled volcano plot code
 	 */
+	//For some reason this code is identical to the scatter plot code without the volcano modifications that Allison added?
 	public static String getVolcanoPlot(String x, String y, String nameSelection, String nameArray, 
         String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor);
-		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-		builder.append("<script> var xArr = " + x + ";");
-		builder.append("var yArr = " + y + ";");
-		builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: 'markers', name: 'trace', text: " + nameArray + "};");
-		builder.append("var data = [trace1];");
-		builder.append(getLabelCode(xLabel, yLabel));
-		builder.append("Plotly.newPlot('CyPlot', data, layout);");
-		builder.append("var myPlot = document.getElementById('CyPlot');");
-		getResizeCode(builder);
-		getClickCode(builder, "myPlot", nameSelection, false);
-		getLassoCode(builder, "myPlot", nameSelection, false);
-		builder.append(getPlotly());
+		if(!editor) {
+			builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
+			builder.append("<script> var xArr = " + x + ";");
+			builder.append("var yArr = " + y + ";");
+			builder.append("var trace1 = { x: xArr , y:  yArr , type: 'scatter', mode: 'markers', name: 'trace', text: " + nameArray + "};");
+			builder.append("var data = [trace1];");
+			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append("Plotly.newPlot('CyPlot', data, layout);");
+			getResizeCode(builder);
+			if(nameSelection != null && nameArray != null) {
+				builder.append("var myPlot = document.getElementById('CyPlot');");
+				getClickCode(builder, "myPlot", nameSelection, false);
+				getLassoCode(builder, "myPlot", nameSelection, false);
+			}
+			builder.append(getPlotly());
+		}else {
+			builder.append("<body>");
+			builder.append("<div id=\"CyPlot\"></div>\n");
+			// builder.append("<a style=\"position:absolute; left: 100px; top: 30\" onclick='hideControls()'>Hide Controls</a>\n");
+			builder.append("<script type=\"text/javascript\" >\n");
+			builder.append("var dataSources = {" + xLabel + ": "+x+", "+yLabel +": "+y+"};\n");
+			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', mode: 'markers', name: 'trace', text: " + nameArray + "};\n");
+			builder.append("var data = [trace1];\n");
+			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));");
+			if (nameSelection != null && nameArray != null) {
+				builder.append("var myPlot = document.getElementById('CyPlot');");
+				getClickCode(builder, "myPlot", nameSelection, true);
+				getLassoCode(builder, "myPlot", nameSelection, true);
+			}
+			builder.append("</script>\n");
+			addHideControlsCode(builder);
+			builder.append("</body></html>");
+		}
+		
 		
 		return builder.toString();
 	}
@@ -291,15 +320,32 @@ public class JSUtils {
 	 * graph editor 
 	 * @return the assembled bar chart code
 	 */
+	//not currently working in editor. unsure of why, html analysis claims that "myPlot" is undefined at some point?
 	public static String getBarChart(String x, String y, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor);
-		builder.append("<body><div id=\"CyPlot\" style=\"width:600px;height:600px;\"></div>");
-		builder.append("<script> var data = [{ x: " + x + ", y: " + y + ", type: 'bar'}];");
-		builder.append(getLabelCode(xLabel, yLabel));
-		builder.append("Plotly.newPlot('CyPlot', data, layout);");
-		getResizeCode(builder);
-		builder.append(getPlotly());
+		if(!editor) {
+			builder.append("<body><div id=\"CyPlot\"></div>");
+			builder.append("<script> var data = [{ x: " + x + ", y: " + y + ", type: 'bar'}];");
+			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append("Plotly.newPlot('CyPlot', data, layout);");
+			getResizeCode(builder);
+			builder.append(getPlotly());
+		}else {
+			builder.append("<body><div id=\"CyPlot\"></div>");
+			builder.append("<script type=\"text/javascript\" >\n");
+			builder.append("var dataSources = {" + xLabel + ": "+x+", "+yLabel +": "+y+"};\n");
+			builder.append("var trace1 = { x: \" + x + \", y: \" + y + \", type: 'bar'}");
+			builder.append("var data = [trace1];");
+			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));");
+			builder.append("var myPlot = document.getElementById('CyPlot');");
+			builder.append("</script>\n");
+			addHideControlsCode(builder);
+			builder.append("</body></html>");
+		}
+		writeDebugFile(builder.toString(), "barchart.html");
+		
 		return builder.toString();
 	}
 	
@@ -421,32 +467,6 @@ public class JSUtils {
 	
 	/**
 	 * Generate the string necessary to support integrating the plotly
-	 * graph resizing function. This is not in an independent
-	 * javascript file because we need to construct the script from
-	 * our current java objects.
-	 *
-	 * @param builder the StringBuilder we'll write the javascript into
-	 */
-	public static void getResizeCode(StringBuilder builder) {
-
-		builder.append("(function() { \n");
-		builder.append("    var d3 = Plotly.d3;\n");
-		builder.append("    var WIDTH_IN_PERCENT_OF_PARENT = 94;\n");
-		builder.append("    var HEIGHT_IN_PERCENT_OF_PARENT = 95;\n");
-		builder.append("    var gd3 = d3.select(\"div[id='CyPlot']\")\n");
-		builder.append("        .style({ width: WIDTH_IN_PERCENT_OF_PARENT + '%',\n");
-		builder.append("        '    margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',\n");
-		builder.append("\n");
-		builder.append("        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',\n");
-		builder.append("        'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'\n");
-		builder.append("    });\n");
-		builder.append("    var gd = gd3.node();");
-		builder.append("    window.onresize = function() {Plotly.Plots.resize(gd);};\n");
-		builder.append("})();");
-	}
-	
-	/**
-	 * Generate the string necessary to support integrating the plotly
 	 * click selection with Cytoscape.  This is not in an independent
 	 * javascript file because we need to construct the script from
 	 * our current java objects.
@@ -537,6 +557,32 @@ public class JSUtils {
 	 */
 	public static String getLabelCode(String xLabel, String yLabel) {
 		return "var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};";
+	}
+	
+	/**
+	 * Generate the string necessary to support integrating the plotly
+	 * graph resizing function. This is not in an independent
+	 * javascript file because we need to construct the script from
+	 * our current java objects.
+	 *
+	 * @param builder the StringBuilder we'll write the javascript into
+	 */
+	public static void getResizeCode(StringBuilder builder) {
+
+		builder.append("(function() { \n");
+		builder.append("    var d3 = Plotly.d3;\n");
+		builder.append("    var WIDTH_IN_PERCENT_OF_PARENT = 94;\n");
+		builder.append("    var HEIGHT_IN_PERCENT_OF_PARENT = 95;\n");
+		builder.append("    var gd3 = d3.select(\"div[id='CyPlot']\")\n");
+		builder.append("        .style({ width: WIDTH_IN_PERCENT_OF_PARENT + '%',\n");
+		builder.append("        '    margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',\n");
+		builder.append("\n");
+		builder.append("        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',\n");
+		builder.append("        'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'\n");
+		builder.append("    });\n");
+		builder.append("    var gd = gd3.node();");
+		builder.append("    window.onresize = function() {Plotly.Plots.resize(gd);};\n");
+		builder.append("})();");
 	}
 
 	/**

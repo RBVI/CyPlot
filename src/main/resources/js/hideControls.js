@@ -23,11 +23,13 @@ function hideControls() {
         hideElement.innerHTML = '&nbsp;<&nbsp;';
         hideElement.style.left = '130px';
         hidden = false;
+        Plotly.Plots.resize(Plotly.d3.select("div[id='CyPlot']").node());
     } else {
         control.style.display = 'none';
         hideElement.innerHTML = '&nbsp;>&nbsp;';
         hideElement.style.left = '20px';
         hidden = true;
+        Plotly.Plots.resize(Plotly.d3.select("div[id='CyPlot']").node());
     }
 		return false;
 }

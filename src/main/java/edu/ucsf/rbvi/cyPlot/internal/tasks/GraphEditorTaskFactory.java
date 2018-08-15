@@ -11,15 +11,22 @@ public class GraphEditorTaskFactory implements TaskFactory {
 		this.serviceRegistrar = reg;
 	}
 
+	/**
+	 *Creates a TaskIterator which is used to generate the GraphEditorTask,
+	 *which in turn generates the plotly graph editor in a cybrowser window.
+	 *
+	 *@return the TaskIterator for a GraphEditorTask
+	 */
 	public TaskIterator createTaskIterator() { 
-		// This should do something like:
 		return new TaskIterator(new GraphEditorTask(serviceRegistrar));
-		//return null;
 	}
 
+	/**
+	 *Checks to see if there are any networks. If so, returns true.
+	 *
+	 *@return a boolean signifying if there are existing networks
+	 */
 	public boolean isReady() { 
-		// Check to see if there are any networks
-		// If so, return true
 		return true; 
 	}
 }
