@@ -67,6 +67,13 @@ public class BarChartTask extends AbstractTask {
 		editorCol = new ListSingleSelection("Yes", "No");
 	}
 
+	/**
+	 * Generate the variables necessary to create a bar chart in plotly with the cytoscape 
+	 * task. Creates and executes a TaskIterator which opens the plot within a cybrowser window. 
+	 *
+	 * @param monitor the TaskMonitor required for this method by the parent 
+	 * AbstractTask class
+	 */
 	public void run(TaskMonitor monitor) { 
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);

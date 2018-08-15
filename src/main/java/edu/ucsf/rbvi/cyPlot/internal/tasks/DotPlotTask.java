@@ -31,11 +31,14 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 	public class DotPlotTask extends AbstractTask {
 		
 		final CyServiceRegistrar sr;
-		@Tunable (description="x column")
+		@Tunable (description="X-axis column")
 		public ListSingleSelection<String> xCol;
 
-		@Tunable (description="y column")
+		@Tunable (description="Y-axis column")
 		public ListSingleSelection<String> yCol;
+		
+		@Tunable (description="Name selection column")
+		public ListSingleSelection<String> nameCol;
 		
 		@Tunable (description="Open in plot editor?")
 		public ListSingleSelection<String> editorCol;
@@ -58,28 +61,29 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			editor = true;
 			
 			List<String> headers = ModelUtils.getColOptions(columns, "num");
+			List<String> names = ModelUtils.getColOptions(columns, "string");
 			
 			xCol = new ListSingleSelection<>(headers);
 			yCol = new ListSingleSelection<>(headers);
+			nameCol = new ListSingleSelection<>(names);
 			editorCol = new ListSingleSelection("Yes", "No");
 		}
 		
-		public String getXSelection() {
-			return xCol.getSelectedValue();
-		}
-		
-		public String getYSelection() {
-			return yCol.getSelectedValue();
-		}
-
+		/**
+		 * Generate the variables necessary to create a dot plot in plotly as a cytoscape 
+		 * task. Creates and executes a TaskIterator which opens the plot within a cybrowser window. 
+		 *
+		 * @param monitor the TaskMonitor required for this method by the parent 
+		 * AbstractTask class
+		 */
 		public void run(TaskMonitor monitor) { 
 			TaskManager sTM = sr.getService(TaskManager.class);
 		    //AvailableCommands ac = sr.getService(AvailableCommands.class);
 			CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 			
-			CyColumn xColumn = table.getColumn(getXSelection());
-			CyColumn yColumn = table.getColumn(getYSelection());
-			CyColumn nameColumn = table.getColumn("shared name");
+			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
+			CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 			
 	        String xArray = ModelUtils.colToArray(xColumn);
 	        String yArray = ModelUtils.colToArray(yColumn);

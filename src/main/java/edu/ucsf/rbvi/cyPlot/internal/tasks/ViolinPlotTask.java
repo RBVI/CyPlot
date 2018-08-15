@@ -34,7 +34,7 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 		@Tunable (description="Fold change column")
 		public ListSingleSelection<String> xCol;
 
-		@Tunable (description="P-val column")
+		@Tunable (description="p-value column")
 		public ListSingleSelection<String> yCol;
 		
 		@Tunable (description="Open in plot editor?")
@@ -63,22 +63,21 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			yCol = new ListSingleSelection<>(headers);
 			editorCol = new ListSingleSelection("Yes", "No");
 		}
-		
-		public String getXSelection() {
-			return xCol.getSelectedValue();
-		}
-		
-		public String getYSelection() {
-			return yCol.getSelectedValue();
-		}
 
+		/**
+		 * Generate the variables necessary to create a violin plot in plotly with the cytoscape 
+		 * task. Creates and executes a TaskIterator which opens the plot within a cybrowser window. 
+		 *
+		 * @param monitor the TaskMonitor required for this method by the parent 
+		 * AbstractTask class
+		 */
 		public void run(TaskMonitor monitor) { 
 			TaskManager sTM = sr.getService(TaskManager.class);
 		    //AvailableCommands ac = sr.getService(AvailableCommands.class);
 			CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 			
-			CyColumn xColumn = table.getColumn(getXSelection());
-			CyColumn yColumn = table.getColumn(getYSelection());
+			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 			CyColumn nameColumn = table.getColumn("shared name");
 			
 	        String xArray = ModelUtils.colToArray(xColumn);

@@ -36,10 +36,10 @@ public class HeatMapTask extends AbstractTask {
 	@Tunable (description="Title")
 	public String title;
 	
-	@Tunable (description="Columns")
+	@Tunable (description="Data columns")
 	public ListMultipleSelection<String> cols;
 	
-	@Tunable (description="y-axis label")
+	@Tunable (description="Y-axis label")
 	public ListSingleSelection<String> yAxis;
 		
 	@Tunable (description="Low color")
@@ -89,18 +89,13 @@ public class HeatMapTask extends AbstractTask {
 		return cols.getSelectedValues();
 	}
 	
-	public String getLowSelection() {
-		return lColor.getSelectedValue();
-	}
-	
-	public String getMedSelection() {
-		return mColor.getSelectedValue();
-	}
-	
-	public String getHighSelection() {
-		return hColor.getSelectedValue();
-	}
-	
+	/**
+	 * Generate the variables necessary to create a bar chart in plotly with the cytoscape 
+	 * task. Creates and executes a TaskIterator which opens the plot within a cybrowser window. 
+	 *
+	 * @param monitor the TaskMonitor required for this method by the parent 
+	 * AbstractTask class
+	 */
 	public void run(TaskMonitor monitor) { 
 		//SynchronousTaskManager sTM = sr.getService(SynchronousTaskManager.class);
 		TaskManager sTM = sr.getService(TaskManager.class);
@@ -135,53 +130,53 @@ public class HeatMapTask extends AbstractTask {
 			
 		}
 		String lowRGB = "";
-		if (getLowSelection().equals("Red")) {
+		if (ModelUtils.getTunableSelection(lColor).equals("Red")) {
 			lowRGB = "rgb(255, 0, 0)";
 		}
-		if (getLowSelection().equals("Yellow")) {
+		if (ModelUtils.getTunableSelection(lColor).equals("Yellow")) {
 			lowRGB = "rgb(255, 255, 0)";
 		}
-		if (getLowSelection().equals("Blue")) {
+		if (ModelUtils.getTunableSelection(lColor).equals("Blue")) {
 			lowRGB = "rgb(0, 0, 255)";
 		}
-		if (getLowSelection().equals("Black")) {
+		if (ModelUtils.getTunableSelection(lColor).equals("Black")) {
 			lowRGB = "rgb(0, 0, 0)";
 		}
-		if (getLowSelection().equals("White")) {
+		if (ModelUtils.getTunableSelection(lColor).equals("White")) {
 			lowRGB = "rgb(255, 255, 255)";
 		}
 		
 		String medRGB = "";
-		if (getMedSelection().equals("Red")) {
+		if (ModelUtils.getTunableSelection(mColor).equals("Red")) {
 			medRGB = "rgb(255, 0, 0)";
 		}
-		if (getMedSelection().equals("Yellow")) {
+		if (ModelUtils.getTunableSelection(mColor).equals("Yellow")) {
 			medRGB = "rgb(255, 255, 0)";
 		}
-		if (getMedSelection().equals("Blue")) {
+		if (ModelUtils.getTunableSelection(mColor).equals("Blue")) {
 			medRGB = "rgb(0, 0, 255)";
 		}
-		if (getMedSelection().equals("Black")) {
+		if (ModelUtils.getTunableSelection(mColor).equals("Black")) {
 			medRGB = "rgb(0, 0, 0)";
 		}
-		if (getMedSelection().equals("White")) {
+		if (ModelUtils.getTunableSelection(mColor).equals("White")) {
 			medRGB = "rgb(255, 255, 255)";
 		}
 		
 		String highRGB = "";
-		if (getHighSelection().equals("Red")) {
+		if (ModelUtils.getTunableSelection(hColor).equals("Red")) {
 			highRGB = "rgb(255, 0, 0)";
 		}
-		if (getHighSelection().equals("Yellow")) {
+		if (ModelUtils.getTunableSelection(hColor).equals("Yellow")) {
 			highRGB = "rgb(255, 255, 0)";
 		}
-		if (getHighSelection().equals("Blue")) {
+		if (ModelUtils.getTunableSelection(hColor).equals("Blue")) {
 			highRGB = "rgb(0, 0, 255)";
 		}
-		if (getHighSelection().equals("Black")) {
+		if (ModelUtils.getTunableSelection(hColor).equals("Black")) {
 			highRGB = "rgb(0, 0, 0)";
 		}
-		if (getHighSelection().equals("White")) {
+		if (ModelUtils.getTunableSelection(hColor).equals("White")) {
 			highRGB = "rgb(255, 255, 255)";
 		}
 		
@@ -192,14 +187,14 @@ public class HeatMapTask extends AbstractTask {
 			editor = false; //don't open the graph in the editor
 		}
 		
-			String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataArray, colNamesArray, yAxisArray, title, editor);
-			Map<String, Object> args = new HashMap<>();
-			
-			System.out.println(html);
-			
-			args.put("text", html);
-			args.put("title", "Plot");
-			args.put("id", "01");
+		String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataArray, colNamesArray, yAxisArray, title, editor);
+		Map<String, Object> args = new HashMap<>();
+		
+		System.out.println(html);
+		
+		args.put("text", html);
+		args.put("title", "Plot");
+		args.put("id", "01");
 		
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);

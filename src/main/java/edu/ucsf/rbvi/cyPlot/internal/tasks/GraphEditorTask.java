@@ -56,6 +56,13 @@ public class GraphEditorTask extends AbstractTask {
 		selectedColumnsList = new ArrayList<>();
 	}
 	
+	/**
+	 * Generate the variables necessary to open the plotly graph editor with the cytoscape 
+	 * task. Creates and executes a TaskIterator which opens the plot within a cybrowser window. 
+	 *
+	 * @param monitor the TaskMonitor required for this method by the parent 
+	 * AbstractTask class
+	 */
 	public void run(TaskMonitor monitor) { 
 		// Get the selected columns
 		for (String col: cols.getSelectedValues()) {
