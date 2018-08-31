@@ -168,7 +168,7 @@ public class JSUtils {
 				getLassoCode(builder, "myPlot", nameSelection, false);
 			}
 			builder.append(getPlotly());
-			//writeDebugFile(builder.toString(), "ScatterPlot.html");
+			writeDebugFile(builder.toString(), "ScatterPlot.html");
 		} else {
 			builder.append("<body>");
 			builder.append("<div id=\"CyPlot\"></div>\n");
@@ -178,16 +178,18 @@ public class JSUtils {
 			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};\n");
 			builder.append("var data = [trace1];\n");
 			builder.append(getLabelCode(xLabel, yLabel));
-			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));");
+			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
+			builder.append("</script>\n");
 			if (nameSelection != null && nameArray != null) {
-				builder.append("var myPlot = document.getElementById('CyPlot');");
+				builder.append("<script>\n");
+				builder.append("var myPlot = document.getElementById('CyPlot');\n");
 				getClickCode(builder, "myPlot", nameSelection, true);
 				getLassoCode(builder, "myPlot", nameSelection, true);
+				builder.append("</script>\n");
 			}
-			builder.append("</script>\n");
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
-			//writeDebugFile(builder.toString(), "CyPlot.html");
+			writeDebugFile(builder.toString(), "CyPlot.html");
 		}
 
 		return builder.toString();
@@ -483,6 +485,7 @@ public class JSUtils {
 	                                String nameSelection, boolean isEditor) {
 		if (isEditor) {
 			builder.append("var plots = "+plot+".getElementsByClassName('"+PLOT_CLASS+"');\n");
+			// builder.append("alert('plots = '+plots[0]);\n");
 			builder.append("for (var i = 0; i < plots.length; i++) {\n");
 			builder.append("    var plplot = plots[i];\n");
 			builder.append("    plplot.on('plotly_click', function (data) { \n");
@@ -491,7 +494,7 @@ public class JSUtils {
 			builder.append("}\n");
 			return;
 		} else {
-			builder.append(plot+".on('plotly_click', function(data){ \n");
+			builder.append("\n"+plot+".on('plotly_click', function(data){ \n");
 			builder.append("    cybrowser.executeCyCommand('network select nodeList = \"" + nameSelection + ":' +data.points[0].text+'\"');\n");
 			builder.append("});\n");
 			return;
@@ -582,7 +585,7 @@ public class JSUtils {
 		builder.append("    });\n");
 		builder.append("    var gd = gd3.node();");
 		builder.append("    window.onresize = function() {Plotly.Plots.resize(gd);};\n");
-		builder.append("})();");
+		builder.append("})();\n");
 	}
 
 	/**
