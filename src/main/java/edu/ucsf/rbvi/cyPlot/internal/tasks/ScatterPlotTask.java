@@ -27,49 +27,57 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 
 public class ScatterPlotTask extends AbstractTask {
-	
+
 	final CyServiceRegistrar sr;
 	@Tunable (description="X-axis column")
 	public ListSingleSelection<String> xCol;
 
 	@Tunable (description="Y-axis column")
 	public ListSingleSelection<String> yCol;
-	
+
 	@Tunable (description="Name selection column")
 	public ListSingleSelection<String> nameCol;
-	
+
 	@Tunable (description="Open in plot editor?")
 	public ListSingleSelection<String> editorCol;
-	
-	
+
+	// @ContainsTunables
+	// public CommandTunables commandTunables = null;
+
 	public CyApplicationManager appManager;
 	public CyNetworkView netView;
 	public CyNetwork network;
 	public CyTable table;
 	public Collection<CyColumn> columns;
 	public boolean editor;
-		
+
 	public ScatterPlotTask(final CyServiceRegistrar sr) {
 		super();
 		this.sr = sr; 
 		appManager = sr.getService(CyApplicationManager.class);
 		netView = appManager.getCurrentNetworkView();
-		network = netView.getModel();
-		table = network.getDefaultNodeTable();
-		columns = table.getColumns();
-		editor = true;
-		
-		List<String> headers = ModelUtils.getColOptions(columns, "num");
-		
-		List<String> names = ModelUtils.getColOptions(columns, "string");
+		if (netView != null) {
+			network = netView.getModel();
+			table = network.getDefaultNodeTable();
+			columns = table.getColumns();
+			editor = true;
 
+			List<String> headers = ModelUtils.getColOptions(columns, "num");
 
-		xCol = new ListSingleSelection<>(headers);
-		yCol = new ListSingleSelection<>(headers);
-		nameCol = new ListSingleSelection<>(names);
+			List<String> names = ModelUtils.getColOptions(columns, "string");
+
+			xCol = new ListSingleSelection<>(headers);
+			yCol = new ListSingleSelection<>(headers);
+			nameCol = new ListSingleSelection<>(names);
+		} else {
+			xCol = null;
+			yCol = null;
+			nameCol = null;
+		}
+		// commandTunables = new CommandTunables();
 		editorCol = new ListSingleSelection("Yes", "No");
 	}
-	
+
 	/**
 	 * Generate the variables necessary to create a scatter plot in plotly with the cytoscape 
 	 * task. Creates and executes a TaskIterator which opens the plot within a cybrowser window. 
@@ -80,29 +88,44 @@ public class ScatterPlotTask extends AbstractTask {
 	public void run(TaskMonitor monitor) { 
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
-		
-		CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
-		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
-		CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
-		
-		String xArray = ModelUtils.colToArray(xColumn);
-		
-		String yArray = ModelUtils.colToArray(yColumn);
-		
-		String nameArray = ModelUtils.colToArray(nameColumn);
-		
+
 		String editorSelection = ModelUtils.getTunableSelection(editorCol);
 		if(editorSelection.equals("Yes")) {
 			editor = true; //open the graph in the editor
 		}else {
 			editor = false; //don't open the graph in the editor
 		}
-		
-		
-		String xLabel = xColumn.getName();
-        String yLabel = yColumn.getName();
-        
-		String html = JSUtils.getScatterPlot(xArray, yArray, "markers", ModelUtils.getTunableSelection(nameCol), nameArray, xLabel, yLabel, editor);
+
+		String html = null;
+		if (xCol != null && yCol != null) {
+			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
+			CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
+
+			String xArray = ModelUtils.colToArray(xColumn);
+
+			String yArray = ModelUtils.colToArray(yColumn);
+
+			String nameArray = ModelUtils.colToArray(nameColumn);
+
+			String xLabel = xColumn.getName();
+			String yLabel = yColumn.getName();
+			html = JSUtils.getScatterPlot(xArray, yArray, "markers", ModelUtils.getTunableSelection(nameCol), 
+			                                     nameArray, xLabel, yLabel, editor);
+		}
+		/*
+		else if (commandTunables != null) {
+			String xArray = commandTunables.getXArray();
+			String yArray = commandTunables.getYArray();
+			String nameArray = commandTunables.getNameArray();
+			String xLabel = commandTunables.getXLabel();
+			String yLabel = commandTunables.getYLabel();
+			String title = commandTunables.getTitle();
+			html = JSUtils.getScatterPlot(xArray, yArray, "markers", ModelUtils.getTunableSelection(nameCol), 
+			                                     nameArray, xLabel, yLabel, editor);
+		}
+		*/
+
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("debug", "true");

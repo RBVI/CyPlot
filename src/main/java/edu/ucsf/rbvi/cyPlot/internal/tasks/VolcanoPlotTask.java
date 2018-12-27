@@ -79,30 +79,31 @@ public class VolcanoPlotTask extends AbstractTask {
 	public void run(TaskMonitor monitor) { 
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
-		
+
 		CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
 		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 		CyColumn nameColumn = table.getColumn("shared name");
-		
-        String xArray = ModelUtils.colToArray(xColumn);
-        String yArray = ModelUtils.colToArray(yColumn);
-        String nameArray = ModelUtils.colToArray(nameColumn);
-        
-        String xLabel = xColumn.getName();
-        String yLabel = yColumn.getName();
-        
-        String editorSelection = ModelUtils.getTunableSelection(editorCol);
+
+		String xArray = ModelUtils.colToArray(xColumn);
+		String yArray = ModelUtils.colToArrayNegLog(yColumn);
+		String nameArray = ModelUtils.colToArray(nameColumn);
+
+		String xLabel = xColumn.getName();
+		String yLabel = yColumn.getName();
+
+		String editorSelection = ModelUtils.getTunableSelection(editorCol);
 		if(editorSelection.equals("Yes")) {
 			editor = true; //open the graph in the editor
 		}else {
 			editor = false; //don't open the graph in the editor
 		}
-        
-        String html = JSUtils.getVolcanoPlot(xArray, yArray,  ModelUtils.getTunableSelection(nameCol), nameArray, xLabel, yLabel, editor);
-		Map<String, Object> args = new HashMap();        
-        args.put("text", html);
+
+		yLabel = "-Log("+yLabel+")";
+		String html = JSUtils.getVolcanoPlot(xArray, yArray,  ModelUtils.getTunableSelection(nameCol), nameArray, xLabel, yLabel, editor);
+		Map<String, Object> args = new HashMap();
+		args.put("text", html);
 		args.put("title", "Plot");
-		
+
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);
 	}

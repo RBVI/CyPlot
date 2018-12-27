@@ -20,6 +20,7 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 	import org.cytoscape.work.TaskMonitor;
 	import org.cytoscape.work.Tunable;
 	import org.cytoscape.work.util.ListSingleSelection;
+	import org.cytoscape.work.util.ListMultipleSelection;
 
 	import edu.ucsf.rbvi.cyPlot.internal.utils.JSUtils;
 	import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
@@ -31,12 +32,13 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 	public class ViolinPlotTask extends AbstractTask {
 		
 		final CyServiceRegistrar sr;
-		@Tunable (description="Fold change column")
-		public ListSingleSelection<String> xCol;
 
-		@Tunable (description="p-value column")
-		public ListSingleSelection<String> yCol;
-		
+		@Tunable (description="Columns to include")
+		public ListMultipleSelection<String> cols;
+
+    @Tunable (description="Name selection column")
+    public ListSingleSelection<String> nameCol;
+
 		@Tunable (description="Open in plot editor?")
 		public ListSingleSelection<String> editorCol;
 		
@@ -56,11 +58,12 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			table = network.getDefaultNodeTable();
 			columns = table.getColumns();
 			editor = true;
-			
+
 			List<String> headers = ModelUtils.getColOptions(columns, "num");
-			
-			xCol = new ListSingleSelection<>(headers);
-			yCol = new ListSingleSelection<>(headers);
+			List<String> names = ModelUtils.getColOptions(columns, "string");
+
+			cols = new ListMultipleSelection<>(headers);
+			nameCol = new ListSingleSelection(names);
 			editorCol = new ListSingleSelection("Yes", "No");
 		}
 
@@ -76,27 +79,26 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 		    //AvailableCommands ac = sr.getService(AvailableCommands.class);
 			CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 			
-			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
-			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
+			Map<String, String> traceMap = new HashMap<>();
+			for (String col: ModelUtils.getTunableSelections(cols)) {
+				String array = ModelUtils.colToArray(table.getColumn(col));
+				traceMap.put(col, array);
+			}
 			CyColumn nameColumn = table.getColumn("shared name");
 			
-	        String xArray = ModelUtils.colToArray(xColumn);
-	        String yArray = ModelUtils.colToArray(yColumn);
-	        String nameArray = ModelUtils.colToArray(nameColumn);
-	        
-	        String xLabel = xColumn.getName();
-	        String yLabel = yColumn.getName();
-	        
-	        String editorSelection = ModelUtils.getTunableSelection(editorCol);
+			String nameArray = ModelUtils.colToArray(nameColumn);
+
+			String editorSelection = ModelUtils.getTunableSelection(editorCol);
+
 			if(editorSelection.equals("Yes")) {
 				editor = true; //open the graph in the editor
 			}else {
 				editor = false; //don't open the graph in the editor
 			}
-	        
-	        String html = JSUtils.getViolinPlot(xArray, yArray, nameArray, xLabel, yLabel, editor);
-			Map<String, Object> args = new HashMap();        
-	        args.put("text", html);
+
+			String html = JSUtils.getViolinPlot(traceMap, ModelUtils.getTunableSelection(nameCol), nameArray, editor);
+			Map<String, Object> args = new HashMap();
+			args.put("text", html);
 			args.put("title", "Plot");
 			
 			TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);

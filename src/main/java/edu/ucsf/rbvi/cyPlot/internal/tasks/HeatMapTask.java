@@ -79,6 +79,7 @@ public class HeatMapTask extends AbstractTask {
 		
 		yAxis = new ListSingleSelection<>(names);
 		
+		// FIXME -- use palettes
 		lColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
 		mColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
 		hColor = new ListSingleSelection("Red", "Yellow", "Blue", "Black", "White");
@@ -118,16 +119,10 @@ public class HeatMapTask extends AbstractTask {
 		
 		String yAxisArray = ModelUtils.colToArray(yColumn);
 		
-		String dataArray = "[";
-		for (int i = 0; i < colNames.size(); i++) {
-			String colDataArray = ModelUtils.colToArray(table.getColumn(colNames.get(i)));
-			if (i != colNames.size() - 1) {
-				dataArray += colDataArray+ ", ";
-			}
-			else {
-				dataArray += colDataArray + "]";
-			}	
-			
+		Map<String, String> dataMap = new HashMap<>();
+		for (String colName: colNames) {
+			String colDataArray = ModelUtils.colToArray(table.getColumn(colName));
+			dataMap.put(colName, colDataArray);
 		}
 		String lowRGB = "";
 		if (ModelUtils.getTunableSelection(lColor).equals("Red")) {
@@ -187,7 +182,7 @@ public class HeatMapTask extends AbstractTask {
 			editor = false; //don't open the graph in the editor
 		}
 		
-		String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataArray, colNamesArray, yAxisArray, title, editor);
+		String html = JSUtils.getHeatMap(lowRGB, medRGB, highRGB, dataMap, colNamesArray, yAxisArray, title, editor);
 		Map<String, Object> args = new HashMap<>();
 		
 		System.out.println(html);
