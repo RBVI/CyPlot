@@ -20,6 +20,7 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 
 import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
+import edu.ucsf.rbvi.cyPlot.internal.utils.JSONUtils;
 import edu.ucsf.rbvi.cyPlot.internal.utils.JSUtils;
 
 import org.cytoscape.model.CyColumn;
@@ -35,9 +36,35 @@ public class BarChartTask extends AbstractTask {
 	
 	@Tunable (description="X-axis column")
 	public ListSingleSelection<String> xCol;
+
+	@Tunable (description="Name selection column")
+	public ListSingleSelection<String> nameCol;
 	
 	@Tunable (description="Open in plot editor?")
 	public ListSingleSelection<String> editorCol;
+
+	// Command interface for non-network plots
+	@Tunable (description="JSON formatted string of point names", context="nogui")
+	public String names = null;
+
+	@Tunable (description="JSON formatted string of x values", context="nogui")
+	public String xValues = null;
+
+	@Tunable (description="JSON formatted string of y values", context="nogui")
+	public String yValues = null;
+
+	@Tunable (description="Selection string", context="nogui")
+	public String selectionString = null;
+
+	@Tunable (description="Plot title", context="nogui")
+	public String title = null;
+
+	@Tunable (description="X Axis Label", context="nogui")
+	public String xLabel = null;
+
+	@Tunable (description="Y Axis Label", context="nogui")
+	public String yLabel = null;
+
 	
 	
 	public CyApplicationManager appManager;
@@ -52,18 +79,24 @@ public class BarChartTask extends AbstractTask {
 		this.sr = sr; 
 		appManager = sr.getService(CyApplicationManager.class);
 		netView = appManager.getCurrentNetworkView();
-		network = netView.getModel();
-		table = network.getDefaultNodeTable();
-		columns = table.getColumns();
-		editor = true;
-		
-		List<String> headers = ModelUtils.getColOptions(columns, "num");
-		
-		List<String> names = ModelUtils.getColOptions(columns, "string");
+		if (netView != null) {
+			network = netView.getModel();
+			table = network.getDefaultNodeTable();
+			columns = table.getColumns();
+			editor = true;
 
-		
-		yCol = new ListSingleSelection<>(headers);
-		xCol = new ListSingleSelection<>(names);
+			List<String> headers = ModelUtils.getColOptions(columns, "num");
+
+			List<String> names = ModelUtils.getColOptions(columns, "string");
+
+			xCol = new ListSingleSelection<>(headers);
+			yCol = new ListSingleSelection<>(headers);
+			nameCol = new ListSingleSelection<>(names);
+		} else {
+			xCol = null;
+			yCol = null;
+			nameCol = null;
+		}
 		editorCol = new ListSingleSelection("Yes", "No");
 	}
 
@@ -77,25 +110,43 @@ public class BarChartTask extends AbstractTask {
 	public void run(TaskMonitor monitor) { 
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
-		
-		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
-		CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
-		
-		String xArray = ModelUtils.colToArray(xColumn);
-		
-		String yArray = ModelUtils.colToArray(yColumn);
-				
-		String xLabel = xColumn.getName();
-        String yLabel = yColumn.getName();
-        
-        String editorSelection = ModelUtils.getTunableSelection(editorCol);
+
+		String editorSelection = ModelUtils.getTunableSelection(editorCol);
 		if(editorSelection.equals("Yes")) {
 			editor = true; //open the graph in the editor
 		}else {
 			editor = false; //don't open the graph in the editor
 		}
-        
-		String html = JSUtils.getBarChart(xArray, yArray, xLabel, yLabel, editor);
+		
+		String xArray;
+		String yArray;
+		String nameArray;
+		String idColumn = null;
+
+		if (xCol != null && yCol != null) {
+			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
+			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+			CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
+		
+			xArray = ModelUtils.colToArray(xColumn);
+		
+			yArray = ModelUtils.colToArray(yColumn);
+
+			nameArray = ModelUtils.colToArray(nameColumn);
+				
+			xLabel = xColumn.getName();
+			yLabel = yColumn.getName();
+
+			if (nameCol != null)
+				idColumn = ModelUtils.getTunableSelection(nameCol);
+		} else {
+			xArray = JSONUtils.csvToJSONArray(xValues);
+			yArray = JSONUtils.csvToJSONArray(yValues);
+			nameArray = JSONUtils.csvToJSONArray(names);
+		}
+
+		String html = JSUtils.getBarChart(xArray, yArray,  selectionString, idColumn, nameArray, 
+		                                  title, xLabel, yLabel, editor);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("title", "Bar Chart");

@@ -8,6 +8,8 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -134,62 +136,31 @@ public class JSUtils {
 		}
 	}
 	
+
 	/**
-	 * Generate the string necessary to generate a basic scatter plot or
-	 * line graph in plotly, either with or without the plotly graph editor.
+	 * Generate the string necessary to generate a volcano plot in plotly, either 
+	 * with or without the plotly graph editor.
 	 *
 	 * @param x the user-selected x-column data
 	 * @param y the user-selected y-column data
 	 * @param mode the String which determines the form the data will take ("markers"
 	 * for scatter or "lines" for line)
+	 * @param selectionString a cytoscape command callback for selection
 	 * @param nameSelection the cytoscape data column we use to show the names of points
 	 * @param nameArray the list of node names
+	 * @param title the plot title
 	 * @param xLabel the label for the x-axis
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
 	 * @return the assembled scatter plot code
 	 */
-	public static String getScatterPlot(String x, String y, String mode, String nameSelection, 
-									                    String nameArray, String xLabel, String yLabel, boolean editor) {
-		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
-		if (!editor) {
-			builder.append("<body><div id=\"CyPlot\"></div>\n");
-			builder.append("<script>\n");
-			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};\n");
-			builder.append("var data = [trace1];\n");
-			builder.append(getLabelCode(xLabel, yLabel));
-			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
-			getResizeCode(builder);
-			builder.append("</script>\n");
-			if (nameSelection != null && nameArray != null) {
-				getClickCode(builder, "CyPlot", nameSelection, false);
-				getLassoCode(builder, "CyPlot", nameSelection, false);
-			}
-			builder.append(getPlotly());
-			writeDebugFile(builder.toString(), "ScatterPlot.html");
-		} else {
-			builder.append("<body>");
-			builder.append("<div id=\"CyPlot\"></div>\n");
-			// builder.append("<a style=\"position:absolute; left: 100px; top: 30\" onclick='hideControls()'>Hide Controls</a>\n");
-			builder.append("<script type=\"text/javascript\" >\n");
-			builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
-			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};\n");
-			builder.append("var data = [trace1];\n");
-			builder.append(getLabelCode(xLabel, yLabel));
-			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
-			builder.append("</script>\n");
-			if (nameSelection != null && nameArray != null) {
-				getClickCode(builder, "CyPlot", nameSelection, true);
-				getLassoCode(builder, "CyPlot", nameSelection, true);
-			}
-			addHideControlsCode(builder);
-			builder.append("</body></html>");
-			writeDebugFile(builder.toString(), "ScatterEditor.html");
-		}
-
-		return builder.toString();
+	public static String getScatterPlot(Map<String,String> xTraceMap, Map<String, String> yTraceMap, Map<String, String> nameTraceMap,
+	                                    String selectionString, String nameSelection, 
+									                    String title, String xLabel, String yLabel, String mode, boolean editor) {
+		String html = getXYPlot("scatter", xTraceMap, yTraceMap, nameTraceMap, selectionString, nameSelection, title, xLabel, yLabel, mode, editor);
+		writeDebugFile(html, "ScatterPlot.html");
+		return html;
 	}
 	
 	/**
@@ -200,8 +171,10 @@ public class JSUtils {
 	 * @param y the user-selected y-column data
 	 * @param mode the String which determines the form the data will take ("markers"
 	 * for scatter or "lines" for line)
+	 * @param selectionString a cytoscape command callback for selection
 	 * @param nameSelection the cytoscape data column we use to show the names of points
 	 * @param nameArray the list of node names
+	 * @param title the plot title
 	 * @param xLabel the label for the x-axis
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
@@ -210,21 +183,21 @@ public class JSUtils {
 	 */
 
 	// FIXME: this really isn't right....
-	public static String getFilledAreaPlot(String x, String y, String mode, String nameSelection, 
-        String nameArray, String xLabel, String yLabel, boolean editor) {
+	public static String getFilledAreaPlot(String x, String y, String mode, String selectionString, String nameSelection, 
+                                         String nameArray, String title, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor);
 		if(!editor) {
 			builder.append("<body><div id=\"CyPlot\"></div>\n");
 			builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", fill: 'tonexty', type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};\n");
 			builder.append("var data = [trace1];\n");
-			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append(getLabelCode(xLabel, yLabel, title, false));
 			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
 			getResizeCode(builder);
 			builder.append("</script>\n");
 			if(nameSelection != null && nameArray != null) {
-				getClickCode(builder, "CyPlot", nameSelection, false);
-				getLassoCode(builder, "CyPlot", nameSelection, false);
+				getClickCode(builder, "CyPlot", null, nameSelection, false);
+				getLassoCode(builder, "CyPlot", null, nameSelection, false);
 			}
 			builder.append(getPlotly());
 		}else {
@@ -235,12 +208,12 @@ public class JSUtils {
 			builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 			builder.append("var trace1 = { x: " + x + ", y: " + y + ", fill: 'tonexty', type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};\n");
 			builder.append("var data = [trace1];\n");
-			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append(getLabelCode(xLabel, yLabel, title, false));
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 			builder.append("</script>\n");
 			if (nameSelection != null && nameArray != null) {
-				getClickCode(builder, "CyPlot", nameSelection, true);
-				getLassoCode(builder, "CyPlot", nameSelection, true);
+				getClickCode(builder, "CyPlot", null, nameSelection, true);
+				getLassoCode(builder, "CyPlot", null, nameSelection, true);
 			}
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
@@ -249,24 +222,26 @@ public class JSUtils {
 
 		return builder.toString();
 	}
-	
+
 	/**
 	 * Generate the string necessary to generate a volcano plot in plotly, either 
 	 * with or without the plotly graph editor.
 	 *
-	 * @param x the user-selected x-column data
-	 * @param y the user-selected y-column data
+	 * @param x the user-selected x-column data (Fold Change)
+	 * @param y the user-selected y-column data (-Log(pValues))
+	 * @param selectionString a cytoscape command callback for selection
 	 * @param nameSelection the cytoscape data column we use to show the names of points
 	 * @param nameArray the list of node names
+	 * @param title the plot title
 	 * @param xLabel the label for the x-axis
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
 	 * @return the assembled volcano plot code
 	 */
-	//For some reason this code is identical to the scatter plot code without the volcano modifications that Allison added?
-	public static String getVolcanoPlot(String x, String y, String nameSelection, String nameArray, 
-        String xLabel, String yLabel, boolean editor) {
+	public static String getVolcanoPlot(String x, String y, String selectionString, String nameSelection, String nameArray, 
+	                                    String title, String xLabel, String yLabel, boolean editor) {
+
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor);
 		if(!editor) {
@@ -274,13 +249,13 @@ public class JSUtils {
 			builder.append("<script>\n");
 			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', mode: 'markers', name: 'trace', text: " + nameArray + "};\n");
 			builder.append("var data = [trace1];\n");
-			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append(getLabelCode(xLabel, yLabel, title, true));
 			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
 			getResizeCode(builder);
 			builder.append("</script>\n");
-			if(nameSelection != null && nameArray != null) {
-				getClickCode(builder, "CyPlot", nameSelection, false);
-				getLassoCode(builder, "CyPlot", nameSelection, false);
+			if (selectionString != null || nameSelection != null) {
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
 			}
 			builder.append(getPlotly());
 			writeDebugFile(builder.toString(), "VolcanoPlot.html");
@@ -292,12 +267,12 @@ public class JSUtils {
 			builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', mode: 'markers', name: 'trace', text: " + nameArray + "};\n");
 			builder.append("var data = [trace1];\n");
-			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append(getLabelCode(xLabel, yLabel, title, true));
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));");
 			builder.append("</script>\n");
-			if (nameSelection != null && nameArray != null) {
-				getClickCode(builder, "CyPlot", nameSelection, true);
-				getLassoCode(builder, "CyPlot", nameSelection, true);
+			if (selectionString != null || nameSelection != null) {
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, true);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, true);
 			}
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
@@ -314,22 +289,30 @@ public class JSUtils {
 	 *
 	 * @param x the user-selected x-column data
 	 * @param y the user-selected y-column data
+	 * @param selectionString a cytoscape command callback for selection
+	 * @param title the plot title
 	 * @param xLabel the label for the x-axis
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
 	 * @return the assembled bar chart code
 	 */
-	public static String getBarChart(String x, String y, String xLabel, String yLabel, boolean editor) {
+
+	public static String getBarChart(String x, String y, String selectionString, String nameSelection, 
+									                 String nameArray, String title, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor);
 		if(!editor) {
 			builder.append("<body><div id=\"CyPlot\"></div>");
 			builder.append("<script>\n");
 		 	builder.append("var data = [{ x: " + x + ", y: " + y + ", type: 'bar'}];\n");
-			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append(getLabelCode(xLabel, yLabel, title, false));
 			builder.append("Plotly.newPlot('CyPlot', data, layout);");
 			getResizeCode(builder);
+			if (selectionString != null || nameSelection != null) {
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
+			}
 			builder.append("</script>\n");
 			builder.append(getPlotly());
 		}else {
@@ -338,10 +321,14 @@ public class JSUtils {
 			builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'bar'}\n");
 			builder.append("var data = [trace1];\n");
-			builder.append(getLabelCode(xLabel, yLabel));
+			builder.append(getLabelCode(xLabel, yLabel, title, false));
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 			// builder.append("var myPlot = document.getElementById('CyPlot');\n");
 			builder.append("</script>\n");
+			if (selectionString != null || nameSelection != null) {
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
+			}
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
 		}
@@ -385,8 +372,8 @@ public class JSUtils {
 			getResizeCode(builder);
 			builder.append("</script>\n");
 		// if (nameSelection != null && nameArray != null) 	{
-			getClickCode(builder, "CyPlot", yAxisArray, false);
-			getLassoCode(builder, "CyPlot", yAxisArray, false);
+			getClickCode(builder, "CyPlot", null, yAxisArray, false);
+			getLassoCode(builder, "CyPlot", null, yAxisArray, false);
 		// }
 			builder.append(getPlotly());
 		} else {
@@ -404,8 +391,8 @@ public class JSUtils {
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
       builder.append("</script>\n");
 			// if (nameSelection != null && nameArray != null) {
-        getClickCode(builder, "CyPlot", yAxisArray, true);
-        getLassoCode(builder, "CyPlot", yAxisArray, true);
+        getClickCode(builder, "CyPlot", null, yAxisArray, true);
+        getLassoCode(builder, "CyPlot", null, yAxisArray, true);
       // }
       addHideControlsCode(builder);
       builder.append("</body></html>");
@@ -427,8 +414,21 @@ public class JSUtils {
 	 * graph editor 
 	 * @return the assembled violin plot code
 	 */
-	public static String getViolinPlot(Map<String, String> traceMap, String nameSelection, String nameArray, 
+	public static String getViolinPlot(Map<String, String> traceMap, String selectionString,
+	                                   String nameSelection, Map<String,String> traceNamesMap, 
+																		 String title, String xlabel, String ylabel,
                                      boolean editor) {
+
+		if (title == null)
+			title = "Cytoscape Violin Plot";
+
+		if (traceNamesMap == null || traceNamesMap.size() == 0) {
+			traceNamesMap = new HashMap<>();
+			for (String tr: traceMap.keySet()) {
+				traceNamesMap.put(tr, "[]");
+			}
+		}
+
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor);
 		if (!editor) {
@@ -436,21 +436,29 @@ public class JSUtils {
 			builder.append("<script>\n");
 
 			String traceStr = "var data = [";
+			int traceNumber = 1;
 			for (String trace: traceMap.keySet()) {
-				builder.append("var "+trace+" = { legendgroup: '"+trace+"', name: '"+trace+"', scalegroup: 'Yes', x0: '"+trace+"', y: "+traceMap.get(trace)+", type:'violin', text: " + nameArray + "};\n");
-				traceStr += trace+",";
+				builder.append("var trace"+traceNumber+" = { legendgroup: '"+trace+"', name: '"+trace+"', scalegroup: 'Yes', x0: '"+trace+"', y: "+traceMap.get(trace)+", type:'violin', text: " + traceNamesMap.get(trace) + "};\n");
+				traceStr += "trace"+traceNumber+",";
+				traceNumber++;
 			}
 			builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
 
-			builder.append("var layout = { hovermode: 'closest', showlegend: true, title: 'violin plot', legend: { tracegroupgap: 0 }, violingap: 0, violingroupgap: 0, violinmode: 'overlay' };\n");
-			// builder.append(getLabelCode(xLabel, yLabel));
+			if (xlabel == null)
+				xlabel = "";
+			if (ylabel == null)
+				ylabel = "";
+
+			builder.append("var layout = { hovermode: 'closest', showlegend: true, title: '"+title+"',");
+			builder.append("xaxis: { title:'"+xlabel+"'}, yaxis: {title:'"+ylabel+"'},");
+			builder.append("legend: { tracegroupgap: 0 }, violingap: 0, violingroupgap: 0, violinmode: 'overlay' };\n");
 			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
 			//attempting resize
 			getResizeCode(builder);
 			builder.append("</script>\n");
-			if (nameSelection != null && nameArray != null) {
-				getClickCode(builder, "CyPlot", nameSelection, false);
-				getLassoCode(builder, "CyPlot", nameSelection, false);
+			if (selectionString != null || nameSelection != null) {
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
 			}
 			builder.append(getPlotly());
 			writeDebugFile(builder.toString(), "ViolinPlot.html");
@@ -461,9 +469,11 @@ public class JSUtils {
 			builder.append("<script type=\"text/javascript\" >\n");
 			String traceStr = "var data = [";
 			String dataSources = "var dataSources = {";
+			int traceNumber = 1;
 			for (String trace: traceMap.keySet()) {
-				builder.append("var "+trace+" = { legendgroup: '"+trace+"', name: '"+trace+"', scalegroup: 'Yes', x0: '"+trace+"', y: "+traceMap.get(trace)+", type:'violin', text: " + nameArray + "};\n");
-				traceStr += trace+",";
+				builder.append("var trace"+traceNumber+" = { legendgroup: '"+trace+"', name: '"+trace+"', scalegroup: 'Yes', x0: '"+trace+"', y: "+traceMap.get(trace)+", type:'violin', text: " + traceNamesMap.get(trace) + "};\n");
+				traceStr += "trace"+traceNumber+",";
+				traceNumber++;
 				dataSources += "'"+trace+"': "+traceMap.get(trace)+",";
 			}
 			builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
@@ -471,13 +481,13 @@ public class JSUtils {
 			builder.append("var layout = { hovermode: 'closest', showlegend: true, title: 'violin plot', legend: { tracegroupgap: 0 }, violingap: 0, violingroupgap: 0, violinmode: 'overlay' };\n");
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 			builder.append("</script>\n");
-			if (nameSelection != null && nameArray != null) {
-				getClickCode(builder, "CyPlot", nameSelection, true);
-				getLassoCode(builder, "CyPlot", nameSelection, true);
+			if (selectionString != null || nameSelection != null) {
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, true);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, true);
 			}
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
-			writeDebugFile(builder.toString(), "ScatterEditor.html");
+			writeDebugFile(builder.toString(), "ViolinEditor.html");
 		}
 
 		return builder.toString();
@@ -539,13 +549,17 @@ public class JSUtils {
 	 * @param builder the StringBuilder we'll write the javascript into
 	 * @param plot the variable that points to the div containing the
 	 * plotly plot.
+	 * @param selectionString the command we use to indicate selected nodes
 	 * @param nameSelection the column we used to show the names of points
 	 * @param isEditor if <b>true</b> we'll be integrating this into the
 	 * PlotlyEditor.  This means we have to find the appropriate div by
 	 * searching for a particular CSS class.
 	 */
-	public static void getClickCode(StringBuilder builder, String plot, 
+	public static void getClickCode(StringBuilder builder, String plot, String selectionString,
 	                                String nameSelection, boolean isEditor) {
+		if (selectionString == null)
+			selectionString = "network select nodeList = \""+nameSelection+":'%s'\"";
+
 		builder.append("<script>\n");
 		builder.append("var myPlot = document.getElementById('"+plot+"');\n");
 		if (isEditor) {
@@ -554,12 +568,16 @@ public class JSUtils {
 			builder.append("for (var i = 0; i < plots.length; i++) {\n");
 			builder.append("    var plplot = plots[i];\n");
 			builder.append("    plplot.on('plotly_click', function (data) { \n");
-			builder.append("        cybrowser.executeCyCommand('network select nodeList = \"" + nameSelection + ":' +data.points[0].text+'\"');\n");
+			String selString = String.format(selectionString, "+data.points[0].text+");
+			builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
 			builder.append("    });\n");
 			builder.append("}\n");
 		} else {
 			builder.append("\nmyPlot.on('plotly_click', function(data){ \n");
-			builder.append("    cybrowser.executeCyCommand('network select nodeList = \"" + nameSelection + ":' +data.points[0].text+'\"');\n");
+			String selString = String.format(selectionString, "+data.points[0].text+");
+			builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
+			System.out.println("selString = "+selString);
+			System.out.println("command = "+"cybrowser.executeCyCommand('"+selString+"');");
 			builder.append("});\n");
 		}
 		builder.append("</script>\n");
@@ -580,7 +598,7 @@ public class JSUtils {
 	 * searching for a particular CSS class.
 	 */
 	public static void getLassoCode(StringBuilder builder, 
-	                                String plot, String nameSelection, 
+	                                String plot, String selectionString, String nameSelection, 
 	                                boolean isEditor) {
 		builder.append("<script>\n");
 		builder.append("var myPlot = document.getElementById('"+plot+"');\n");
@@ -591,18 +609,34 @@ public class JSUtils {
 			builder.append("    plplot.on('plotly_selected', function (data) { \n");
 			builder.append("        var nodelist = ''; \n");
 			builder.append("        for(var i = 0; i<data.points.length; i++) { \n");
-			builder.append("            nodelist+= (', "+nameSelection+ ":' +data.points[i].text);\n");
+			if (selectionString == null)
+				builder.append("            nodelist+= (',"+nameSelection+ ":' +data.points[i].text);\n");
+			else
+				builder.append("            nodelist+= (','+data.points[i].text);\n");
 			builder.append("        };\n");
-			builder.append("        cybrowser.executeCyCommand('network select nodeList = \"'+nodelist+'\"');\n");
+			if (selectionString == null)
+				builder.append("        cybrowser.executeCyCommand('network select nodeList = \"'+nodelist+'\"');\n");
+			else {
+				String selString = String.format(selectionString, "'+nodelist+'");
+				builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
+			}
 			builder.append("    });\n");
 			builder.append("}\n");
 		} else {
-			builder.append("myPlot.on('plotly_click', function(data){ \n");
+			builder.append("myPlot.on('plotly_selected', function(data){ \n");
 		  builder.append("    var nodelist = ''; \n");
 			builder.append("    for(var i = 0; i<data.points.length; i++) { \n");
-			builder.append("        nodelist+= (', "+nameSelection+ ":' +data.points[i].text);\n");
+			if (selectionString == null)
+				builder.append("        nodelist+= (',"+nameSelection+ ":'+data.points[i].text);\n");
+			else
+				builder.append("            nodelist+= (','+data.points[i].text);\n");
 			builder.append("    };\n");
-			builder.append("    cybrowser.executeCyCommand('network select nodeList = \"" + nameSelection + ":' +data.points[0].text+'\"');\n");
+			if (selectionString == null)
+				builder.append("        cybrowser.executeCyCommand('network select nodeList = \"'+nodelist+'\"');\n");
+			else {
+				String selString = String.format(selectionString, "'+nodelist+'");
+				builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
+			}
 			builder.append("});\n");
 		}
 		builder.append("</script>\n");
@@ -623,8 +657,9 @@ public class JSUtils {
 	 * @return the assembled label code
 	 *
 	 */
-	public static String getLabelCode(String xLabel, String yLabel) {
-		return "var layout = {showlegend: true, legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + xLabel + " vs " + yLabel + "'};";
+	public static String getLabelCode(String xLabel, String yLabel, String title, boolean showLegend) {
+		if (title == null) title = xLabel+" vs "+yLabel;
+		return "var layout = {showlegend: "+showLegend+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + title + "'};";
 	}
 	
 	/**
@@ -663,7 +698,71 @@ public class JSUtils {
 		loadWithScript(builder, "/js/hideControls.js");
 	}
 	
-	
+
+	// Common interface for all XY Plot routines, including:
+	// 	Volcano, Scatter, Bar, Line
+	public static String getXYPlot(String type,
+	                               Map<String, String> xTraceMap, Map<String, String> yTraceMap, Map<String, String> nameTraceMap,
+	                               String selectionString, String nameSelection,
+	                               String title, String xLabel, String yLabel, String mode, boolean editor) {
+		StringBuilder builder = new StringBuilder();
+		boolean showLegend = false;
+		if (xTraceMap.keySet().size() > 1)
+			showLegend = true;
+		getPreamble(builder, editor);
+		if (!editor) {
+			builder.append("<body><div id=\"CyPlot\"></div>\n");
+			builder.append("<script>\n");
+			String traceStr = "var data = [";
+			int traceNumber = 1;
+			for (String trace: xTraceMap.keySet()) {
+				builder.append("var trace"+traceNumber+" = { legendgroup: '"+trace+"', name: '"+trace+"', mode:'"+mode+"', scalegroup: 'Yes',");
+				builder.append("x:"+xTraceMap.get(trace)+", y: "+yTraceMap.get(trace)+", type:'"+type+"', text: " + nameTraceMap.get(trace) + "};\n");
+				traceStr += "trace"+traceNumber+",";
+				traceNumber++;
+			}
+			builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
+			builder.append(getLabelCode(xLabel, yLabel, title, showLegend));
+			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
+			getResizeCode(builder);
+			builder.append("</script>\n");
+			if (selectionString != null || nameSelection != null) {
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
+			}
+			builder.append(getPlotly());
+		} else {
+			builder.append("<body>");
+			builder.append("<div id=\"CyPlot\"></div>\n");
+			// builder.append("<a style=\"position:absolute; left: 100px; top: 30\" onclick='hideControls()'>Hide Controls</a>\n");
+			builder.append("<script type=\"text/javascript\" >\n");
+			String traceStr = "var data = [";
+			String dataSources = "var dataSources = {";
+			int traceNumber = 1;
+			for (String trace: xTraceMap.keySet()) {
+				builder.append("var trace"+traceNumber+" = { legendgroup: '"+trace+"', name: '"+trace+"', mode:'"+mode+"', scalegroup: 'Yes',");
+				builder.append("x:"+xTraceMap.get(trace)+", y: "+yTraceMap.get(trace)+", type:'"+type+"', text: " + nameTraceMap.get(trace) + "};\n");
+				traceStr += "trace"+traceNumber+",";
+				traceNumber++;
+				dataSources += "'"+trace+"X': "+xTraceMap.get(trace)+",";
+				dataSources += "'"+trace+"Y': "+yTraceMap.get(trace)+",";
+			}
+			builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
+			builder.append(dataSources.substring(0, dataSources.length()-1)+"};\n");
+			builder.append(getLabelCode(xLabel, yLabel, title, showLegend));
+			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
+			builder.append("</script>\n");
+			if (selectionString != null || nameSelection != null) {
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
+			}
+			addHideControlsCode(builder);
+			builder.append("</body></html>");
+		}
+		writeDebugFile(builder.toString(), type+"Plot.html");
+		return builder.toString();
+	}
+
 	/**
 	 * This method loads data from the resources in the CyPlot
 	 * jar file.  While the title is loadJS, we also use it for

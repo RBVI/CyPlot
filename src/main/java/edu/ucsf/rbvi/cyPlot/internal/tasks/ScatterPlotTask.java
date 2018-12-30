@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.swing.JFrame;
 
+import org.json.simple.parser.ParseException;
+
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.service.util.CyServiceRegistrar;
@@ -20,6 +22,7 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 
 import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
+import edu.ucsf.rbvi.cyPlot.internal.utils.JSONUtils;
 import edu.ucsf.rbvi.cyPlot.internal.utils.JSUtils;
 
 import org.cytoscape.model.CyColumn;
@@ -40,6 +43,28 @@ public class ScatterPlotTask extends AbstractTask {
 
 	@Tunable (description="Open in plot editor?")
 	public ListSingleSelection<String> editorCol;
+
+	// Command interface for non-network plots
+	@Tunable (description="JSON formatted string of point names", context="nogui")
+	public String names = null;
+
+	@Tunable (description="JSON formatted string of x values", context="nogui")
+	public String xValues = null;
+
+	@Tunable (description="JSON formatted string of y values", context="nogui")
+	public String yValues = null;
+
+	@Tunable (description="Selection string", context="nogui")
+	public String selectionString = null;
+
+	@Tunable (description="Plot title", context="nogui")
+	public String title = null;
+
+	@Tunable (description="X Axis Label", context="nogui")
+	public String xLabel = null;
+
+	@Tunable (description="Y Axis Label", context="nogui")
+	public String yLabel = null;
 
 	// @ContainsTunables
 	// public CommandTunables commandTunables = null;
@@ -96,40 +121,78 @@ public class ScatterPlotTask extends AbstractTask {
 			editor = false; //don't open the graph in the editor
 		}
 
-		String html = null;
+		Map<String, String> xTraceMap;
+		Map<String, String> yTraceMap;
+		Map<String, String> nameMap;
+		String idColumn = null;
+
 		if (xCol != null && yCol != null) {
+			xTraceMap = new HashMap<>();
+			yTraceMap = new HashMap<>();
+			nameMap = new HashMap<>();
+
 			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
 			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 			CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 
-			String xArray = ModelUtils.colToArray(xColumn);
+			xTraceMap.put("trace",ModelUtils.colToArray(xColumn));
 
-			String yArray = ModelUtils.colToArray(yColumn);
+			yTraceMap.put("trace",ModelUtils.colToArray(yColumn));
 
+			if (xLabel == null)
+				xLabel = xColumn.getName();
+
+			if (yLabel == null)
+				yLabel = yColumn.getName();
+
+			if (nameCol != null)
+				idColumn = ModelUtils.getTunableSelection(nameCol);
+
+		} else {
+			try {
+				xTraceMap = JSONUtils.getMap(xValues);
+			} catch (ParseException pe) {
+				monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to parse 'xValues' input: "+pe+": "+pe.getPosition());
+				return;
+			}
+
+			try {
+				yTraceMap = JSONUtils.getMap(yValues);
+			} catch (ParseException pe) {
+				monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to parse 'yValues' input: "+pe+": "+pe.getPosition());
+				return;
+			}
+		}
+
+		if (names == null) {
+			CyColumn nameColumn = table.getColumn("shared name");
 			String nameArray = ModelUtils.colToArray(nameColumn);
+			nameMap = new HashMap<>();
+			for (String key: xTraceMap.keySet()) {
+				nameMap.put(key, nameArray);
+			}
+		} else {
+			// First, determine if we've got a JSON string or not
+			try {
+				nameMap = JSONUtils.getMap(names);
+			} catch (ParseException pe) {
+				nameMap = new HashMap<>();
+				// Maybe not?
+				String nameArr = JSONUtils.csvToJSONArray(names);
+				for (String key: xTraceMap.keySet()) {
+					nameMap.put(key, nameArr);
+				}
+			}
+		}
 
-			String xLabel = xColumn.getName();
-			String yLabel = yColumn.getName();
-			html = JSUtils.getScatterPlot(xArray, yArray, "markers", ModelUtils.getTunableSelection(nameCol), 
-			                                     nameArray, xLabel, yLabel, editor);
-		}
-		/*
-		else if (commandTunables != null) {
-			String xArray = commandTunables.getXArray();
-			String yArray = commandTunables.getYArray();
-			String nameArray = commandTunables.getNameArray();
-			String xLabel = commandTunables.getXLabel();
-			String yLabel = commandTunables.getYLabel();
-			String title = commandTunables.getTitle();
-			html = JSUtils.getScatterPlot(xArray, yArray, "markers", ModelUtils.getTunableSelection(nameCol), 
-			                                     nameArray, xLabel, yLabel, editor);
-		}
-		*/
+		// String html = JSUtils.getScatterPlot(xTraceMap, yTraceMap, nameMap, selectionString, idColumn, 
+		//                                      title, xLabel, yLabel, "markers", editor);
+		String html = JSUtils.getXYPlot("scatter", xTraceMap, yTraceMap, nameMap, selectionString, idColumn, 
+		                                title, xLabel, yLabel, "markers", editor);
 
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
-		args.put("debug", "true");
-		args.put("title", "Scatter Plot");
+		args.put("title", title);
 
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);
