@@ -43,7 +43,7 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
     public ListSingleSelection<String> nameCol = null;
 
 		@Tunable (description="Open in plot editor?")
-		public ListSingleSelection<String> editorCol;
+		public boolean editor;
 
 		// Command interface for non-network plots
 		@Tunable (description="JSON formatted string of point names", context="nogui")
@@ -69,7 +69,6 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 		public CyNetwork network;
 		public CyTable table;
 		public Collection<CyColumn> columns;
-		public boolean editor;
 
 		public ViolinPlotTask(final CyServiceRegistrar sr) {
 			super();
@@ -88,7 +87,6 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 				nameCol = new ListSingleSelection(names);
 			}
 			editor = true;
-			editorCol = new ListSingleSelection("Yes", "No");
 		}
 
 		/**
@@ -141,14 +139,6 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 						nameMap.put(key, nameArr);
 					}
 				}
-			}
-
-			String editorSelection = ModelUtils.getTunableSelection(editorCol);
-
-			if(editorSelection.equals("Yes")) {
-				editor = true; //open the graph in the editor
-			}else {
-				editor = false; //don't open the graph in the editor
 			}
 
 			String idColumn = null;

@@ -40,7 +40,7 @@ public class FilledAreaTask extends AbstractTask {
 	public ListSingleSelection<String> nameCol;
 
 	@Tunable (description="Open in plot editor?")
-	public ListSingleSelection<String> editorCol;
+	public boolean editor;
 
 	// Command interface for non-network plots
 	@Tunable (description="JSON formatted string of point names", context="nogui")
@@ -72,7 +72,6 @@ public class FilledAreaTask extends AbstractTask {
 	public CyNetwork network;
 	public CyTable table;
 	public Collection<CyColumn> columns;
-	public boolean editor;
 
 	public FilledAreaTask(final CyServiceRegistrar sr) {
 		super();
@@ -98,7 +97,6 @@ public class FilledAreaTask extends AbstractTask {
 			nameCol = null;
 		}
 		// commandTunables = new CommandTunables();
-		editorCol = new ListSingleSelection("Yes", "No");
 	}
 
 	/**
@@ -111,13 +109,6 @@ public class FilledAreaTask extends AbstractTask {
 	public void run(TaskMonitor monitor) { 
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
-
-		String editorSelection = ModelUtils.getTunableSelection(editorCol);
-		if(editorSelection.equals("Yes")) {
-			editor = true; //open the graph in the editor
-		}else {
-			editor = false; //don't open the graph in the editor
-		}
 
 		String xArray;
 		String yArray;

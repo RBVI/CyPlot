@@ -42,7 +42,7 @@ public class LineGraphTask extends AbstractTask {
 	public ListSingleSelection<String> nameCol;
 
 	@Tunable (description="Open in plot editor?")
-	public ListSingleSelection<String> editorCol;
+	public boolean editor;
 
 	// Command interface for non-network plots
 	@Tunable (description="JSON formatted string of point names", context="nogui")
@@ -74,7 +74,6 @@ public class LineGraphTask extends AbstractTask {
 	public CyNetwork network;
 	public CyTable table;
 	public Collection<CyColumn> columns;
-	public boolean editor;
 
 	public LineGraphTask(final CyServiceRegistrar sr) {
 		super();
@@ -99,8 +98,6 @@ public class LineGraphTask extends AbstractTask {
 			yCol = null;
 			nameCol = null;
 		}
-		// commandTunables = new CommandTunables();
-		editorCol = new ListSingleSelection("Yes", "No");
 	}
 
 	/**
@@ -113,13 +110,6 @@ public class LineGraphTask extends AbstractTask {
 	public void run(TaskMonitor monitor) { 
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
-
-		String editorSelection = ModelUtils.getTunableSelection(editorCol);
-		if(editorSelection.equals("Yes")) {
-			editor = true; //open the graph in the editor
-		}else {
-			editor = false; //don't open the graph in the editor
-		}
 
 		Map<String, String> xTraceMap;
 		Map<String, String> yTraceMap;

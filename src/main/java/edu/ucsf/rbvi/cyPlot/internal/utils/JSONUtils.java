@@ -1,6 +1,8 @@
 package edu.ucsf.rbvi.cyPlot.internal.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
@@ -29,6 +31,30 @@ public class JSONUtils {
 			returnMap.put(strKey, arrayToStringNegLog(obj.get(key)));
 		}
 		return returnMap;
+	}
+
+	public static Map<String, List<?>> getListMap(String data) throws ParseException {
+		JSONParser parser = new JSONParser();
+		JSONObject obj = (JSONObject)parser.parse(data);
+		Map<String, List<?>> returnMap = new HashMap<>();
+		for (Object key: obj.keySet()) {
+			String strKey = key.toString();
+			returnMap.put(strKey, stringToList((JSONArray)obj.get(key)));
+		}
+		return returnMap;
+	}
+
+	public static List<String> csvToList(String str) {
+		// Handle quotes
+		String[] splitString = str.split("\t",-1);
+		if (splitString.length == 1)
+			splitString = str.split(",",-1);
+
+		List<String> list = new ArrayList<>();
+		for (String s: splitString) {
+			list.add(s);
+		}
+		return list;
 	}
 
 	public static String csvToJSONArray(String str) {
@@ -83,5 +109,33 @@ public class JSONUtils {
 		} else {
 			return obj.toString();
 		}
+	}
+
+	public static String listToString(List<?> strList) {
+		String retString = "[";
+		for (int i = 0; i < strList.size()-1; i++) {
+			if (strList.get(i) == null)
+				retString += "'',";
+			else
+				retString += "'"+strList.get(i).toString()+"',";
+		}
+		return retString+"'"+strList.get(strList.size()-1)+"']";
+	}
+
+	public static List<String> stringToList(JSONArray arr) {
+		List<String> list = new ArrayList<>();
+		for (Object v: arr) {
+			list.add(v.toString());
+		}
+		return list;
+	}
+
+	public static List<String> stringToList(String str) throws ParseException {
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(str);
+		if (obj instanceof JSONArray) {
+			return stringToList((JSONArray)obj);
+		}
+		return null;
 	}
 }

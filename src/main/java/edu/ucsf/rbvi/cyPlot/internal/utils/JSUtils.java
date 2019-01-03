@@ -1,5 +1,7 @@
 package edu.ucsf.rbvi.cyPlot.internal.utils;
 
+import java.awt.Color;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -10,12 +12,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import org.cytoscape.util.color.Palette;
 
  
 // TODO: lots of opportunity to clean things up here
@@ -326,8 +331,8 @@ public class JSUtils {
 			// builder.append("var myPlot = document.getElementById('CyPlot');\n");
 			builder.append("</script>\n");
 			if (selectionString != null || nameSelection != null) {
-				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
-				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, true);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, true);
 			}
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
@@ -342,62 +347,96 @@ public class JSUtils {
 	 * Generate the string necessary to generate a heat map in plotly, 
 	 * either with or without the plotly graph editor.
 	 *
-	 * @param lowRGB the lower-bounded color for the color gradient
-	 * @param medRGB the middle-bounded color for the color gradient
-	 * @param highRGB the high-bounded color for the color gradient
-	 * @param dataArray the data plotted
-	 * @param colNames the list of column names for data plotted
-	 * @param yAxisArray the data for the y-axis
-	 * @param title the title of the map
+		String html = JSUtils.getHeatMap(rowHeaders, columnHeaders, colData, colorPalette,
+		                                 xLabel, yLabel, title, editor);
+	 * @param rowHeaders the list of row headers.  Also defines the row order.
+	 * @param columnHeaders the list of column headers.  Also defines the column order.
+	 * @param colData a map of the data, organized by the column name as the key and a 
+	 *                JSON-formatted array with the column data
+	 * @param selectionString the command we use to indicate selected nodes
+	 * @param nameSelection the column we used to show the names of points
+	 * @param colorPalette a color palette.  Could be either a String, in which case it's assumed
+	 *                     to be a Plotly palette, or a Palette, and we'll provide RGB values.
+	 * @param zmin the minimum value for the scale
+	 * @param zmax the maximum value for the scale
+	 * @param xLabel the label for the x axis
+	 * @param yLabel the label for the y axis
+	 * @param title the title of the chart
 	 * @param editor the boolean that controls whether the graph will open in the plotly
 	 * graph editor 
 	 * @return the assembled heat map code
 	 */
-	public static String getHeatMap(String lowRGB, String medRGB, String highRGB, Map<String,String> dataMap, 
-	                                String colNames, String yAxisArray, String title, boolean editor) {
-		String dataArray = "[";
-		for (String col: dataMap.keySet()) {
-			dataArray += dataMap.get(col)+",";
+	public static String getHeatMap(List<String> rowHeaders, List<String> columnHeaders, 
+	                                Map<String, List<?>> colData,
+	                                String selectionString, String nameSelection,
+	                                double zmin, double zmax,
+	                                Object colorPalette, String xLabel, String yLabel,
+	                                String title, boolean editor) {
+		// Get our color string
+		String colors = "var colorScaleValue = "+getColorString(colorPalette)+"\n";
+
+		StringBuilder dataArrayBuilder = new StringBuilder();
+		dataArrayBuilder.append("[");
+		for (String col: columnHeaders) {
+			dataArrayBuilder.append(JSONUtils.listToString(colData.get(col))+",");
 		}
-		dataArray = dataArray.substring(0, dataArray.length()-1)+"]";
+		dataArrayBuilder.setCharAt(dataArrayBuilder.length()-1, ']');
+
+		// Build our text data
+		
+		String dataArray = dataArrayBuilder.toString();
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor);
 		if (!editor) {
 			builder.append("<body><div id=\"CyPlot\"></div>\n");
 			builder.append("<script>\n");
-	 		builder.append("var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']];\n");
-		 	builder.append("var data = [{z: " + dataArray + ", x: " + colNames + ", y: " + yAxisArray + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];\n");
-			builder.append("var layout = {title: '" + title + "'};\n");
+	 		builder.append(colors);
+		 	builder.append("var data = [{z: " + dataArray + ", x: " + JSONUtils.listToString(columnHeaders));
+			builder.append(", y: " + JSONUtils.listToString(rowHeaders) + ", type: \"heatmap\", transpose: true,");
+			// This doesn't actually work to pass the data right now
+			// builder.append(" text: "+ JSONUtils.listToString(rowHeaders)+",");
+			builder.append(" zmin: '"+ zmin +"',");
+			builder.append(" zmax: '"+ zmax +"',");
+			builder.append(" colorscale: colorScaleValue}];\n");
+			builder.append(getLabelCode(xLabel, yLabel, title, true));
 			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
 			getResizeCode(builder);
 			builder.append("</script>\n");
-		// if (nameSelection != null && nameArray != null) 	{
-			getClickCode(builder, "CyPlot", null, yAxisArray, false);
-			getLassoCode(builder, "CyPlot", null, yAxisArray, false);
-		// }
+			if (selectionString != null || nameSelection != null) {
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, "y", false);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, "y", false);
+			}
 			builder.append(getPlotly());
 		} else {
 			builder.append("<body>");
 			builder.append("<div id=\"CyPlot\"></div>\n");
 			builder.append("<script>\n");
-	 		builder.append("var colorscaleValue = [[0, '" + lowRGB + "'], [.5, '" + medRGB + "'], [1, '" + highRGB + "']];\n");
-		 	builder.append("var data = [{z: " + dataArray + ", x: " + colNames + ", y: " + yAxisArray + ", type: \"heatmap\", transpose: true, colorscale: colorscaleValue}];\n");
-			builder.append("var layout = {title: '" + title + "'};\n");
+	 		builder.append(colors);
+		 	builder.append("var data = [{z: " + dataArray + ", x: " + JSONUtils.listToString(columnHeaders));
+			builder.append(", y: " + JSONUtils.listToString(rowHeaders) + ", type: \"heatmap\", transpose: true,");
+			// This doesn't actually work to pass the data right now
+			// builder.append(" text: "+ JSONUtils.listToString(rowHeaders)+",");
+			builder.append(" zmin: '"+ zmin +"',");
+			builder.append(" zmax: '"+ zmax +"',");
+			builder.append(" colorscale: colorScaleValue}];\n");
+			// builder.append("var layout = {title: '" + title + "', xaxis{'title': '"+xLabel+"'}");
+			// builder.append(", yaxis: {'title':'"+yLabel+"'}};\n");
+			builder.append(getLabelCode(xLabel, yLabel, title, true));
 			String dataSources = "var dataSources = {";
-			for (String col: dataMap.keySet()) {
-				dataSources += "'"+col+"':"+dataMap.get(col)+",";
+			for (String col: colData.keySet()) {
+				dataSources += "'"+col+"':"+colData.get(col)+",";
 			}
 			builder.append(dataSources.substring(0, dataSources.length()-1)+"};\n");
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
       builder.append("</script>\n");
-			// if (nameSelection != null && nameArray != null) {
-        getClickCode(builder, "CyPlot", null, yAxisArray, true);
-        getLassoCode(builder, "CyPlot", null, yAxisArray, true);
-      // }
+			if (selectionString != null || nameSelection != null) {
+        getClickCode(builder, "CyPlot", selectionString, nameSelection, "y", true);
+        getLassoCode(builder, "CyPlot", selectionString, nameSelection, "y", true);
+      }
       addHideControlsCode(builder);
       builder.append("</body></html>");
-			writeDebugFile(builder.toString(), "HeatMapEditor.html");
 		}
+		writeDebugFile(builder.toString(), "HeatMap.html");
 		return builder.toString();
 	}
 
@@ -539,6 +578,10 @@ public class JSUtils {
 		return builder.toString();	
 	}
 	
+	public static void getClickCode(StringBuilder builder, String plot, String selectionString,
+	                                String nameSelection, boolean isEditor) {
+		getClickCode(builder, plot, selectionString, nameSelection, null, isEditor);
+	}
 	
 	/**
 	 * Generate the string necessary to support integrating the plotly
@@ -551,14 +594,17 @@ public class JSUtils {
 	 * plotly plot.
 	 * @param selectionString the command we use to indicate selected nodes
 	 * @param nameSelection the column we used to show the names of points
+	 * @param dataElement the data element to use for the selection name
 	 * @param isEditor if <b>true</b> we'll be integrating this into the
 	 * PlotlyEditor.  This means we have to find the appropriate div by
 	 * searching for a particular CSS class.
 	 */
 	public static void getClickCode(StringBuilder builder, String plot, String selectionString,
-	                                String nameSelection, boolean isEditor) {
+	                                String nameSelection, String dataElement, boolean isEditor) {
 		if (selectionString == null)
 			selectionString = "network select nodeList = \""+nameSelection+":'%s'\"";
+		if (dataElement == null)
+			dataElement = "text";
 
 		builder.append("<script>\n");
 		builder.append("var myPlot = document.getElementById('"+plot+"');\n");
@@ -568,19 +614,24 @@ public class JSUtils {
 			builder.append("for (var i = 0; i < plots.length; i++) {\n");
 			builder.append("    var plplot = plots[i];\n");
 			builder.append("    plplot.on('plotly_click', function (data) { \n");
-			String selString = String.format(selectionString, "+data.points[0].text+");
+			String selString = String.format(selectionString, "+data.points[0]."+dataElement+"+");
 			builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
 			builder.append("    });\n");
 			builder.append("}\n");
 		} else {
 			builder.append("\nmyPlot.on('plotly_click', function(data){ \n");
-			String selString = String.format(selectionString, "+data.points[0].text+");
+			String selString = String.format(selectionString, "+data.points[0]."+dataElement+"+");
 			builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
 			System.out.println("selString = "+selString);
 			System.out.println("command = "+"cybrowser.executeCyCommand('"+selString+"');");
 			builder.append("});\n");
 		}
 		builder.append("</script>\n");
+	}
+
+	public static void getLassoCode(StringBuilder builder, String plot, String selectionString,
+	                                String nameSelection, boolean isEditor) {
+		getLassoCode(builder, plot, selectionString, nameSelection, null, isEditor);
 	}
 
 	/**
@@ -593,13 +644,18 @@ public class JSUtils {
 	 * @param plot the variable that points to the div containing the
 	 * plotly plot.
 	 * @param nameSelection the column we used to show the names of points
+	 * @param dataElement the data element to use for the selection name
 	 * @param isEditor if <b>true</b> we'll be integrating this into the
 	 * PlotlyEditor.  This means we have to find the appropriate div by
 	 * searching for a particular CSS class.
 	 */
 	public static void getLassoCode(StringBuilder builder, 
 	                                String plot, String selectionString, String nameSelection, 
+	                                String dataElement,
 	                                boolean isEditor) {
+		if (dataElement == null)
+			dataElement = "text";
+
 		builder.append("<script>\n");
 		builder.append("var myPlot = document.getElementById('"+plot+"');\n");
 		if (isEditor) {
@@ -610,9 +666,9 @@ public class JSUtils {
 			builder.append("        var nodelist = ''; \n");
 			builder.append("        for(var i = 0; i<data.points.length; i++) { \n");
 			if (selectionString == null)
-				builder.append("            nodelist+= (',"+nameSelection+ ":' +data.points[i].text);\n");
+				builder.append("            nodelist+= (',"+nameSelection+ ":' +data.points[i]."+dataElement+");\n");
 			else
-				builder.append("            nodelist+= (','+data.points[i].text);\n");
+				builder.append("            nodelist+= (','+data.points[i]."+dataElement+");\n");
 			builder.append("        };\n");
 			if (selectionString == null)
 				builder.append("        cybrowser.executeCyCommand('network select nodeList = \"'+nodelist+'\"');\n");
@@ -627,9 +683,9 @@ public class JSUtils {
 		  builder.append("    var nodelist = ''; \n");
 			builder.append("    for(var i = 0; i<data.points.length; i++) { \n");
 			if (selectionString == null)
-				builder.append("        nodelist+= (',"+nameSelection+ ":'+data.points[i].text);\n");
+				builder.append("        nodelist+= (',"+nameSelection+ ":'+data.points[i]."+dataElement+");\n");
 			else
-				builder.append("            nodelist+= (','+data.points[i].text);\n");
+				builder.append("            nodelist+= (','+data.points[i]."+dataElement+");\n");
 			builder.append("    };\n");
 			if (selectionString == null)
 				builder.append("        cybrowser.executeCyCommand('network select nodeList = \"'+nodelist+'\"');\n");
@@ -659,7 +715,7 @@ public class JSUtils {
 	 */
 	public static String getLabelCode(String xLabel, String yLabel, String title, boolean showLegend) {
 		if (title == null) title = xLabel+" vs "+yLabel;
-		return "var layout = {showlegend: "+showLegend+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "'}, yaxis: { title:'" + yLabel + "'}, title: '" + title + "'};";
+		return "var layout = {showlegend: "+showLegend+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "', automargin: true}, title: '" + title + "'};";
 	}
 	
 	/**
@@ -702,7 +758,8 @@ public class JSUtils {
 	// Common interface for all XY Plot routines, including:
 	// 	Volcano, Scatter, Bar, Line
 	public static String getXYPlot(String type,
-	                               Map<String, String> xTraceMap, Map<String, String> yTraceMap, Map<String, String> nameTraceMap,
+	                               Map<String, String> xTraceMap, Map<String, String> yTraceMap, 
+	                               Map<String, String> nameTraceMap,
 	                               String selectionString, String nameSelection,
 	                               String title, String xLabel, String yLabel, String mode, boolean editor) {
 		StringBuilder builder = new StringBuilder();
@@ -753,8 +810,8 @@ public class JSUtils {
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 			builder.append("</script>\n");
 			if (selectionString != null || nameSelection != null) {
-				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
-				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
+				getClickCode(builder, "CyPlot", selectionString, nameSelection, true);
+				getLassoCode(builder, "CyPlot", selectionString, nameSelection, true);
 			}
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
@@ -783,5 +840,25 @@ public class JSUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static String getColorString(Object palette) {
+		if (palette instanceof Palette) {
+			// Get a color span and return the ends and the middle
+			Color[] colors = ((Palette)palette).getColors(9);
+			String colorstr = "["+getStopColor(colors[8], 0.0)+","+getStopColor(colors[4], 0.5)+
+			                  ","+getStopColor(colors[0], 1.0)+"]";
+			return colorstr;
+		} else {
+			return "'"+palette.toString()+"'";
+		}
+	}
+
+	private static String getStopColor(Color clr, double stop) {
+		return "["+stop+", '"+getRGBColor(clr)+"']";
+	}
+
+	private static String getRGBColor(Color clr) {
+		return "rgb("+clr.getRed()+","+clr.getGreen()+","+clr.getBlue()+")";
 	}
 }
