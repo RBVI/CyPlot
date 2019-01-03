@@ -167,18 +167,18 @@ public class HeatMapTask extends AbstractTask {
 		} else {
 			rowHeaders = getHeaders(rowLabels);
 			columnHeaders = getHeaders(columnLabels);
-			System.out.println("rowHeaders.size = "+rowHeaders.size());
+			// System.out.println("rowHeaders.size = "+rowHeaders.size());
 
 			try {
 				colData = JSONUtils.getListMap(data);
 			} catch (ParseException pe) {
 				monitor.showMessage(TaskMonitor.Level.ERROR, "Parse error in 'data': "+pe.toString());
-				System.out.println(data);
+				// System.out.println(data);
 				return;
 			}
 
-			for (String col: colData.keySet())
-				System.out.println("colData.get("+col+").size() = "+colData.get(col).size());
+			// for (String col: colData.keySet())
+			// 	System.out.println("colData.get("+col+").size() = "+colData.get(col).size());
 
 			// Get our min/max
 			for (String colName: columnHeaders) {

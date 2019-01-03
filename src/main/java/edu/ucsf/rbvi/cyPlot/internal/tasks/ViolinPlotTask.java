@@ -103,7 +103,7 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			TaskManager sTM = sr.getService(TaskManager.class);
 		    //AvailableCommands ac = sr.getService(AvailableCommands.class);
 			CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
-			System.out.println("ViolinPlotTask");
+			// System.out.println("ViolinPlotTask");
 
 			Map<String, String> traceMap;
 			Map<String, String> nameMap;
@@ -166,7 +166,7 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			args.put("text", html);
 			args.put("title", title);
 
-			System.out.println("Calling cyBrowser");
+			// System.out.println("Calling cyBrowser");
 			TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 			sTM.execute(ti);
 		}

@@ -18,7 +18,7 @@ public class JSONUtils {
 		Map<String, String> returnMap = new HashMap<>();
 		for (Object key: obj.keySet()) {
 			String strKey = key.toString();
-			System.out.println("strKey = "+strKey);
+			// System.out.println("strKey = "+strKey);
 			returnMap.put(strKey, arrayToString(obj.get(key)));
 		}
 		return returnMap;

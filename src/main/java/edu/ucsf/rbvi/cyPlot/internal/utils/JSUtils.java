@@ -127,7 +127,7 @@ public class JSUtils {
 			byte[] bytesArray = string.getBytes();
 			fos.write(bytesArray);
 			fos.flush();
-			System.out.println("Write successful.");
+			// System.out.println("Write successful.");
 		}catch(IOException e) {
 			e.printStackTrace();
 		}finally {
