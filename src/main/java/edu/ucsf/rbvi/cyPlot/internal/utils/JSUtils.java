@@ -160,14 +160,19 @@ public class JSUtils {
 	 * graph editor 
 	 * @return the assembled scatter plot code
 	 */
-	public static String getScatterPlot(Map<String,String> xTraceMap, Map<String, String> yTraceMap, Map<String, String> nameTraceMap,
+	public static String getScatterPlot(Map<String,String> xTraceMap, Map<String, String> yTraceMap, 
+	                                    Map<String, String> nameTraceMap,
 	                                    String selectionString, String nameSelection, 
-									                    String title, String xLabel, String yLabel, String mode, boolean editor) {
-		String html = getXYPlot("scatter", xTraceMap, yTraceMap, nameTraceMap, selectionString, nameSelection, title, xLabel, yLabel, mode, editor);
+	                                    String title, String xLabel, String yLabel,
+	                                    String dataExtra, String layoutExtra, String mode, boolean editor) {
+		String html = getXYPlot("scatter", xTraceMap, yTraceMap, nameTraceMap, 
+		                        selectionString, nameSelection, title, xLabel, yLabel, 
+		                        dataExtra, layoutExtra,
+		                        mode, editor);
 		writeDebugFile(html, "ScatterPlot.html");
 		return html;
 	}
-	
+
 	/**
 	 * Generate the string necessary to generate a filled area plot in plotly, 
 	 * either with or without the plotly graph editor.
@@ -369,9 +374,8 @@ public class JSUtils {
 	public static String getHeatMap(List<String> rowHeaders, List<String> columnHeaders, 
 	                                Map<String, List<?>> colData,
 	                                String selectionString, String nameSelection,
-	                                double zmin, double zmax,
 	                                Object colorPalette, String xLabel, String yLabel,
-	                                String title, boolean editor) {
+	                                String title, String dataExtra, String layoutExtra, boolean editor) {
 		// Get our color string
 		String colors = "var colorScaleValue = "+getColorString(colorPalette)+"\n";
 
@@ -387,55 +391,56 @@ public class JSUtils {
 		String dataArray = dataArrayBuilder.toString();
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor);
-		if (!editor) {
-			builder.append("<body><div id=\"CyPlot\"></div>\n");
-			builder.append("<script>\n");
-	 		builder.append(colors);
-		 	builder.append("var data = [{z: " + dataArray + ", x: " + JSONUtils.listToString(columnHeaders));
-			builder.append(", y: " + JSONUtils.listToString(rowHeaders) + ", type: \"heatmap\", transpose: true,");
-			// This doesn't actually work to pass the data right now
-			// builder.append(" text: "+ JSONUtils.listToString(rowHeaders)+",");
-			builder.append(" zmin: '"+ zmin +"',");
-			builder.append(" zmax: '"+ zmax +"',");
-			builder.append(" colorscale: colorScaleValue}];\n");
-			builder.append(getLabelCode(xLabel, yLabel, title, true));
-			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
-			getResizeCode(builder);
-			builder.append("</script>\n");
-			if (selectionString != null || nameSelection != null) {
-				getClickCode(builder, "CyPlot", selectionString, nameSelection, "y", false);
-				getLassoCode(builder, "CyPlot", selectionString, nameSelection, "y", false);
-			}
-			builder.append(getPlotly());
-		} else {
-			builder.append("<body>");
-			builder.append("<div id=\"CyPlot\"></div>\n");
-			builder.append("<script>\n");
-	 		builder.append(colors);
-		 	builder.append("var data = [{z: " + dataArray + ", x: " + JSONUtils.listToString(columnHeaders));
-			builder.append(", y: " + JSONUtils.listToString(rowHeaders) + ", type: \"heatmap\", transpose: true,");
-			// This doesn't actually work to pass the data right now
-			// builder.append(" text: "+ JSONUtils.listToString(rowHeaders)+",");
-			builder.append(" zmin: '"+ zmin +"',");
-			builder.append(" zmax: '"+ zmax +"',");
-			builder.append(" colorscale: colorScaleValue}];\n");
-			// builder.append("var layout = {title: '" + title + "', xaxis{'title': '"+xLabel+"'}");
-			// builder.append(", yaxis: {'title':'"+yLabel+"'}};\n");
-			builder.append(getLabelCode(xLabel, yLabel, title, true));
+		builder.append("<body><div id=\"CyPlot\"></div>\n");
+		builder.append("<script>\n");
+ 		builder.append(colors);
+	 	builder.append("var data = [{z: " + dataArray + ", x: " + JSONUtils.listToString(columnHeaders));
+		builder.append(", y: " + JSONUtils.listToString(rowHeaders) + ", type: \"heatmap\", transpose: true,");
+
+		// This doesn't actually work to pass the data right now
+		// builder.append(" text: "+ JSONUtils.listToString(rowHeaders)+",");
+
+		if (dataExtra != null)
+			builder.append(dataExtra+",");
+		builder.append(" colorscale: colorScaleValue}];\n");
+		// We can't use getLayoutCode because of the need to use ticktext :-(
+		// builder.append(getLayoutCode(xLabel, yLabel, title, layoutExtra, true));
+		{
+			if (title == null) title = xLabel+" vs "+yLabel;
+			builder.append("var layout = ");
+			builder.append("{hovermode: 'closest',");
+			builder.append("yaxis: { title: '"+yLabel+"', automargin: true,");
+			builder.append(" ticktext: "+JSONUtils.listToString(rowHeaders, 4) + ",");
+			builder.append(" tickvals: "+JSONUtils.indicesToString(rowHeaders, 4) + ",");
+			builder.append(" tickfont: {size: 9},");
+	 		builder.append("},");
+			builder.append("xaxis: { title: '"+xLabel+"', automargin: true },");
+			builder.append("title: '"+title+"'");
+			if (layoutExtra != null)
+				builder.append(","+layoutExtra);
+			builder.append("}\n");
+		}
+
+		if (editor) {
 			String dataSources = "var dataSources = {";
 			for (String col: colData.keySet()) {
 				dataSources += "'"+col+"':"+colData.get(col)+",";
 			}
 			builder.append(dataSources.substring(0, dataSources.length()-1)+"};\n");
-			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
-      builder.append("</script>\n");
-			if (selectionString != null || nameSelection != null) {
-        getClickCode(builder, "CyPlot", selectionString, nameSelection, "y", true);
-        getLassoCode(builder, "CyPlot", selectionString, nameSelection, "y", true);
-      }
-      addHideControlsCode(builder);
-      builder.append("</body></html>");
+			builder.append("ReactDOM.render(React.createElement(app.App.default, ");
+			builder.append("{ dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
+		} else {
+			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
+			getResizeCode(builder);
 		}
+		builder.append("</script>\n");
+		if (selectionString != null || nameSelection != null) {
+			getClickCode(builder, "CyPlot", selectionString, nameSelection, "y", editor);
+			getLassoCode(builder, "CyPlot", selectionString, nameSelection, "y", editor);
+		}
+		if (editor)
+      addHideControlsCode(builder);
+		builder.append(getPlotly());
 		writeDebugFile(builder.toString(), "HeatMap.html");
 		return builder.toString();
 	}
@@ -455,7 +460,9 @@ public class JSUtils {
 	 */
 	public static String getViolinPlot(Map<String, String> traceMap, String selectionString,
 	                                   String nameSelection, Map<String,String> traceNamesMap, 
+	                                   List<String> traceOrder,
 																		 String title, String xlabel, String ylabel,
+																		 String dataExtra, String layoutExtra, 
                                      boolean editor) {
 
 		if (title == null)
@@ -470,68 +477,66 @@ public class JSUtils {
 
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor);
-		if (!editor) {
-			builder.append("<body><div id=\"CyPlot\"></div>\n");
-			builder.append("<script>\n");
+		builder.append("<body><div id=\"CyPlot\"></div>\n");
+		builder.append("<script type=\"text/javascript\">\n");
 
-			String traceStr = "var data = [";
-			int traceNumber = 1;
-			for (String trace: traceMap.keySet()) {
-				builder.append("var trace"+traceNumber+" = { legendgroup: '"+trace+"', name: '"+trace+"', scalegroup: 'Yes', x0: '"+trace+"', y: "+traceMap.get(trace)+", type:'violin', text: " + traceNamesMap.get(trace) + "};\n");
-				traceStr += "trace"+traceNumber+",";
-				traceNumber++;
-			}
-			builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
-
-			if (xlabel == null)
-				xlabel = "";
-			if (ylabel == null)
-				ylabel = "";
-
-			builder.append("var layout = { hovermode: 'closest', showlegend: true, title: '"+title+"',");
-			builder.append("xaxis: { title:'"+xlabel+"'}, yaxis: {title:'"+ylabel+"'},");
-			builder.append("legend: { tracegroupgap: 0 }, violingap: 0, violingroupgap: 0, violinmode: 'overlay' };\n");
-			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
-			//attempting resize
-			getResizeCode(builder);
-			builder.append("</script>\n");
-			if (selectionString != null || nameSelection != null) {
-				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
-				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
-			}
-			builder.append(getPlotly());
-			writeDebugFile(builder.toString(), "ViolinPlot.html");
-		} else {
-			builder.append("<body>");
-			builder.append("<div id=\"CyPlot\"></div>\n");
-
-			builder.append("<script type=\"text/javascript\" >\n");
-			String traceStr = "var data = [";
-			String dataSources = "var dataSources = {";
-			int traceNumber = 1;
-			for (String trace: traceMap.keySet()) {
-				builder.append("var trace"+traceNumber+" = { legendgroup: '"+trace+"', name: '"+trace+"', scalegroup: 'Yes', x0: '"+trace+"', y: "+traceMap.get(trace)+", type:'violin', text: " + traceNamesMap.get(trace) + "};\n");
-				traceStr += "trace"+traceNumber+",";
-				traceNumber++;
-				dataSources += "'"+trace+"': "+traceMap.get(trace)+",";
-			}
-			builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
-			builder.append(dataSources.substring(0, dataSources.length()-1)+"};\n");
-			builder.append("var layout = { hovermode: 'closest', showlegend: true, title: 'violin plot', legend: { tracegroupgap: 0 }, violingap: 0, violingroupgap: 0, violinmode: 'overlay' };\n");
-			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
-			builder.append("</script>\n");
-			if (selectionString != null || nameSelection != null) {
-				getClickCode(builder, "CyPlot", selectionString, nameSelection, true);
-				getLassoCode(builder, "CyPlot", selectionString, nameSelection, true);
-			}
-			addHideControlsCode(builder);
-			builder.append("</body></html>");
-			writeDebugFile(builder.toString(), "ViolinEditor.html");
+		String traceStr = "var data = [";
+		int traceNumber = 1;
+		String dataSources = "var dataSources = {";
+		for (String trace: traceOrder) {
+			builder.append("var trace"+traceNumber+" = ");
+			builder.append("{ legendgroup: '"+trace+"', name: '"+trace+"'");
+			builder.append(", scalegroup: 'Yes', x0: '"+trace+"', ");
+			builder.append("y: "+traceMap.get(trace)+", ");
+			builder.append("type:'violin', ");
+			builder.append("text: " + traceNamesMap.get(trace));
+			if (dataExtra != null)
+				builder.append(","+dataExtra);
+		 	builder.append("};\n");
+			traceStr += "trace"+traceNumber+",";
+			traceNumber++;
+			dataSources += "'"+trace+"': "+traceMap.get(trace)+",";
 		}
+		builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
 
+		if (editor)
+			builder.append(dataSources.substring(0, dataSources.length()-1)+"};\n");
+
+		if (xlabel == null)
+			xlabel = "";
+		if (ylabel == null)
+			ylabel = "";
+
+		if (layoutExtra == null)
+			layoutExtra = "";
+		layoutExtra += "violinmode: 'overlay', violingap: 0, violingroupgap: 0";
+		builder.append(getLayoutCode(xlabel, ylabel, title, layoutExtra, true));
+
+		/*
+		builder.append("var layout = { hovermode: 'closest', showlegend: true, title: '"+title+"',");
+		builder.append("xaxis: { title:'"+xlabel+"'}, yaxis: {title:'"+ylabel+"'},");
+		if (layoutExtra)
+			builder.append(layoutExtra);
+		builder.append("legend: { tracegroupgap: 0 }, violingap: 0, violingroupgap: 0, violinmode: 'overlay' };\n");
+		*/
+
+		if (!editor) {
+			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
+			getResizeCode(builder);
+		} else {
+			builder.append("ReactDOM.render(React.createElement(app.App.default, ");
+			builder.append("{ dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
+		}
+		builder.append("</script>\n");
+		if (selectionString != null || nameSelection != null) {
+			getClickCode(builder, "CyPlot", selectionString, nameSelection, editor);
+			getLassoCode(builder, "CyPlot", selectionString, nameSelection, editor);
+		}
+		builder.append(getPlotly());
+		writeDebugFile(builder.toString(), "ViolinPlot.html");
 		return builder.toString();
 	}
-	
+
 	/**
 	 * Generate the string necessary to generate a dot plot or
 	 * in plotly, either with or without the plotly graph editor.
@@ -713,6 +718,22 @@ public class JSUtils {
 	 * @return the assembled label code
 	 *
 	 */
+	public static String getLayoutCode(String xLabel, String yLabel, String title, 
+	                                   String layoutExtra, boolean showLegend) {
+
+		if (title == null) title = xLabel+" vs "+yLabel;
+		String layout = "var layout = ";
+		layout += "{showLegend: "+showLegend+", legend: { x:1, y: 0.5 },";
+		layout += "hovermode: 'closest',";
+		layout += "xaxis: { title: '"+xLabel+"', automargin: true },";
+		layout += "yaxis: { title: '"+yLabel+"', automargin: true },";
+		layout += "title: '"+title+"'";
+		if (layoutExtra != null)
+			layout += ","+layoutExtra;
+		layout += "};\n";
+		return layout;
+	}
+
 	public static String getLabelCode(String xLabel, String yLabel, String title, boolean showLegend) {
 		if (title == null) title = xLabel+" vs "+yLabel;
 		return "var layout = {showlegend: "+showLegend+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "', automargin: true}, title: '" + title + "'};";
@@ -761,61 +782,52 @@ public class JSUtils {
 	                               Map<String, String> xTraceMap, Map<String, String> yTraceMap, 
 	                               Map<String, String> nameTraceMap,
 	                               String selectionString, String nameSelection,
-	                               String title, String xLabel, String yLabel, String mode, boolean editor) {
+	                               String title, String xLabel, String yLabel, String mode, 
+	                               String dataExtra, String layoutExtra,
+	                               boolean editor) {
 		StringBuilder builder = new StringBuilder();
 		boolean showLegend = false;
 		if (xTraceMap.keySet().size() > 1)
 			showLegend = true;
 		getPreamble(builder, editor);
-		if (!editor) {
-			builder.append("<body><div id=\"CyPlot\"></div>\n");
-			builder.append("<script>\n");
-			String traceStr = "var data = [";
-			int traceNumber = 1;
-			for (String trace: xTraceMap.keySet()) {
-				builder.append("var trace"+traceNumber+" = { legendgroup: '"+trace+"', name: '"+trace+"', mode:'"+mode+"', scalegroup: 'Yes',");
-				builder.append("x:"+xTraceMap.get(trace)+", y: "+yTraceMap.get(trace)+", type:'"+type+"', text: " + nameTraceMap.get(trace) + "};\n");
-				traceStr += "trace"+traceNumber+",";
-				traceNumber++;
-			}
-			builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
-			builder.append(getLabelCode(xLabel, yLabel, title, showLegend));
+
+		builder.append("<body><div id=\"CyPlot\"></div>\n");
+		builder.append("<script>\n");
+		String traceStr = "var data = [";
+		String dataSources = "var dataSources = {";
+		int traceNumber = 1;
+		for (String trace: xTraceMap.keySet()) {
+			builder.append("var trace"+traceNumber+" = ");
+			builder.append("{ legendgroup: '"+trace+"', name: '"+trace+"', mode:'"+mode+"', scalegroup: 'Yes',");
+			builder.append("x:"+xTraceMap.get(trace)+", y: "+yTraceMap.get(trace));
+			builder.append(", type:'"+type+"', text: " + nameTraceMap.get(trace));
+			if (dataExtra != null)
+				builder.append(","+dataExtra);
+			builder.append("};\n");
+
+			traceStr += "trace"+traceNumber+",";
+			traceNumber++;
+			dataSources += "'"+trace+"X': "+xTraceMap.get(trace)+",";
+			dataSources += "'"+trace+"Y': "+yTraceMap.get(trace)+",";
+		}
+		builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
+		builder.append(getLayoutCode(xLabel, yLabel, title, layoutExtra, showLegend));
+		if (editor) {
+			builder.append(dataSources.substring(0, dataSources.length()-1)+"};\n");
+			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
+		} else {
 			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
 			getResizeCode(builder);
-			builder.append("</script>\n");
-			if (selectionString != null || nameSelection != null) {
-				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
-				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
-			}
-			builder.append(getPlotly());
-		} else {
-			builder.append("<body>");
-			builder.append("<div id=\"CyPlot\"></div>\n");
-			// builder.append("<a style=\"position:absolute; left: 100px; top: 30\" onclick='hideControls()'>Hide Controls</a>\n");
-			builder.append("<script type=\"text/javascript\" >\n");
-			String traceStr = "var data = [";
-			String dataSources = "var dataSources = {";
-			int traceNumber = 1;
-			for (String trace: xTraceMap.keySet()) {
-				builder.append("var trace"+traceNumber+" = { legendgroup: '"+trace+"', name: '"+trace+"', mode:'"+mode+"', scalegroup: 'Yes',");
-				builder.append("x:"+xTraceMap.get(trace)+", y: "+yTraceMap.get(trace)+", type:'"+type+"', text: " + nameTraceMap.get(trace) + "};\n");
-				traceStr += "trace"+traceNumber+",";
-				traceNumber++;
-				dataSources += "'"+trace+"X': "+xTraceMap.get(trace)+",";
-				dataSources += "'"+trace+"Y': "+yTraceMap.get(trace)+",";
-			}
-			builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
-			builder.append(dataSources.substring(0, dataSources.length()-1)+"};\n");
-			builder.append(getLabelCode(xLabel, yLabel, title, showLegend));
-			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
-			builder.append("</script>\n");
-			if (selectionString != null || nameSelection != null) {
-				getClickCode(builder, "CyPlot", selectionString, nameSelection, true);
-				getLassoCode(builder, "CyPlot", selectionString, nameSelection, true);
-			}
-			addHideControlsCode(builder);
-			builder.append("</body></html>");
 		}
+		builder.append("</script>\n");
+		if (selectionString != null || nameSelection != null) {
+			getClickCode(builder, "CyPlot", selectionString, nameSelection, editor);
+			getLassoCode(builder, "CyPlot", selectionString, nameSelection, editor);
+		}
+		if (editor)
+			addHideControlsCode(builder);
+		builder.append(getPlotly());
+
 		writeDebugFile(builder.toString(), type+"Plot.html");
 		return builder.toString();
 	}

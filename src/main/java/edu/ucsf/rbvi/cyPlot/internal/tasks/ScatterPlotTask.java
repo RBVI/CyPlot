@@ -179,7 +179,7 @@ public class ScatterPlotTask extends AbstractTask {
 		// String html = JSUtils.getScatterPlot(xTraceMap, yTraceMap, nameMap, selectionString, idColumn, 
 		//                                      title, xLabel, yLabel, "markers", editor);
 		String html = JSUtils.getXYPlot("scatter", xTraceMap, yTraceMap, nameMap, selectionString, idColumn, 
-		                                title, xLabel, yLabel, "markers", editor);
+		                                title, xLabel, yLabel, "markers", null, null, editor);
 
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);

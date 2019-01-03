@@ -176,7 +176,7 @@ public class LineGraphTask extends AbstractTask {
 		}
 
 		String html = JSUtils.getXYPlot("scatter", xTraceMap, yTraceMap, nameMap, selectionString, idColumn, 
-		                                title, xLabel, yLabel, "lines", editor);
+		                                title, xLabel, yLabel, "lines", null, null, editor);
 
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);

@@ -52,7 +52,7 @@ public class HeatMapTask extends AbstractTask {
 	public ListMultipleSelection<String> cols;
 	
 	@Tunable (description="Row labels")
-	public ListSingleSelection<String> yAxis;
+	public ListSingleSelection<String> idColumn;
 		
 	@Tunable (description="Color palette to use")
 	public ListSingleSelection<String> palette;
@@ -104,7 +104,7 @@ public class HeatMapTask extends AbstractTask {
 
 			cols = new ListMultipleSelection<>(headers);
 
-			yAxis = new ListSingleSelection<>(names);
+			idColumn = new ListSingleSelection<>(names);
 		}
 
 		// Get the list of palette providers
@@ -146,7 +146,7 @@ public class HeatMapTask extends AbstractTask {
 		double zmax = Double.MIN_VALUE;
 
 		if (data == null) {
-			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yAxis));
+			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(idColumn));
 
 			columnHeaders = getColsSelection();
 			rowHeaders = yColumn.getValues(String.class);
@@ -167,6 +167,8 @@ public class HeatMapTask extends AbstractTask {
 		} else {
 			rowHeaders = getHeaders(rowLabels);
 			columnHeaders = getHeaders(columnLabels);
+			System.out.println("rowHeaders.size = "+rowHeaders.size());
+
 			try {
 				colData = JSONUtils.getListMap(data);
 			} catch (ParseException pe) {
@@ -174,6 +176,9 @@ public class HeatMapTask extends AbstractTask {
 				System.out.println(data);
 				return;
 			}
+
+			for (String col: colData.keySet())
+				System.out.println("colData.get("+col+").size() = "+colData.get(col).size());
 
 			// Get our min/max
 			for (String colName: columnHeaders) {
@@ -187,7 +192,7 @@ public class HeatMapTask extends AbstractTask {
 		}
 
 		if (Math.abs(zmin) > zmax)
-			zmax = Math.abs(zmax);
+			zmax = Math.abs(zmin);
 		else
 			zmin = Math.copySign(zmax, zmin);
 
@@ -197,6 +202,12 @@ public class HeatMapTask extends AbstractTask {
 		if (yLabel == null)
 			yLabel = "";
 
+		String ids;
+		if (idColumn == null)
+			ids = null;
+		else
+			ids = idColumn.getSelectedValue();
+
 		// String rowHeaders = "{'':"+ModelUtils.colToArray(yColumn)+"}";
 
 		if (palette.getSelectedValue() == null || palette.getSelectedValue().length() == 0) {
@@ -204,6 +215,8 @@ public class HeatMapTask extends AbstractTask {
 		}
 
 		Palette colorPalette = paletteMap.get(palette.getSelectedValue());
+
+		String dataExtra = "zmin: '"+zmin+"', zmax: '"+zmax+"', ygap: '.2', xgap: '2'";
 
 		// getClusteredHeatMap(List<String> rowOrder, List<String> columnOrder, 
 		//                     Map<String, List<String>> rowGroupMap, Map<String, List<String>> colGroupMap,
@@ -222,8 +235,9 @@ public class HeatMapTask extends AbstractTask {
 	                                String title, boolean editor) {
 		*/
 		String html = JSUtils.getHeatMap(rowHeaders, columnHeaders, colData,
-	                                   selectionString, yAxis.getSelectedValue(), 
-		                                 zmin, zmax, colorPalette, xLabel, yLabel, title, editor);
+	                                   selectionString, ids, 
+		                                 colorPalette, xLabel, yLabel, title, 
+		                                 dataExtra, null, editor);
 		Map<String, Object> args = new HashMap<>();
 		
 		args.put("text", html);

@@ -1,6 +1,7 @@
 package edu.ucsf.rbvi.cyPlot.internal.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ public class JSONUtils {
 		Map<String, String> returnMap = new HashMap<>();
 		for (Object key: obj.keySet()) {
 			String strKey = key.toString();
+			System.out.println("strKey = "+strKey);
 			returnMap.put(strKey, arrayToString(obj.get(key)));
 		}
 		return returnMap;
@@ -50,11 +52,7 @@ public class JSONUtils {
 		if (splitString.length == 1)
 			splitString = str.split(",",-1);
 
-		List<String> list = new ArrayList<>();
-		for (String s: splitString) {
-			list.add(s);
-		}
-		return list;
+		return Arrays.asList(splitString);
 	}
 
 	public static String csvToJSONArray(String str) {
@@ -68,16 +66,19 @@ public class JSONUtils {
 			splitString = str.split(",",-1);
 
 		String jsonStr = "[";
+		StringBuilder builder = new StringBuilder();
+		builder.append("[");
 		for (String s: splitString) {
-			jsonStr += "'"+s+"',";
+			builder.append("'"+s+"',");
 		}
-		return jsonStr.substring(0,jsonStr.length()-1)+"]";
+		return builder.substring(0,builder.length()-1).toString()+"]";
 	}
 
 	public static String arrayToStringNegLog(Object obj) {
 		if (obj instanceof JSONArray) {
 			JSONArray arr = (JSONArray) obj;
-			String s = "[";
+			StringBuilder builder = new StringBuilder();
+		 	builder.append("[");
 			for (Object v: arr) {
 				double value;
 				if (v instanceof Double)
@@ -90,9 +91,9 @@ public class JSONUtils {
 				else
 					value = Double.NaN;
 
-				s += "'"+String.valueOf(value)+"',";
+				builder.append("'"+String.valueOf(value)+"',");
 			}
-			return s.substring(0,s.length()-1)+"]";
+			return builder.substring(0,builder.length()-1).toString()+"]";
 		} else {
 			return obj.toString();
 		}
@@ -101,25 +102,41 @@ public class JSONUtils {
 	public static String arrayToString(Object obj) {
 		if (obj instanceof JSONArray) {
 			JSONArray arr = (JSONArray) obj;
-			String s = "[";
+			StringBuilder builder = new StringBuilder();
+			builder.append("[");
 			for (Object v: arr) {
-				s += "'"+v.toString()+"',";
+				builder.append("'"+v.toString()+"',");
 			}
-			return s.substring(0,s.length()-1)+"]";
+			return builder.substring(0,builder.length()-1).toString()+"]";
 		} else {
 			return obj.toString();
 		}
 	}
 
-	public static String listToString(List<?> strList) {
-		String retString = "[";
-		for (int i = 0; i < strList.size()-1; i++) {
-			if (strList.get(i) == null)
-				retString += "'',";
-			else
-				retString += "'"+strList.get(i).toString()+"',";
+	public static String indicesToString(List<?> strList, int nth) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("[");
+		for (int i = 0; i < strList.size()-1; i += nth) {
+			builder.append(i+",");
 		}
-		return retString+"'"+strList.get(strList.size()-1)+"']";
+		builder.append(strList.size()-1+"]");
+		return builder.toString();
+	}
+
+	public static String listToString(List<?> strList) {
+		return listToString(strList,1);
+	}
+
+	public static String listToString(List<?> strList, int nth) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("[");
+		for (int i = 0; i < strList.size()-1; i += nth) {
+			if (strList.get(i) == null)
+				builder.append("'',");
+			else
+				builder.append("'"+strList.get(i).toString()+"',");
+		}
+		return builder.toString()+"'"+strList.get(strList.size()-1)+"']";
 	}
 
 	public static List<String> stringToList(JSONArray arr) {

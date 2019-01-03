@@ -49,6 +49,9 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 		@Tunable (description="JSON formatted string of point names", context="nogui")
 		public String names = null;
 
+		@Tunable (description="JSON formatted string of group names", context="nogui")
+		public String groups = null;
+
 		@Tunable (description="JSON formatted data string", context="nogui")
 		public String data = null;
 
@@ -100,6 +103,7 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			TaskManager sTM = sr.getService(TaskManager.class);
 		    //AvailableCommands ac = sr.getService(AvailableCommands.class);
 			CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
+			System.out.println("ViolinPlotTask");
 
 			Map<String, String> traceMap;
 			Map<String, String> nameMap;
@@ -141,16 +145,28 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 				}
 			}
 
+			List<String> traceOrder;
+			if (groups != null) {
+				try {
+					traceOrder = JSONUtils.stringToList(groups);
+				} catch (ParseException pe) {
+					traceOrder = JSONUtils.csvToList(groups);
+				}
+			} else {
+				traceOrder = new ArrayList<>(traceMap.keySet());
+			}
+
 			String idColumn = null;
 			if (nameCol != null)
 				idColumn = ModelUtils.getTunableSelection(nameCol);
 
-			String html = JSUtils.getViolinPlot(traceMap, selectionString, idColumn, nameMap, 
-			                                    title, xlabel, ylabel, editor);
+			String html = JSUtils.getViolinPlot(traceMap, selectionString, idColumn, nameMap, traceOrder,
+			                                    title, xlabel, ylabel, null, null, editor);
 			Map<String, Object> args = new HashMap();
 			args.put("text", html);
 			args.put("title", title);
 
+			System.out.println("Calling cyBrowser");
 			TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 			sTM.execute(ti);
 		}
