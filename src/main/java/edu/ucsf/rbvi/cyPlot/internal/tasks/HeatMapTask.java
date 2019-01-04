@@ -73,6 +73,9 @@ public class HeatMapTask extends AbstractTask {
 	@Tunable (description="Selection string", context="nogui")
 	public String selectionString = null;
 
+	@Tunable (description="Plot id", context="nogui")
+	public String id = null;
+
 	@Tunable (description="X Axis Label", context="nogui")
 	public String xLabel = null;
 
@@ -241,8 +244,11 @@ public class HeatMapTask extends AbstractTask {
 		Map<String, Object> args = new HashMap<>();
 		
 		args.put("text", html);
-		args.put("title", "Plot");
-		args.put("id", "01");
+		args.put("title", title);
+		if (id != null)
+			args.put("id", id);
+		else
+			args.put("id", "heatmap");
 		
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);

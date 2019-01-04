@@ -61,6 +61,9 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 		@Tunable (description="Plot title", context="nogui")
 		public String title = null;
 
+		@Tunable (description="Plot id", context="nogui")
+		public String id = null;
+
 		@Tunable (description="X Axis Label", context="nogui")
 		public String xlabel = null;
 
@@ -165,6 +168,10 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			Map<String, Object> args = new HashMap();
 			args.put("text", html);
 			args.put("title", title);
+			if (id != null)
+				args.put("id", id);
+			else
+				args.put("id", "violin");
 
 			// System.out.println("Calling cyBrowser");
 			TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
