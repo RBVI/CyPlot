@@ -12,11 +12,10 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 	import org.json.simple.parser.ParseException;
 
 	import org.cytoscape.application.CyApplicationManager;
-	import org.cytoscape.command.AvailableCommands;
-	import org.cytoscape.command.CommandExecutorTaskFactory;
 	import org.cytoscape.service.util.CyServiceRegistrar;
 	import org.cytoscape.view.model.CyNetworkView;
 	import org.cytoscape.work.AbstractTask;
+	import org.cytoscape.work.ContainsTunables;
 	import org.cytoscape.work.TaskIterator;
 	import org.cytoscape.work.TaskManager;
 	import org.cytoscape.work.TaskMonitor;
@@ -42,9 +41,6 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
     @Tunable (description="Name selection column")
     public ListSingleSelection<String> nameCol = null;
 
-		@Tunable (description="Open in plot editor?")
-		public boolean editor;
-
 		// Command interface for non-network plots
 		@Tunable (description="JSON formatted string of point names", context="nogui")
 		public String names = null;
@@ -55,20 +51,8 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 		@Tunable (description="JSON formatted data string", context="nogui")
 		public String data = null;
 
-		@Tunable (description="Selection string", context="nogui")
-		public String selectionString = null;
-
-		@Tunable (description="Plot title", context="nogui")
-		public String title = null;
-
-		@Tunable (description="Plot id", context="nogui")
-		public String id = null;
-
-		@Tunable (description="X Axis Label", context="nogui")
-		public String xlabel = null;
-
-		@Tunable (description="Y Axis Label", context="nogui")
-		public String ylabel = null;
+		@ContainsTunables
+		public CommandTunables commandTunables = null;
 
 		public CyApplicationManager appManager;
 		public CyNetworkView netView;
@@ -92,7 +76,7 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 				cols = new ListMultipleSelection<>(headers);
 				nameCol = new ListSingleSelection(names);
 			}
-			editor = true;
+			commandTunables = new CommandTunables();
 		}
 
 		/**
@@ -103,9 +87,6 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 		 * AbstractTask class
 		 */
 		public void run(TaskMonitor monitor) { 
-			TaskManager sTM = sr.getService(TaskManager.class);
-		    //AvailableCommands ac = sr.getService(AvailableCommands.class);
-			CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 			// System.out.println("ViolinPlotTask");
 
 			Map<String, String> traceMap;
@@ -163,18 +144,10 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			if (nameCol != null)
 				idColumn = ModelUtils.getTunableSelection(nameCol);
 
-			String html = JSUtils.getViolinPlot(traceMap, selectionString, idColumn, nameMap, traceOrder,
-			                                    title, xlabel, ylabel, null, null, editor);
-			Map<String, Object> args = new HashMap();
-			args.put("text", html);
-			args.put("title", title);
-			if (id != null)
-				args.put("id", id);
-			else
-				args.put("id", "violin");
+			String html = JSUtils.getViolinPlot(traceMap, commandTunables.selectionString, idColumn, nameMap, traceOrder,
+			                                    commandTunables.title, commandTunables.xLabel, commandTunables.yLabel, 
+			                                    null, null, commandTunables.editor);
 
-			// System.out.println("Calling cyBrowser");
-			TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
-			sTM.execute(ti);
+			ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id, commandTunables.id+":ViolinPlot");
 		}
 }

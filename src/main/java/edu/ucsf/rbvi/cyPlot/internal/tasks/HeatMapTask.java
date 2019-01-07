@@ -29,6 +29,7 @@ import org.cytoscape.util.color.PaletteProviderManager;
 import org.cytoscape.util.color.PaletteType;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.ContainsTunables;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
@@ -45,9 +46,6 @@ public class HeatMapTask extends AbstractTask {
 	
 	final CyServiceRegistrar sr;
 
-	@Tunable (description="Plot Title")
-	public String title;
-	
 	@Tunable (description="Data columns")
 	public ListMultipleSelection<String> cols;
 	
@@ -70,17 +68,8 @@ public class HeatMapTask extends AbstractTask {
 	@Tunable (description="JSON formatted string of row headers", context="nogui")
 	public String rowLabels = null;
 
-	@Tunable (description="Selection string", context="nogui")
-	public String selectionString = null;
-
-	@Tunable (description="Plot id", context="nogui")
-	public String id = null;
-
-	@Tunable (description="X Axis Label", context="nogui")
-	public String xLabel = null;
-
-	@Tunable (description="Y Axis Label", context="nogui")
-	public String yLabel = null;
+	@ContainsTunables
+	public CommandTunables commandTunables = new CommandTunables();
 	
 	public CyApplicationManager appManager;
 	public CyNetworkView netView;
@@ -122,6 +111,8 @@ public class HeatMapTask extends AbstractTask {
 
 		// Set a reasonable default
 		palette.setSelectedValue("ColorBrewer Diverging Red-Blue");
+
+		commandTunables = new CommandTunables();
 	}
 	
 	public List<String> getColsSelection() {
@@ -138,7 +129,6 @@ public class HeatMapTask extends AbstractTask {
 	public void run(TaskMonitor monitor) { 
 		//SynchronousTaskManager sTM = sr.getService(SynchronousTaskManager.class);
 		TaskManager sTM = sr.getService(TaskManager.class);
-		AvailableCommands ac = sr.getService(AvailableCommands.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);	
 
 		List<String> rowHeaders;
@@ -199,11 +189,11 @@ public class HeatMapTask extends AbstractTask {
 		else
 			zmin = Math.copySign(zmax, zmin);
 
-		if (xLabel == null)
-			xLabel = "";
+		if (commandTunables.xLabel == null)
+			commandTunables.xLabel = "";
 
-		if (yLabel == null)
-			yLabel = "";
+		if (commandTunables.yLabel == null)
+			commandTunables.yLabel = "";
 
 		String ids;
 		if (idColumn == null)
@@ -238,20 +228,11 @@ public class HeatMapTask extends AbstractTask {
 	                                String title, boolean editor) {
 		*/
 		String html = JSUtils.getHeatMap(rowHeaders, columnHeaders, colData,
-	                                   selectionString, ids, 
-		                                 colorPalette, xLabel, yLabel, title, 
+	                                   commandTunables.selectionString, ids, 
+		                                 colorPalette, commandTunables.xLabel, commandTunables.yLabel, commandTunables.title, 
 		                                 dataExtra, null, editor);
-		Map<String, Object> args = new HashMap<>();
-		
-		args.put("text", html);
-		args.put("title", title);
-		if (id != null)
-			args.put("id", id);
-		else
-			args.put("id", "heatmap");
-		
-		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
-		sTM.execute(ti);
+
+		ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id, commandTunables.id+":HeatMap");
 	}
 
 	private void addPalettes(Map<String, Palette> map, PaletteType type) {

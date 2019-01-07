@@ -34,8 +34,10 @@ public class JSUtils {
 	 * @param editor the boolean which determines whether the graph will
 	 * utilize the plotly graph editor
 	 */
-	public static void getPreamble(StringBuilder builder, boolean editor) { 
+	public static void getPreamble(StringBuilder builder, boolean editor, String title) { 
 			builder.append("<html><head>");
+			if (title != null)
+				builder.append("<title>"+title+"</title>\n");
 			builder.append("<meta charset=\"utf-8\"/>");
 			builder.append("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,shrink-to-fit=no\"/>");
 			builder.append("<meta name=\"theme-color\" content=\"#000000\"/>");
@@ -66,7 +68,7 @@ public class JSUtils {
 	 */
 	public static String getChartEditor(String data) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, true);
+		getPreamble(builder, true, null);
 		builder.append("<body>\n");
 		builder.append("<div id=\"CyPlot\"></div>\n");
 		builder.append("<script type=\"text/javascript\">\n");
@@ -196,7 +198,7 @@ public class JSUtils {
 	public static String getFilledAreaPlot(String x, String y, String mode, String selectionString, String nameSelection, 
                                          String nameArray, String title, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		getPreamble(builder, editor, title);
 		if(!editor) {
 			builder.append("<body><div id=\"CyPlot\"></div>\n");
 			builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", fill: 'tonexty', type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};\n");
@@ -253,7 +255,7 @@ public class JSUtils {
 	                                    String title, String xLabel, String yLabel, boolean editor) {
 
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		getPreamble(builder, editor, title);
 		if(!editor) {
 			builder.append("<body><div id=\"CyPlot\"></div>");
 			builder.append("<script>\n");
@@ -311,7 +313,7 @@ public class JSUtils {
 	public static String getBarChart(String x, String y, String selectionString, String nameSelection, 
 									                 String nameArray, String title, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		getPreamble(builder, editor, title);
 		if(!editor) {
 			builder.append("<body><div id=\"CyPlot\"></div>");
 			builder.append("<script>\n");
@@ -390,7 +392,7 @@ public class JSUtils {
 		
 		String dataArray = dataArrayBuilder.toString();
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		getPreamble(builder, editor, title);
 		builder.append("<body><div id=\"CyPlot\"></div>\n");
 		builder.append("<script>\n");
  		builder.append(colors);
@@ -476,7 +478,7 @@ public class JSUtils {
 		}
 
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		getPreamble(builder, editor, title);
 		builder.append("<body><div id=\"CyPlot\"></div>\n");
 		builder.append("<script type=\"text/javascript\">\n");
 
@@ -552,7 +554,7 @@ public class JSUtils {
 	 */
 	public static String getDotPlot(String x, String y, String nameArray, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
-		getPreamble(builder, editor);
+		getPreamble(builder, editor, null);
 		builder.append("<body><div id=\"CyPlot\"></div>");
 		builder.append("<script>\n");
 		builder.append( "var trace1 = {\n");
@@ -789,7 +791,7 @@ public class JSUtils {
 		boolean showLegend = false;
 		if (xTraceMap.keySet().size() > 1)
 			showLegend = true;
-		getPreamble(builder, editor);
+		getPreamble(builder, editor, title);
 
 		builder.append("<body><div id=\"CyPlot\"></div>\n");
 		builder.append("<script>\n");

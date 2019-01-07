@@ -15,6 +15,7 @@ import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.ContainsTunables;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
@@ -41,9 +42,6 @@ public class ScatterPlotTask extends AbstractTask {
 	@Tunable (description="Name selection column")
 	public ListSingleSelection<String> nameCol;
 
-	@Tunable (description="Open in plot editor?")
-	public boolean editor;
-
 	// Command interface for non-network plots
 	@Tunable (description="JSON formatted string of point names", context="nogui")
 	public String names = null;
@@ -54,20 +52,8 @@ public class ScatterPlotTask extends AbstractTask {
 	@Tunable (description="JSON formatted string of y values", context="nogui")
 	public String yValues = null;
 
-	@Tunable (description="Selection string", context="nogui")
-	public String selectionString = null;
-
-	@Tunable (description="Plot title", context="nogui")
-	public String title = null;
-
-	@Tunable (description="X Axis Label", context="nogui")
-	public String xLabel = null;
-
-	@Tunable (description="Y Axis Label", context="nogui")
-	public String yLabel = null;
-
-	// @ContainsTunables
-	// public CommandTunables commandTunables = null;
+	@ContainsTunables
+	public CommandTunables commandTunables = null;
 
 	public CyApplicationManager appManager;
 	public CyNetworkView netView;
@@ -84,7 +70,6 @@ public class ScatterPlotTask extends AbstractTask {
 			network = netView.getModel();
 			table = network.getDefaultNodeTable();
 			columns = table.getColumns();
-			editor = true;
 
 			List<String> headers = ModelUtils.getColOptions(columns, "num");
 
@@ -98,7 +83,7 @@ public class ScatterPlotTask extends AbstractTask {
 			yCol = null;
 			nameCol = null;
 		}
-		// commandTunables = new CommandTunables();
+		commandTunables = new CommandTunables();
 	}
 
 	/**
@@ -109,9 +94,6 @@ public class ScatterPlotTask extends AbstractTask {
 	 * AbstractTask class
 	 */
 	public void run(TaskMonitor monitor) { 
-		TaskManager sTM = sr.getService(TaskManager.class);
-		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
-
 		Map<String, String> xTraceMap;
 		Map<String, String> yTraceMap;
 		Map<String, String> nameMap;
@@ -130,11 +112,11 @@ public class ScatterPlotTask extends AbstractTask {
 
 			yTraceMap.put("trace",ModelUtils.colToArray(yColumn));
 
-			if (xLabel == null)
-				xLabel = xColumn.getName();
+			if (commandTunables.xLabel == null)
+				commandTunables.xLabel = xColumn.getName();
 
-			if (yLabel == null)
-				yLabel = yColumn.getName();
+			if (commandTunables.yLabel == null)
+				commandTunables.yLabel = yColumn.getName();
 
 			if (nameCol != null)
 				idColumn = ModelUtils.getTunableSelection(nameCol);
@@ -178,14 +160,12 @@ public class ScatterPlotTask extends AbstractTask {
 
 		// String html = JSUtils.getScatterPlot(xTraceMap, yTraceMap, nameMap, selectionString, idColumn, 
 		//                                      title, xLabel, yLabel, "markers", editor);
-		String html = JSUtils.getXYPlot("scatter", xTraceMap, yTraceMap, nameMap, selectionString, idColumn, 
-		                                title, xLabel, yLabel, "markers", null, null, editor);
+		String html = JSUtils.getXYPlot("scatter", xTraceMap, yTraceMap, nameMap, commandTunables.selectionString, 
+		                                idColumn, commandTunables.title, commandTunables.xLabel, 
+		                                commandTunables.yLabel, "markers", null, null, 
+		                                commandTunables.editor);
 
-		Map<String, Object> args = new HashMap<>();		
-		args.put("text", html);
-		args.put("title", title);
+		ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id, commandTunables.id+":ScatterPlot");
 
-		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
-		sTM.execute(ti);
 	}
 }

@@ -2,10 +2,16 @@ package edu.ucsf.rbvi.cyPlot.internal.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
@@ -140,5 +146,20 @@ public class ModelUtils {
 		}else {
 			return null;
 		}
+	}
+
+	public static void openCyBrowser(CyServiceRegistrar sr, String html, String title, String id, String tabID) {
+		TaskManager sTM = sr.getService(TaskManager.class);
+		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);	
+
+		Map<String, Object> args = new HashMap<>();
+		args.put("text", html);
+		args.put("title", title);
+		args.put("id", id);
+		args.put("newTab", "true");
+		args.put("tabID", tabID);
+		
+		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
+		sTM.execute(ti);
 	}
 }
