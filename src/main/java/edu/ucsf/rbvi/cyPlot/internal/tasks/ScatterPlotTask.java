@@ -52,6 +52,8 @@ public class ScatterPlotTask extends AbstractTask {
 	@Tunable (description="JSON formatted string of y values", context="nogui")
 	public String yValues = null;
 
+	// TODO: add Z values and color parameters
+
 	@ContainsTunables
 	public CommandTunables commandTunables = null;
 
@@ -99,7 +101,7 @@ public class ScatterPlotTask extends AbstractTask {
 		Map<String, String> nameMap;
 		String idColumn = null;
 
-		if (xCol != null && yCol != null) {
+		if (xValues == null && yValues == null) {
 			xTraceMap = new HashMap<>();
 			yTraceMap = new HashMap<>();
 			nameMap = new HashMap<>();
