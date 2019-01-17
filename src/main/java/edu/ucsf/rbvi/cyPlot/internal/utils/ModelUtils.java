@@ -45,17 +45,17 @@ public class ModelUtils {
 	 * @return the String of column data formatted as JSON
 	 */
 	public static String colsToDataSourcesArray(List<CyColumn> columns) {
-		String dataArray = "";
+		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i<columns.size(); i++) {
 			String oneCol = "'" + columns.get(i).getName() + "' : " + colToArray(columns.get(i));
 			if (i != columns.size()-1) {
-				dataArray += oneCol + ",";
+				builder.append(oneCol + ",");
 			}
 			else {	
-			dataArray += oneCol;
+				builder.append(oneCol);
 			}
 		}
-		return dataArray;
+		return builder.toString();
 	}
 	
 	//Returns an array-formatted String of column data depending on the specified data type.
@@ -67,15 +67,16 @@ public class ModelUtils {
 	 */
 	public static String colToArray(CyColumn column) {
 		List<Object> list = column.getValues(column.getType());
-		String array = "[";
+		StringBuilder builder = new StringBuilder();
+		builder.append("[");
 		for(int i = 0; i<list.size(); i++) {
 			if(i != list.size()-1) {
-				array += ("'" + list.get(i) + "', ");
+				builder.append("'" + list.get(i) + "', ");
 			}else {
-				array += ("'" + list.get(i) + "']");
+				builder.append("'" + list.get(i) + "']");
 			}
 		}
-		return array;
+		return builder.toString();
 	}
 
 	//Returns an array-formatted String of column data depending on the specified data type.
