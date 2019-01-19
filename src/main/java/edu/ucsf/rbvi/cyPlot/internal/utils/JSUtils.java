@@ -167,10 +167,10 @@ public class JSUtils {
 	                                    String selectionString, String nameSelection, 
 	                                    String title, String xLabel, String yLabel,
 	                                    String dataExtra, String layoutExtra, String mode, boolean editor) {
-		String html = getXYPlot("scatter", xTraceMap, yTraceMap, nameTraceMap, 
+		String html = getXYPlot("scatter", xTraceMap, yTraceMap, null, nameTraceMap, 
 		                        selectionString, nameSelection, title, xLabel, yLabel, 
 		                        dataExtra, layoutExtra,
-		                        mode, editor);
+		                        mode, null, editor);
 		writeDebugFile(html, "ScatterPlot.html");
 		return html;
 	}
@@ -782,10 +782,10 @@ public class JSUtils {
 	// 	Volcano, Scatter, Bar, Line
 	public static String getXYPlot(String type,
 	                               Map<String, String> xTraceMap, Map<String, String> yTraceMap, 
-	                               Map<String, String> nameTraceMap,
+	                               Map<String, String> zTraceMap, Map<String, String> nameTraceMap,
 	                               String selectionString, String nameSelection,
 	                               String title, String xLabel, String yLabel, String mode, 
-	                               String dataExtra, String layoutExtra,
+	                               String dataExtra, String layoutExtra, String colorscale,
 	                               boolean editor) {
 		StringBuilder builder = new StringBuilder();
 		boolean showLegend = false;
@@ -801,6 +801,13 @@ public class JSUtils {
 		for (String trace: xTraceMap.keySet()) {
 			builder.append("var trace"+traceNumber+" = ");
 			builder.append("{ legendgroup: '"+trace+"', name: '"+trace+"', mode:'"+mode+"', scalegroup: 'Yes',");
+			if (zTraceMap != null) {
+				builder.append("marker: { color: "+zTraceMap.get(trace));
+				if (colorscale == null)
+					builder.append(",colorscale='Viridis', showscale:true},");
+				else
+					builder.append(",colorscale:'"+colorscale+"', showscale:true},");
+			}
 			builder.append("x:"+xTraceMap.get(trace)+", y: "+yTraceMap.get(trace));
 			builder.append(", type:'"+type+"', text: " + nameTraceMap.get(trace));
 			if (dataExtra != null)

@@ -8,7 +8,7 @@ var control = controls[0];
 var hidden = false;
 var hideElement = document.createElement('A');
 hideElement.href = '#foo'; // We really don't want to go anywhere
-hideElement.innerHTML = '&nbsp;<&nbsp;';
+hideElement.innerHTML = '&nbsp;&larr;&nbsp;';
 hideElement.style.position = 'absolute';
 hideElement.style.top = '15px';
 hideElement.style.left = '130px';
@@ -20,13 +20,13 @@ plot.appendChild(hideElement);
 function hideControls() {
     if (hidden) { 
         control.style.display = 'flex';
-        hideElement.innerHTML = '&nbsp;<&nbsp;';
+        hideElement.innerHTML = '&nbsp;&larr;&nbsp;';
         hideElement.style.left = '130px';
         hidden = false;
         Plotly.Plots.resize(Plotly.d3.select("div[id='CyPlot']").node());
     } else {
         control.style.display = 'none';
-        hideElement.innerHTML = '&nbsp;>&nbsp;';
+        hideElement.innerHTML = '&nbsp;&rarr;&nbsp;';
         hideElement.style.left = '20px';
         hidden = true;
         Plotly.Plots.resize(Plotly.d3.select("div[id='CyPlot']").node());

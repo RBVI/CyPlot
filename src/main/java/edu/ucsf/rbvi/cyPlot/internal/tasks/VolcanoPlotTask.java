@@ -176,8 +176,9 @@ public class VolcanoPlotTask extends AbstractTask {
 		if (title == null)
 			title = "Cytoscape Volcano Plot";
 
-		String html = JSUtils.getXYPlot("scatter", fcTraceMap, pvTraceMap, nameMap, selectionString, idColumn, 
-		                                title, xLabel, yLabel, "markers", null, null, editor);
+		String html = JSUtils.getXYPlot("scatter", fcTraceMap, pvTraceMap, null, 
+		                                nameMap, selectionString, idColumn, 
+		                                title, xLabel, yLabel, "markers", null, null, null, editor);
 
 		Map<String, Object> args = new HashMap();
 		args.put("text", html);

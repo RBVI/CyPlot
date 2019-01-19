@@ -52,10 +52,14 @@ public class ScatterPlotTask extends AbstractTask {
 	@Tunable (description="JSON formatted string of y values", context="nogui")
 	public String yValues = null;
 
-	// TODO: add Z values and color parameters
-
 	@ContainsTunables
 	public CommandTunables commandTunables = null;
+
+	@Tunable (description="JSON formatted string of z values", context="nogui")
+	public String zValues = null;
+
+	@Tunable (description="Color scale", context="nogui", dependsOn="zValues!=null")
+	public ListSingleSelection<String> colorscale;
 
 	public CyApplicationManager appManager;
 	public CyNetworkView netView;
@@ -86,6 +90,8 @@ public class ScatterPlotTask extends AbstractTask {
 			nameCol = null;
 		}
 		commandTunables = new CommandTunables();
+		colorscale = new ListSingleSelection<String>("Blues","Earth","Electric","Greens","Greys","Hot","Jet","Picnic","Portland","Reds","Viridis");
+		colorscale.setSelectedValue("Viridis");
 	}
 
 	/**
@@ -98,6 +104,7 @@ public class ScatterPlotTask extends AbstractTask {
 	public void run(TaskMonitor monitor) { 
 		Map<String, String> xTraceMap;
 		Map<String, String> yTraceMap;
+		Map<String, String> zTraceMap = null;
 		Map<String, String> nameMap;
 		String idColumn = null;
 
@@ -137,6 +144,16 @@ public class ScatterPlotTask extends AbstractTask {
 				monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to parse 'yValues' input: "+pe+": "+pe.getPosition());
 				return;
 			}
+
+			if (zValues != null) {
+				try {
+					zTraceMap = JSONUtils.getMap(zValues);
+				} catch (ParseException pe) {
+					monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to parse 'yValues' input: "+pe+": "+pe.getPosition());
+					return;
+				}
+			}
+
 		}
 
 		if (names == null) {
@@ -162,9 +179,11 @@ public class ScatterPlotTask extends AbstractTask {
 
 		// String html = JSUtils.getScatterPlot(xTraceMap, yTraceMap, nameMap, selectionString, idColumn, 
 		//                                      title, xLabel, yLabel, "markers", editor);
-		String html = JSUtils.getXYPlot("scatter", xTraceMap, yTraceMap, nameMap, commandTunables.selectionString, 
+		String html = JSUtils.getXYPlot("scatter", xTraceMap, yTraceMap, zTraceMap, nameMap, 
+		                                commandTunables.selectionString, 
 		                                idColumn, commandTunables.title, commandTunables.xLabel, 
 		                                commandTunables.yLabel, "markers", null, null, 
+		                                colorscale.getSelectedValue(),
 		                                commandTunables.editor);
 
 		ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id, commandTunables.id+":ScatterPlot");
