@@ -621,13 +621,13 @@ public class JSUtils {
 			builder.append("for (var i = 0; i < plots.length; i++) {\n");
 			builder.append("    var plplot = plots[i];\n");
 			builder.append("    plplot.on('plotly_click', function (data) { \n");
-			String selString = String.format(selectionString, "+data.points[0]."+dataElement+"+");
+			String selString = String.format(selectionString, "'+data.points[0]."+dataElement+"+'");
 			builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
 			builder.append("    });\n");
 			builder.append("}\n");
 		} else {
 			builder.append("\nmyPlot.on('plotly_click', function(data){ \n");
-			String selString = String.format(selectionString, "+data.points[0]."+dataElement+"+");
+			String selString = String.format(selectionString, "'+data.points[0]."+dataElement+"+'");
 			builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
 			System.out.println("selString = "+selString);
 			System.out.println("command = "+"cybrowser.executeCyCommand('"+selString+"');");
