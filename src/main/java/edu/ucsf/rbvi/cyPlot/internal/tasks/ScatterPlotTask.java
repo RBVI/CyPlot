@@ -61,6 +61,9 @@ public class ScatterPlotTask extends AbstractTask {
 	@Tunable (description="Color scale", context="nogui", dependsOn="zValues!=null")
 	public ListSingleSelection<String> colorscale;
 
+	@Tunable (description="Color scale label", context="nogui", dependsOn="zValues!=null")
+	public String scaleLabel = null;
+
 	public CyApplicationManager appManager;
 	public CyNetworkView netView;
 	public CyNetwork network;
@@ -184,6 +187,7 @@ public class ScatterPlotTask extends AbstractTask {
 		                                idColumn, commandTunables.title, commandTunables.xLabel, 
 		                                commandTunables.yLabel, "markers", null, null, 
 		                                colorscale.getSelectedValue(),
+		                                scaleLabel,
 		                                commandTunables.editor);
 
 		ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id, commandTunables.id+":ScatterPlot");

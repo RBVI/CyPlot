@@ -170,7 +170,7 @@ public class JSUtils {
 		String html = getXYPlot("scatter", xTraceMap, yTraceMap, null, nameTraceMap, 
 		                        selectionString, nameSelection, title, xLabel, yLabel, 
 		                        dataExtra, layoutExtra,
-		                        mode, null, editor);
+		                        mode, null, null, editor);
 		writeDebugFile(html, "ScatterPlot.html");
 		return html;
 	}
@@ -786,7 +786,7 @@ public class JSUtils {
 	                               String selectionString, String nameSelection,
 	                               String title, String xLabel, String yLabel, String mode, 
 	                               String dataExtra, String layoutExtra, String colorscale,
-	                               boolean editor) {
+	                               String scaleLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
 		boolean showLegend = false;
 		if (xTraceMap.keySet().size() > 1)
@@ -804,9 +804,12 @@ public class JSUtils {
 			if (zTraceMap != null) {
 				builder.append("marker: { color: "+zTraceMap.get(trace));
 				if (colorscale == null)
-					builder.append(",colorscale='Viridis', showscale:true},");
-				else
-					builder.append(",colorscale:'"+colorscale+"', showscale:true},");
+					colorscale = "Viridis";
+
+				builder.append(",colorscale:'"+colorscale+"', showscale:true");
+				if (scaleLabel != null) 
+					builder.append(", colorbar: {title:'"+scaleLabel+"'}");
+				builder.append("},");
 			}
 			builder.append("x:"+xTraceMap.get(trace)+", y: "+yTraceMap.get(trace));
 			builder.append(", type:'"+type+"', text: " + nameTraceMap.get(trace));
