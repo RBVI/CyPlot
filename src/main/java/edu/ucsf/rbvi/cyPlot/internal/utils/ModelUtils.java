@@ -153,16 +153,15 @@ public class ModelUtils {
 		}
 	}
 
-	public static void openCyBrowser(CyServiceRegistrar sr, String html, String title, String id, String tabID) {
+	public static void openCyBrowser(CyServiceRegistrar sr, String html, String title, String tabID, boolean newTab) {
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);	
 
 		Map<String, Object> args = new HashMap<>();
 		args.put("text", html);
 		args.put("title", title);
-		args.put("id", id);
-		args.put("newTab", "true");
-		args.put("tabID", tabID);
+		args.put("id", tabID);
+		args.put("newTab", newTab);
 		
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);

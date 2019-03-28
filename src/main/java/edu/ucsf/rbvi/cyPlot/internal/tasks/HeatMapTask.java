@@ -232,7 +232,7 @@ public class HeatMapTask extends AbstractTask {
 		                                 colorPalette, commandTunables.xLabel, commandTunables.yLabel, commandTunables.title, 
 		                                 dataExtra, null, editor);
 
-		ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id, commandTunables.id+":HeatMap");
+		ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id+":HeatMap", true);
 	}
 
 	private void addPalettes(Map<String, Palette> map, PaletteType type) {

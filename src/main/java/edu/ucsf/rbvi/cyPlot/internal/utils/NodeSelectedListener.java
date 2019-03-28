@@ -22,12 +22,17 @@ public class NodeSelectedListener implements SelectedNodesAndEdgesListener {
 		
 		for (Plot plot: plots) {
 			int[] selectedpoints = ModelUtils.getNodeIndices(plot, event.getSelectedNodes());		
-			plot.addExtraSetting("layoutExtra", "selectedpoints=" + selectedpoints // HOW TO INPUT INDICES ARRAY?
-					+ ", selected=dict(marker=dict(color='red'))," 
-					+ "unselected=dict(marker=dict(color='rgb(200,200, 200)', opacity=0.9))");
+			StringBuilder selectedstr = new StringBuilder("[");
+			for (int selected: selectedpoints) 
+				selectedstr.append(selected + ",");
+			if (selectedpoints.length != 0)
+				selectedstr.deleteCharAt(selectedstr.length() - 1);
+			selectedstr.append("]");
+			plot.setSetting("layoutExtra", "selectedpoints: " + selectedstr.toString());
+			System.out.println(plot.getSetting("layoutExtra"));
 			
 			ModelUtils.openCyBrowser(registrar, plot.getHTML(), plot.getSetting("title"), 
-									 plot.getSetting("plotID"), plot.getSetting("tabID"));
+									 plot.getSetting("tabID"), false);
 		}
 	}
 }

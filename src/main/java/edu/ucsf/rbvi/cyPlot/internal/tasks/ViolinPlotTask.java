@@ -148,6 +148,6 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			                                    commandTunables.title, commandTunables.xLabel, commandTunables.yLabel, 
 			                                    null, null, commandTunables.editor);
 
-			ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id, commandTunables.id+":ViolinPlot");
+			ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id+":ViolinPlot", true);
 		}
 }

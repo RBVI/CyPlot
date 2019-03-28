@@ -38,7 +38,7 @@ public class Plot {
 	}
 	
 	public String getHTML() {
-		return JSUtils.getXYPlot("scatter", traceSettings.get("xTraceMap"), 
+		return JSUtils.getXYPlot(settings.get("scatter"), traceSettings.get("xTraceMap"), 
 				traceSettings.get("yTraceMap"), traceSettings.get("zTraceMap"), 
 				traceSettings.get("nameTraceMap"), settings.get("selectionString"), 
 				settings.get("nameSelection"), settings.get("title"), settings.get("xLabel"), 
@@ -53,7 +53,7 @@ public class Plot {
 	
 	public void addExtraSetting(String str, String setting) {
 		String old = settings.get(str);
-		settings.put(str, (old == null ? "" : ", " + old) + setting);
+		settings.put(str, (old == null ? "" : old + ", ") + setting);
 	}
 	
 	public void setTraceSetting(String str, Map<String, String> traceSetting) {

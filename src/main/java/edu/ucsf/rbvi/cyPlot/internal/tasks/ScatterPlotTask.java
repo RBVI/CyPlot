@@ -187,7 +187,7 @@ public class ScatterPlotTask extends AbstractTask {
 				             scaleLabel, commandTunables.editor, commandTunables.id, 
 				             commandTunables.id+":ScatterPlot");
 
-		ModelUtils.openCyBrowser(sr, plot.getHTML(), commandTunables.title, commandTunables.id, commandTunables.id+":ScatterPlot");
+		ModelUtils.openCyBrowser(sr, plot.getHTML(), commandTunables.title, commandTunables.id+":ScatterPlot", true);
 		ModelUtils.addPlot(netView, plot);
 	}
 }
