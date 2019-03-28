@@ -8,15 +8,19 @@ import java.util.Map;
 
 import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
 public class ModelUtils {
-	
+	public static Map<CyNetwork, List<Plot>> plots; // Maps the Network SUID to the list of corresponding tabIDs 
+	public static Map<Plot, Map<CyNode, Integer>> nodeIndexLookup;
 	/**
 	 * Get the user selection for a tunable.
 	 *
@@ -162,5 +166,53 @@ public class ModelUtils {
 		
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);
+	}
+	
+	public static void addPlot(CyNetworkView netView, Plot plot) {
+		addPlot(netView.getModel(), plot);
+	}
+	
+	public static void addPlot(CyNetwork network, Plot plot) {
+		if (plots == null) plots = new HashMap<>();
+		if (!plots.containsKey(network)) {
+			plots.put(network, new ArrayList<>());
+			if (nodeIndexLookup == null) nodeIndexLookup = new HashMap<>();
+			if (!nodeIndexLookup.containsKey(plot)) {
+				Map<CyNode, Integer> lookup = new HashMap<>();
+				List<CyNode> nodes = network.getNodeList();
+				if (nodes != null && !nodes.isEmpty()) {
+					int ind = 0;
+					for (CyNode node: network.getNodeList())
+						lookup.put(node, ind++);
+				}
+				nodeIndexLookup.put(plot, lookup);
+			}
+		}
+		plots.get(network).add(plot);
+	}
+	
+	public static int[] getNodeIndices(Plot plot, Collection<CyNode> selectedNodes) {
+		if (nodeIndexLookup == null) return null;
+		Map<CyNode, Integer> lookup = nodeIndexLookup.get(plot);
+		if (lookup == null) return null;
+		
+		int[] selectedIndices = new int[selectedNodes.size()];
+		int ind = 0;
+		for (CyNode selected: selectedNodes) {
+			if (!lookup.containsKey(selected)) continue; // ignore nodes which were not there when plot was created
+			if (ind == selectedIndices.length) break;
+			selectedIndices[ind++] = lookup.get(selected);
+		}
+		return selectedIndices;
+	}
+	
+	public static List<Plot> getPlots(CyNetworkView netView) {
+		return getPlots(netView.getModel());
+	}
+	
+	public static List<Plot> getPlots(CyNetwork network) {
+		if (plots != null && plots.containsKey(network)) 
+			return plots.get(network);
+		return null;
 	}
 }

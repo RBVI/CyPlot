@@ -2,13 +2,16 @@ package edu.ucsf.rbvi.cyPlot.internal;
 
 import java.util.Properties;
 
+import org.cytoscape.model.events.SelectedNodesAndEdgesListener;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.work.ServiceProperties;
 import org.cytoscape.work.TaskFactory;
 import org.osgi.framework.BundleContext;
 
 import edu.ucsf.rbvi.cyPlot.internal.tasks.VolcanoPlotTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.utils.NodeSelectedListener;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ScatterPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ViolinPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.BarChartTaskFactory;
@@ -25,6 +28,9 @@ public class CyActivator extends AbstractCyActivator {
 
 		//registering all services
 		CyServiceRegistrar sr = getService(context, CyServiceRegistrar.class);
+		
+		NodeSelectedListener nodeSelectedListener = new NodeSelectedListener(sr);
+		registerService(context, nodeSelectedListener, SelectedNodesAndEdgesListener.class, new Properties());
 
 		//adding in the various types of plots
 		// Volcano

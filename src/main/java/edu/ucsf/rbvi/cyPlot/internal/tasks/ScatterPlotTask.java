@@ -23,6 +23,7 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 
 import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
+import edu.ucsf.rbvi.cyPlot.internal.utils.Plot;
 import edu.ucsf.rbvi.cyPlot.internal.utils.JSONUtils;
 import edu.ucsf.rbvi.cyPlot.internal.utils.JSUtils;
 
@@ -118,7 +119,6 @@ public class ScatterPlotTask extends AbstractTask {
 
 			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
 			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
-			CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 
 			xTraceMap.put("trace",ModelUtils.colToArray(xColumn));
 
@@ -160,7 +160,7 @@ public class ScatterPlotTask extends AbstractTask {
 		}
 
 		if (names == null) {
-			CyColumn nameColumn = table.getColumn("shared name");
+			CyColumn nameColumn = table.getColumn(idColumn);
 			String nameArray = ModelUtils.colToArray(nameColumn);
 			nameMap = new HashMap<>();
 			for (String key: xTraceMap.keySet()) {
@@ -179,18 +179,15 @@ public class ScatterPlotTask extends AbstractTask {
 				}
 			}
 		}
+		Plot plot = new Plot("scatter", xTraceMap, yTraceMap, zTraceMap, nameMap, 
+				             commandTunables.selectionString, 
+				             idColumn, commandTunables.title, commandTunables.xLabel, 
+				             commandTunables.yLabel, "markers", null, null, 
+				             colorscale.getSelectedValue(),
+				             scaleLabel, commandTunables.editor, commandTunables.id, 
+				             commandTunables.id+":ScatterPlot");
 
-		// String html = JSUtils.getScatterPlot(xTraceMap, yTraceMap, nameMap, selectionString, idColumn, 
-		//                                      title, xLabel, yLabel, "markers", editor);
-		String html = JSUtils.getXYPlot("scatter", xTraceMap, yTraceMap, zTraceMap, nameMap, 
-		                                commandTunables.selectionString, 
-		                                idColumn, commandTunables.title, commandTunables.xLabel, 
-		                                commandTunables.yLabel, "markers", null, null, 
-		                                colorscale.getSelectedValue(),
-		                                scaleLabel,
-		                                commandTunables.editor);
-
-		ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id, commandTunables.id+":ScatterPlot");
-
+		ModelUtils.openCyBrowser(sr, plot.getHTML(), commandTunables.title, commandTunables.id, commandTunables.id+":ScatterPlot");
+		ModelUtils.addPlot(netView, plot);
 	}
 }
