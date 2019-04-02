@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyIdentifiable;
@@ -167,12 +168,10 @@ public class ModelUtils {
 		sTM.execute(ti);
 	}
 	
-	public static void addPlot(CyNetworkView netView, Plot plot) {
-		addPlot(netView.getModel(), plot);
-	}
-	
 	public static void addPlot(CyNetwork network, Plot plot) {
 		if (plots == null) plots = new HashMap<>();
+		if (network == null)
+			return; // There is no network, so we're not going to be selecting
 		if (!plots.containsKey(network)) {
 			plots.put(network, new ArrayList<>());
 			if (nodeIndexLookup == null) nodeIndexLookup = new HashMap<>();

@@ -22,6 +22,7 @@ public class NodeSelectedListener implements SelectedNodesAndEdgesListener {
 		
 		for (Plot plot: plots) {
 			int[] selectedpoints = ModelUtils.getNodeIndices(plot, event.getSelectedNodes());		
+			if (selectedpoints == null || selectedpoints.length == 0) return;
 			StringBuilder selectedstr = new StringBuilder("[");
 			for (int selected: selectedpoints) 
 				selectedstr.append(selected + ",");

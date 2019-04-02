@@ -609,7 +609,7 @@ public class JSUtils {
 	public static void getClickCode(StringBuilder builder, String plot, String selectionString,
 	                                String nameSelection, String dataElement, boolean isEditor) {
 		if (selectionString == null)
-			selectionString = "network select nodeList = \""+nameSelection+":'%s'\"";
+			selectionString = "network select nodeList = \""+nameSelection+":%s\"";
 		if (dataElement == null)
 			dataElement = "text";
 

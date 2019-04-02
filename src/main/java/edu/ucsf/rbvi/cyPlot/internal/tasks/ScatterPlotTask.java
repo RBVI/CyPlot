@@ -188,6 +188,9 @@ public class ScatterPlotTask extends AbstractTask {
 				             commandTunables.id+":ScatterPlot");
 
 		ModelUtils.openCyBrowser(sr, plot.getHTML(), commandTunables.title, commandTunables.id+":ScatterPlot", true);
-		ModelUtils.addPlot(netView, plot);
+		if (netView != null)
+			ModelUtils.addPlot(netView.getModel(), plot);
+		else
+			ModelUtils.addPlot(null, plot); // Command?
 	}
 }
