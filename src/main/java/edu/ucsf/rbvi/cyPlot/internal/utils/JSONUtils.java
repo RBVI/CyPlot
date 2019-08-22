@@ -1,24 +1,29 @@
 package edu.ucsf.rbvi.cyPlot.internal.utils;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class JSONUtils {
+	static ContainerFactory factory = new MyContainerFactory();
+
 	public static Map<String, String> getMap(String data) throws ParseException {
 		JSONParser parser = new JSONParser();
-		JSONObject obj = (JSONObject)parser.parse(data);
-		Map<String, String> returnMap = new HashMap<>();
+		Map<String, Object> obj = (Map)parser.parse(data, factory);
+		Map<String, String> returnMap = new LinkedHashMap<>();
 		for (Object key: obj.keySet()) {
 			String strKey = key.toString();
-			// System.out.println("strKey = "+strKey);
 			returnMap.put(strKey, arrayToString(obj.get(key)));
 		}
 		return returnMap;
@@ -26,8 +31,8 @@ public class JSONUtils {
 
 	public static Map<String, String> getMapNegLog(String data) throws ParseException {
 		JSONParser parser = new JSONParser();
-		JSONObject obj = (JSONObject)parser.parse(data);
-		Map<String, String> returnMap = new HashMap<>();
+		Map<String, Object> obj = (Map)parser.parse(data, factory);
+		Map<String, String> returnMap = new LinkedHashMap<>();
 		for (Object key: obj.keySet()) {
 			String strKey = key.toString();
 			returnMap.put(strKey, arrayToStringNegLog(obj.get(key)));
@@ -37,8 +42,8 @@ public class JSONUtils {
 
 	public static Map<String, List<?>> getListMap(String data) throws ParseException {
 		JSONParser parser = new JSONParser();
-		JSONObject obj = (JSONObject)parser.parse(data);
-		Map<String, List<?>> returnMap = new HashMap<>();
+		Map<String, Object> obj = (Map)parser.parse(data, factory);
+		Map<String, List<?>> returnMap = new LinkedHashMap<>();
 		for (Object key: obj.keySet()) {
 			String strKey = key.toString();
 			returnMap.put(strKey, stringToList((JSONArray)obj.get(key)));
@@ -155,4 +160,21 @@ public class JSONUtils {
 		}
 		return null;
 	}
+
+	static class MyContainerFactory implements ContainerFactory {
+		/**
+		 * @return A Map instance to store JSON object, or null if you want to use org.json.simple.JSONObject.
+		 */
+		public Map createObjectContainer() {
+			return new LinkedHashMap();
+		}
+
+		/**
+		 * @return A List instance to store JSON array, or null if you want to use org.json.simple.JSONArray. 
+		 */
+		public List creatArrayContainer() {
+			return null;
+		}
+	}
+
 }

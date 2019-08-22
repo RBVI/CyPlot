@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -135,6 +136,7 @@ public class ScatterPlotTask extends AbstractTask {
 
 		} else {
 			try {
+				// System.out.println("xValues");
 				xTraceMap = JSONUtils.getMap(xValues);
 			} catch (ParseException pe) {
 				monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to parse 'xValues' input: "+pe+": "+pe.getPosition());
@@ -142,6 +144,7 @@ public class ScatterPlotTask extends AbstractTask {
 			}
 
 			try {
+				// System.out.println("yValues");
 				yTraceMap = JSONUtils.getMap(yValues);
 			} catch (ParseException pe) {
 				monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to parse 'yValues' input: "+pe+": "+pe.getPosition());
@@ -150,6 +153,7 @@ public class ScatterPlotTask extends AbstractTask {
 
 			if (zValues != null) {
 				try {
+					// System.out.println("zValues");
 					zTraceMap = JSONUtils.getMap(zValues);
 				} catch (ParseException pe) {
 					monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to parse 'yValues' input: "+pe+": "+pe.getPosition());
@@ -162,7 +166,7 @@ public class ScatterPlotTask extends AbstractTask {
 		if (names == null) {
 			CyColumn nameColumn = table.getColumn(idColumn);
 			String nameArray = ModelUtils.colToArray(nameColumn);
-			nameMap = new HashMap<>();
+			nameMap = new LinkedHashMap<>();
 			for (String key: xTraceMap.keySet()) {
 				nameMap.put(key, nameArray);
 			}
