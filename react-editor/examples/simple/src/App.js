@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import plotly from 'plotly.js/dist/plotly';
 import PlotlyEditor from 'react-chart-editor';
 import CustomEditor from './CustomEditor';
-import {localizeString} from 'react-chart-editor/lib';
 import 'react-chart-editor/lib/react-chart-editor.css';
 
 /*
@@ -29,10 +27,7 @@ class App extends Component {
 		if ("dataSourceOptions" in props) {
 			this.dataSourceOptions = props.dataSourceOptions;
 		} else {
-			this.dataSourceOptions = Object.keys(dataSources).map(name => ({
-  				value: name,
-  				label: name,
-			}));
+			this.dataSourceOptions = Object.keys(dataSources).map(name => ({value: name, label: name}));
 		}
 
     this.state = {data: [], layout: {}, frames: []};
@@ -49,12 +44,6 @@ class App extends Component {
 		// alert("data: "+this.state.toSource());
   }
 
-  getChildContext() {
-    return {
-      localize: key => localizeString({}, 'en', key),
-    };
-  }
-
   render() {
     return (
       <div className="app">
@@ -66,9 +55,7 @@ class App extends Component {
           dataSources={this.dataSources}
           dataSourceOptions={this.dataSourceOptions}
           plotly={plotly}
-          onUpdate={(data, layout, frames) =>
-            this.setState({data, layout, frames})
-          }
+          onUpdate={(data, layout, frames) => this.setState({data, layout, frames})}
           useResizeHandler
           // debug
           advancedTraceTypeSelector
@@ -78,9 +65,5 @@ class App extends Component {
     );
   }
 }
-
-App.childContextTypes = {
-  localize: PropTypes.func,
-};
 
 export default App;
