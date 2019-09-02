@@ -41,6 +41,12 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
     @Tunable (description="Name selection column")
     public ListSingleSelection<String> nameCol = null;
 
+		@Tunable (description="Show all points")
+		public boolean showAll = false;
+
+		@Tunable (description="Add jitter to plot")
+		public double jitter = 0.0;
+
 		// Command interface for non-network plots
 		@Tunable (description="JSON formatted string of point names", context="nogui")
 		public String names = null;
@@ -144,9 +150,22 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 			if (nameCol != null)
 				idColumn = ModelUtils.getTunableSelection(nameCol);
 
+			String dataExtra = null;
+			if (showAll) {
+				dataExtra = "points: 'all'";
+			}
+
+			if (jitter > 0.0) {
+				if (dataExtra != null)
+					dataExtra += ",";
+				else
+					dataExtra = "";
+				dataExtra += "jitter: '"+jitter+"'";
+			}
+
 			String html = JSUtils.getViolinPlot(traceMap, commandTunables.selectionString, idColumn, nameMap, traceOrder,
 			                                    commandTunables.title, commandTunables.xLabel, commandTunables.yLabel, 
-			                                    null, null, commandTunables.editor);
+			                                    dataExtra, null, commandTunables.editor);
 
 			ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id+":ViolinPlot", true);
 		}
