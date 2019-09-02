@@ -5,9 +5,6 @@ import org.cytoscape.work.util.ListSingleSelection;
 
 public class CommandTunables {
 	
-	@Tunable (description="Open in plot editor?")
-	public boolean editor;
-
 	@Tunable (description="Selection string", context="nogui")
 	public String selectionString = null;
 

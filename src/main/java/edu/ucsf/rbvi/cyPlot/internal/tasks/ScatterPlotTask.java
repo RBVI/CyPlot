@@ -44,6 +44,9 @@ public class ScatterPlotTask extends AbstractTask {
 	@Tunable (description="Name selection column")
 	public ListSingleSelection<String> nameCol;
 
+	@Tunable (description="Open in plot editor?")
+	public boolean editor;
+
 	// Command interface for non-network plots
 	@Tunable (description="JSON formatted string of point names", context="nogui")
 	public String names = null;
@@ -188,7 +191,7 @@ public class ScatterPlotTask extends AbstractTask {
 				             idColumn, commandTunables.title, commandTunables.xLabel, 
 				             commandTunables.yLabel, "markers", null, null, 
 				             colorscale.getSelectedValue(),
-				             scaleLabel, commandTunables.editor, commandTunables.id, 
+				             scaleLabel, editor, commandTunables.id, 
 				             commandTunables.id+":ScatterPlot");
 
 		ModelUtils.openCyBrowser(sr, plot.getHTML(), commandTunables.title, commandTunables.id+":ScatterPlot", true);

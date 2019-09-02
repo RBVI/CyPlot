@@ -46,6 +46,9 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 
 		@Tunable (description="Add jitter to plot")
 		public double jitter = 0.0;
+	
+		@Tunable (description="Open in plot editor?")
+		public boolean editor;
 
 		// Command interface for non-network plots
 		@Tunable (description="JSON formatted string of point names", context="nogui")
@@ -165,7 +168,7 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 
 			String html = JSUtils.getViolinPlot(traceMap, commandTunables.selectionString, idColumn, nameMap, traceOrder,
 			                                    commandTunables.title, commandTunables.xLabel, commandTunables.yLabel, 
-			                                    dataExtra, null, commandTunables.editor);
+			                                    dataExtra, null, editor);
 
 			ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id+":ViolinPlot", true);
 		}
