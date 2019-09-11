@@ -36,9 +36,9 @@ public class CyActivator extends AbstractCyActivator {
 		// Volcano
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-			props.put(ServiceProperties.TITLE, "Volcano plot");
-			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+			// props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			// props.put(ServiceProperties.TITLE, "Volcano plot");
+			// props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "volcano");
@@ -54,9 +54,9 @@ public class CyActivator extends AbstractCyActivator {
 		// Scatter
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-			props.put(ServiceProperties.TITLE, "Scatter plot");
-			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+			// props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			// props.put(ServiceProperties.TITLE, "Scatter plot");
+			// props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "scatter");
@@ -72,9 +72,9 @@ public class CyActivator extends AbstractCyActivator {
 		// Heat maps
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-			props.put(ServiceProperties.TITLE, "Heat map");
-			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+			// props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			// props.put(ServiceProperties.TITLE, "Heat map");
+			// props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "heat");
@@ -90,9 +90,9 @@ public class CyActivator extends AbstractCyActivator {
 		// Violin plots
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-			props.put(ServiceProperties.TITLE, "Violin plot");
-			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+			// props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			// props.put(ServiceProperties.TITLE, "Violin plot");
+			// props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "violin");
@@ -108,9 +108,9 @@ public class CyActivator extends AbstractCyActivator {
 		// Line graphs
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-			props.put(ServiceProperties.TITLE, "Line graph");
-			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+			// props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			// props.put(ServiceProperties.TITLE, "Line graph");
+			// props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "line");
@@ -126,9 +126,9 @@ public class CyActivator extends AbstractCyActivator {
 		// Bar charts
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-			props.put(ServiceProperties.TITLE, "Bar chart");
-			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+			// props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			// props.put(ServiceProperties.TITLE, "Bar chart");
+			// props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "bar");
@@ -144,9 +144,9 @@ public class CyActivator extends AbstractCyActivator {
 		// Filled area plot
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-			props.put(ServiceProperties.TITLE, "Filled area plot");
-			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+			// props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			// props.put(ServiceProperties.TITLE, "Filled area plot");
+			// props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "filled");
@@ -162,9 +162,9 @@ public class CyActivator extends AbstractCyActivator {
 		// Dot plot
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-			props.put(ServiceProperties.TITLE, "Dot plot");
-			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+			// props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			// props.put(ServiceProperties.TITLE, "Dot plot");
+			// props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "dot");
@@ -180,9 +180,9 @@ public class CyActivator extends AbstractCyActivator {
 		// Graph editor
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
-			props.put(ServiceProperties.TITLE, "Graph editor");
-			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+			// props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			// props.put(ServiceProperties.TITLE, "Graph editor");
+			// props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "editor");
