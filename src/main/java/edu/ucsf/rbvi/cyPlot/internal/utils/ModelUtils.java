@@ -16,6 +16,7 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TaskObserver;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
@@ -154,6 +155,13 @@ public class ModelUtils {
 		}
 	}
 
+	public static void listCyBrowsers(CyServiceRegistrar sr, TaskObserver observer) {
+		TaskManager sTM = sr.getService(TaskManager.class);
+		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);	
+		Map<String, Object> args = new HashMap<>();
+		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "list", args, observer);
+		sTM.execute(ti);
+	}
 	public static void openCyBrowser(CyServiceRegistrar sr, String html, String title, String tabID, boolean newTab) {
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);	

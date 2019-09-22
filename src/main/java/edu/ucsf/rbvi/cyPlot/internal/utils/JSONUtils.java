@@ -161,6 +161,25 @@ public class JSONUtils {
 		return null;
 	}
 
+	public static boolean haveTabID(String jsonResult, String tabID) {
+		JSONParser parser = new JSONParser();
+		try {
+			Object obj = parser.parse(jsonResult);
+			if (obj instanceof JSONArray) {
+				JSONArray browserList = (JSONArray) obj;
+				for (Object browserObj: browserList) {
+					JSONObject browser = (JSONObject) browserObj;
+					if (browser.containsKey("id") && browser.get("id").toString().equals(tabID))
+						return true;
+				}
+			}
+			return false;
+		} catch (ParseException pe) {
+			System.out.println("Unable to parse return from cyBrowser: "+pe.toString());
+			return false;
+		}
+	}
+
 	static class MyContainerFactory implements ContainerFactory {
 		/**
 		 * @return A Map instance to store JSON object, or null if you want to use org.json.simple.JSONObject.
