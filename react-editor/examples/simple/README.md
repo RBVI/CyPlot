@@ -6,6 +6,10 @@ of CyPlot, which has to run entirely within a browser.  There are a couple of no
 1. We don't use the react-scripts.  We needed significant control over the bundling so everything is
 driven by webpack
 2. We use a modified plotly to work better with CyBrowser
+ * To create our modified plotly, use the plotly.diffs file against plotly.js
+ * Then compress it using: "node_modules/.bin/uglifyjs -o plotly.min.js plotly.js"
+ * Finally, copy plotly.js and plotly.min.js ../../../src/main/resources/js
+
 
 ## Quick start
 

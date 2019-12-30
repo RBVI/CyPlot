@@ -1,0 +1,65 @@
+*** plotly.js.1.51.3	2019-12-30 14:59:15.141039628 -0800
+--- plotly.js	2019-12-30 15:05:44.425408961 -0800
+***************
+*** 106062,106067 ****
+--- 106062,106072 ----
+      return IS_SAFARI_REGEX.test(window.navigator.userAgent);
+  };
+  
++ var IS_CYBROWSER_REGEX = /CyBrowser/;
++ lib.isCyBrowser = function() {
++     return IS_CYBROWSER_REGEX.test(window.navigator.userAgent);
++ };
++ 
+  /**
+   * Duck typing to recognize a d3 selection, mostly for IE9's benefit
+   * because it doesn't handle instanceof like modern browsers
+***************
+*** 114866,114872 ****
+      },
+      toImageButtonOptions: {
+          valType: 'any',
+!         dflt: {},
+          
+      },
+      displaylogo: {
+--- 114871,114877 ----
+      },
+      toImageButtonOptions: {
+          valType: 'any',
+!         dflt: {'scale':5},
+          
+      },
+      displaylogo: {
+***************
+*** 146771,146776 ****
+--- 146776,146787 ----
+              reject(new Error('IE < 10 unsupported'));
+          }
+  
++ 				if (Lib.isCyBrowser()) {
++             var prefix = "data:image/"+format+';base64,';
++             cybrowser.downloadFile(prefix + url, name);
++             return resolve(name);
++         }
++ 
+          // Safari doesn't allow downloading of blob urls
+          if(Lib.isSafari()) {
+              var prefix = format === 'svg' ? ',' : ';base64,';
+***************
+*** 146970,146976 ****
+          var img = new Image();
+          var svgBlob, url;
+  
+!         if(format === 'svg' || Lib.isIE9orBelow() || Lib.isSafari()) {
+              url = helpers.encodeSVG(svg);
+          } else {
+              svgBlob = helpers.createBlob(svg, 'svg');
+--- 146981,146987 ----
+          var img = new Image();
+          var svgBlob, url;
+  
+!         if(format === 'svg' || Lib.isIE9orBelow() || Lib.isSafari() || Lib.isCyBrowser()) {
+              url = helpers.encodeSVG(svg);
+          } else {
+              svgBlob = helpers.createBlob(svg, 'svg');

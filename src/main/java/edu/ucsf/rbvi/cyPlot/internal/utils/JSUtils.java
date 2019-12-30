@@ -51,7 +51,8 @@ public class JSUtils {
 				loadJS(builder, "/css/main.752d5eb7.css");
 				builder.append("</style>");
 			} else {
-				loadWithScript(builder, "/js/plotly.min.js");
+				// loadWithScript(builder, "/js/plotly.min.js");
+				loadWithScript(builder, "/js/plotly.js");
 			}
 			builder.append("</head>");
 
