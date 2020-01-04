@@ -180,6 +180,26 @@ public class JSONUtils {
 		}
 	}
 
+	public static List<String> makeUnique(List<String> list) {
+		// Create a map to keep track of the number of times we've seen a term
+		Map<String, Integer> termMap = new HashMap<>();
+		List<String> newTerms = new ArrayList<>();
+		for (String term: list) {
+			if (termMap.containsKey(term)) {
+				int inserts = termMap.get(term);
+				String newTerm = "";
+				for (int i = 0; i < inserts; i++)
+					newTerm = " "+newTerm;
+				newTerms.add(newTerm+term);
+				termMap.put(term, inserts+1);
+			} else {
+				termMap.put(term, 1);
+				newTerms.add(term);
+			}
+		}
+		return newTerms;
+	}
+
 	static class MyContainerFactory implements ContainerFactory {
 		/**
 		 * @return A Map instance to store JSON object, or null if you want to use org.json.simple.JSONObject.

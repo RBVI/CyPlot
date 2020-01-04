@@ -413,8 +413,8 @@ public class JSUtils {
 			builder.append("var layout = ");
 			builder.append("{hovermode: 'closest',");
 			builder.append("yaxis: { title: '"+yLabel+"', automargin: true,");
-			builder.append(" ticktext: "+JSONUtils.listToString(rowHeaders, 4) + ",");
-			builder.append(" tickvals: "+JSONUtils.indicesToString(rowHeaders, 4) + ",");
+			// builder.append(" ticktext: "+JSONUtils.listToString(rowHeaders, 4) + ",");
+			// builder.append(" tickvals: "+JSONUtils.indicesToString(rowHeaders, 4) + ",");
 			builder.append(" tickfont: {size: 9},");
 	 		builder.append("},");
 			builder.append("xaxis: { title: '"+xLabel+"', automargin: true },");

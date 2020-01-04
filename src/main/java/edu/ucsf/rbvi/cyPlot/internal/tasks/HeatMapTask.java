@@ -158,8 +158,12 @@ public class HeatMapTask extends AbstractTask {
 			}
 
 		} else {
-			rowHeaders = getHeaders(rowLabels);
-			columnHeaders = getHeaders(columnLabels);
+			// FIXME: there is a bug (undocumented feature) in plotly.js that silently drops
+			// rows if the row header is a duplicate.  This patently sucks.  The only workaround
+			// is to force the labels to be unique (ugh)
+			rowHeaders = getHeaders(rowLabels, true);
+
+			columnHeaders = getHeaders(columnLabels, false);
 			// System.out.println("rowHeaders.size = "+rowHeaders.size());
 
 			try {
@@ -256,14 +260,18 @@ public class HeatMapTask extends AbstractTask {
 		return "rgb("+clr.getRed()+","+clr.getGreen()+","+clr.getBlue()+")";
 	}
 
-	private List<String> getHeaders(String input) {
+	private List<String> getHeaders(String input, boolean makeUnique) {
+		List<String> headers;
 		// First, see if we've got a JSON-formatted list
 		try {
-			return JSONUtils.stringToList(input);
+			headers = JSONUtils.stringToList(input);
 		} catch (ParseException pe) {
 			// OK, probably a csv
-			return JSONUtils.csvToList(input);
+			headers = JSONUtils.csvToList(input);
 		}
+		if (makeUnique)
+			return JSONUtils.makeUnique(headers);
+		return headers;
 	}
 
 	private double[] getMinMax(List<?> list) {
