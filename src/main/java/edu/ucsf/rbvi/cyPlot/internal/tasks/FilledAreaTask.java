@@ -75,7 +75,7 @@ public class FilledAreaTask extends AbstractTask {
 
 	public FilledAreaTask(final CyServiceRegistrar sr) {
 		super();
-		this.sr = sr; 
+		this.sr = sr;
 		appManager = sr.getService(CyApplicationManager.class);
 		netView = appManager.getCurrentNetworkView();
 		if (netView != null) {
@@ -100,13 +100,13 @@ public class FilledAreaTask extends AbstractTask {
 	}
 
 	/**
-	 * Generate the variables necessary to create a scatter plot in plotly with the cytoscape 
-	 * task. Creates and executes a TaskIterator which opens the plot within a cybrowser window. 
+	 * Generate the variables necessary to create a scatter plot in plotly with the cytoscape
+	 * task. Creates and executes a TaskIterator which opens the plot within a cybrowser window.
 	 *
-	 * @param monitor the TaskMonitor required for this method by the parent 
+	 * @param monitor the TaskMonitor required for this method by the parent
 	 * AbstractTask class
 	 */
-	public void run(TaskMonitor monitor) { 
+	public void run(TaskMonitor monitor) {
 		TaskManager sTM = sr.getService(TaskManager.class);
 		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 
@@ -138,10 +138,10 @@ public class FilledAreaTask extends AbstractTask {
 			nameArray = JSONUtils.csvToJSONArray(names);
 		}
 
-		String html = JSUtils.getFilledAreaPlot(xArray, yArray,  "markers", selectionString, idColumn, nameArray, 
+		String html = JSUtils.getFilledAreaPlot(xArray, yArray,  "markers", selectionString, idColumn, nameArray,
 		                                        title, xLabel, yLabel, editor);
 
-		Map<String, Object> args = new HashMap<>();		
+		Map<String, Object> args = new HashMap<>();
 		args.put("text", html);
 		args.put("title", title);
 

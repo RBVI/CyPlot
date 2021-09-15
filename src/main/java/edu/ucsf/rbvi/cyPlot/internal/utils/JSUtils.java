@@ -22,19 +22,19 @@ import java.io.IOException;
 
 import org.cytoscape.util.color.Palette;
 
- 
+
 // TODO: lots of opportunity to clean things up here
 public class JSUtils {
 	public static String PLOT_CLASS = "js-plotly-plot";
-	
+
 	/**
-	 * Generate the string necessary to load the needed plotly and react files. 
+	 * Generate the string necessary to load the needed plotly and react files.
 	 *
 	 * @param builder the StringBuilder we'll write the javascript into
 	 * @param editor the boolean which determines whether the graph will
 	 * utilize the plotly graph editor
 	 */
-	public static void getPreamble(StringBuilder builder, boolean editor, String title) { 
+	public static void getPreamble(StringBuilder builder, boolean editor, String title) {
 			builder.append("<html><head>");
 			if (title != null)
 				builder.append("<title>"+title+"</title>\n");
@@ -58,10 +58,10 @@ public class JSUtils {
 
 			return;
 	}
-	
+
 	/**
 	 * Generate the string necessary to generate the base plotly
-	 * graph editor. 
+	 * graph editor.
 	 *
 	 * @param data the String representation of user-selected column data
 	 * from cytoscape
@@ -81,7 +81,7 @@ public class JSUtils {
 		writeDebugFile(builder.toString(), "getChartEditor.html");
 		return builder.toString();
 	}
-	
+
 	/**
 	 * Generate the string necessary to load a js file into the selected
 	 * plot as a seperate script within the HTML.
@@ -95,31 +95,31 @@ public class JSUtils {
 		builder.append("\n");
 		builder.append("</script>\n");
 	}
-	
+
 	/**
 	 * Generate the string necessary to complete the code for a plotly graph,
 	 * implement Plotly.react() and closing off outstanding tags.
-	 * 
+	 *
 	 * @return the assembled completion code
 	 */
 	public static String getPlotly() {
 		return "</body></html>";
 	}
-	
+
 	/**
 	 * Generate an HTML file representation of the code being fed to cybrowser. File
 	 * path can be customized by altering "user.home" to suit individual needs. Useful for
-	 * opening the code in external browsers for debugging purposes, but not essential to the 
-	 * functionality of the app. 
-	 * 
+	 * opening the code in external browsers for debugging purposes, but not essential to the
+	 * functionality of the app.
+	 *
 	 * @param string the Java string of HTML that will be written into the file
 	 * @param the desired name of the HTML file generated
 	 */
 	public static void writeDebugFile(String string, String name) {
-		
+
 		File file = null;
 		FileOutputStream fos = null;
-		
+
 		try {
 			String home = System.getProperty("user.home");
 			file = new File(home+"/" + name);
@@ -143,10 +143,10 @@ public class JSUtils {
 			}
 		}
 	}
-	
+
 
 	/**
-	 * Generate the string necessary to generate a volcano plot in plotly, either 
+	 * Generate the string necessary to generate a volcano plot in plotly, either
 	 * with or without the plotly graph editor.
 	 *
 	 * @param x the user-selected x-column data
@@ -160,16 +160,16 @@ public class JSUtils {
 	 * @param xLabel the label for the x-axis
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
-	 * graph editor 
+	 * graph editor
 	 * @return the assembled scatter plot code
 	 */
-	public static String getScatterPlot(Map<String,String> xTraceMap, Map<String, String> yTraceMap, 
+	public static String getScatterPlot(Map<String,String> xTraceMap, Map<String, String> yTraceMap,
 	                                    Map<String, String> nameTraceMap,
-	                                    String selectionString, String nameSelection, 
+	                                    String selectionString, String nameSelection,
 	                                    String title, String xLabel, String yLabel,
 	                                    String dataExtra, String layoutExtra, String mode, boolean editor) {
-		String html = getXYPlot("scatter", xTraceMap, yTraceMap, null, nameTraceMap, 
-		                        selectionString, nameSelection, title, xLabel, yLabel, 
+		String html = getXYPlot("scatter", xTraceMap, yTraceMap, null, nameTraceMap,
+		                        selectionString, nameSelection, title, xLabel, yLabel,
 		                        dataExtra, layoutExtra,
 		                        mode, null, null, editor);
 		writeDebugFile(html, "ScatterPlot.html");
@@ -177,7 +177,7 @@ public class JSUtils {
 	}
 
 	/**
-	 * Generate the string necessary to generate a filled area plot in plotly, 
+	 * Generate the string necessary to generate a filled area plot in plotly,
 	 * either with or without the plotly graph editor.
 	 *
 	 * @param x the user-selected x-column data
@@ -191,12 +191,12 @@ public class JSUtils {
 	 * @param xLabel the label for the x-axis
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
-	 * graph editor 
+	 * graph editor
 	 * @return the assembled filled area plot code
 	 */
 
 	// FIXME: this really isn't right....
-	public static String getFilledAreaPlot(String x, String y, String mode, String selectionString, String nameSelection, 
+	public static String getFilledAreaPlot(String x, String y, String mode, String selectionString, String nameSelection,
                                          String nameArray, String title, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor, title);
@@ -237,7 +237,7 @@ public class JSUtils {
 	}
 
 	/**
-	 * Generate the string necessary to generate a volcano plot in plotly, either 
+	 * Generate the string necessary to generate a volcano plot in plotly, either
 	 * with or without the plotly graph editor.
 	 *
 	 * @param x the user-selected x-column data (Fold Change)
@@ -249,10 +249,10 @@ public class JSUtils {
 	 * @param xLabel the label for the x-axis
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
-	 * graph editor 
+	 * graph editor
 	 * @return the assembled volcano plot code
 	 */
-	public static String getVolcanoPlot(String x, String y, String selectionString, String nameSelection, String nameArray, 
+	public static String getVolcanoPlot(String x, String y, String selectionString, String nameSelection, String nameArray,
 	                                    String title, String xLabel, String yLabel, boolean editor) {
 
 		StringBuilder builder = new StringBuilder();
@@ -291,13 +291,13 @@ public class JSUtils {
 			builder.append("</body></html>");
 			writeDebugFile(builder.toString(), "VolcanoEditor.html");
 		}
-		
-		
+
+
 		return builder.toString();
 	}
-	
+
 	/**
-	 * Generate the string necessary to generate a bar chart in plotly, 
+	 * Generate the string necessary to generate a bar chart in plotly,
 	 * either with or without the plotly graph editor.
 	 *
 	 * @param x the user-selected x-column data
@@ -307,11 +307,11 @@ public class JSUtils {
 	 * @param xLabel the label for the x-axis
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
-	 * graph editor 
+	 * graph editor
 	 * @return the assembled bar chart code
 	 */
 
-	public static String getBarChart(String x, String y, String selectionString, String nameSelection, 
+	public static String getBarChart(String x, String y, String selectionString, String nameSelection,
 									                 String nameArray, String title, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor, title);
@@ -323,8 +323,8 @@ public class JSUtils {
 			builder.append("Plotly.newPlot('CyPlot', data, layout);");
 			getResizeCode(builder);
 			if (selectionString != null || nameSelection != null) {
-				getClickCode(builder, "CyPlot", selectionString, nameSelection, false);
-				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
+				getClickCodeBarChart(builder, "CyPlot", selectionString, nameSelection, false);
+				getLassoCodeBarChart(builder, "CyPlot", selectionString, nameSelection, false);
 			}
 			builder.append("</script>\n");
 			builder.append(getPlotly());
@@ -346,20 +346,20 @@ public class JSUtils {
 			builder.append("</body></html>");
 		}
 		writeDebugFile(builder.toString(), "barchart.html");
-		
+
 		return builder.toString();
 	}
-	
+
 	//getHeatMap javadoc by Liam, don't actually know if this is accurate (Lilly can you check?)
 	/**
-	 * Generate the string necessary to generate a heat map in plotly, 
+	 * Generate the string necessary to generate a heat map in plotly,
 	 * either with or without the plotly graph editor.
 	 *
 		String html = JSUtils.getHeatMap(rowHeaders, columnHeaders, colData, colorPalette,
 		                                 xLabel, yLabel, title, editor);
 	 * @param rowHeaders the list of row headers.  Also defines the row order.
 	 * @param columnHeaders the list of column headers.  Also defines the column order.
-	 * @param colData a map of the data, organized by the column name as the key and a 
+	 * @param colData a map of the data, organized by the column name as the key and a
 	 *                JSON-formatted array with the column data
 	 * @param selectionString the command we use to indicate selected nodes
 	 * @param nameSelection the column we used to show the names of points
@@ -371,10 +371,10 @@ public class JSUtils {
 	 * @param yLabel the label for the y axis
 	 * @param title the title of the chart
 	 * @param editor the boolean that controls whether the graph will open in the plotly
-	 * graph editor 
+	 * graph editor
 	 * @return the assembled heat map code
 	 */
-	public static String getHeatMap(List<String> rowHeaders, List<String> columnHeaders, 
+	public static String getHeatMap(List<String> rowHeaders, List<String> columnHeaders,
 	                                Map<String, List<?>> colData,
 	                                String selectionString, String nameSelection,
 	                                Object colorPalette, String xLabel, String yLabel,
@@ -390,7 +390,7 @@ public class JSUtils {
 		dataArrayBuilder.setCharAt(dataArrayBuilder.length()-1, ']');
 
 		// Build our text data
-		
+
 		String dataArray = dataArrayBuilder.toString();
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor, title);
@@ -449,7 +449,7 @@ public class JSUtils {
 	}
 
 	/**
-	 * Generate the string necessary to generate a violin plot 
+	 * Generate the string necessary to generate a violin plot
 	 * in plotly, either with or without the plotly graph editor.
 	 *
 	 * @param x the user-selected x-column data
@@ -458,14 +458,14 @@ public class JSUtils {
 	 * @param xLabel the label for the x-axis
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
-	 * graph editor 
+	 * graph editor
 	 * @return the assembled violin plot code
 	 */
 	public static String getViolinPlot(Map<String, String> traceMap, String selectionString,
-	                                   String nameSelection, Map<String,String> traceNamesMap, 
+	                                   String nameSelection, Map<String,String> traceNamesMap,
 	                                   List<String> traceOrder,
 																		 String title, String xlabel, String ylabel,
-																		 String dataExtra, String layoutExtra, 
+																		 String dataExtra, String layoutExtra,
                                      boolean editor) {
 
 		if (title == null)
@@ -550,7 +550,7 @@ public class JSUtils {
 	 * @param xLabel the label for the x-axis
 	 * @param yLabel the label for the y-axis
 	 * @param editor the boolean that controls whether the graph will open in the plotly
-	 * graph editor 
+	 * graph editor
 	 * @return the assembled dot plot code
 	 */
 	public static String getDotPlot(String x, String y, String nameArray, String xLabel, String yLabel, boolean editor) {
@@ -576,21 +576,26 @@ public class JSUtils {
 		builder.append("hoverlabel: {\n");
 		builder.append("bgcolor: 'black',\n");
 		builder.append("}\n");
-		builder.append("};\n");		
+		builder.append("};\n");
 		builder.append("var data = [trace1];\n");
 		builder.append("var layout = { title: 'dot plot', xaxis: { showgrid: false, showline: true, linecolor: 'rgb(200,0,0)', ticks:'inside', tickcolor:'rgb(200,0,0)', tickwidth:4}, legend: { bgcolor: 'white', borderwidth:1, bordercolor:'black', orientation:'h', xanchor: 'center', x: 0.5, font: {size:12}}, paper_bgcolor: 'rgb(255,230,255)', plot_bgcolor:'rgb(255,230,255)'};\n");
 		builder.append("Plotly.plot('CyPlot', data, layout);\n");
 		getResizeCode(builder);
 		builder.append(getPlotly());
 
-		return builder.toString();	
+		return builder.toString();
 	}
-	
+
 	public static void getClickCode(StringBuilder builder, String plot, String selectionString,
 	                                String nameSelection, boolean isEditor) {
 		getClickCode(builder, plot, selectionString, nameSelection, null, isEditor);
 	}
-	
+
+  public static void getClickCodeBarChart(StringBuilder builder, String plot, String selectionString,
+                                  String nameSelection, boolean isEditor) {
+    getClickCodeBarChart(builder, plot, selectionString, nameSelection, null, isEditor);
+  }
+
 	/**
 	 * Generate the string necessary to support integrating the plotly
 	 * click selection with Cytoscape.  This is not in an independent
@@ -637,10 +642,44 @@ public class JSUtils {
 		builder.append("</script>\n");
 	}
 
+
+  public static void getClickCodeBarChart(StringBuilder builder, String plot, String selectionString,
+	                                String nameSelection, String dataElement, boolean isEditor) {
+		if (selectionString == null)
+			selectionString = "network select nodeList = \""+nameSelection+":%s\"";
+		if (dataElement == null)
+			dataElement = "text";
+
+		builder.append("var myPlot = document.getElementById('"+plot+"');\n");
+		if (isEditor) {
+			builder.append("var plots = myPlot.getElementsByClassName('"+PLOT_CLASS+"');\n");
+			// builder.append("alert('plots = '+plots[0]);\n");
+			builder.append("for (var i = 0; i < plots.length; i++) {\n");
+			builder.append("    var plplot = plots[i];\n");
+			builder.append("    plplot.on('plotly_click', function (data) { \n");
+			String selString = String.format(selectionString, "'+data.points[0]."+dataElement+"+'");
+			builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
+			builder.append("    });\n");
+			builder.append("}\n");
+		} else {
+			builder.append("\nmyPlot.on('plotly_click', function(data){ \n");
+			String selString = String.format(selectionString, "'+data.points[0]."+dataElement+"+'");
+			builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
+			System.out.println("selString = "+selString);
+			System.out.println("command = "+"cybrowser.executeCyCommand('"+selString+"');");
+			builder.append("});\n");
+		}
+	}
+
 	public static void getLassoCode(StringBuilder builder, String plot, String selectionString,
 	                                String nameSelection, boolean isEditor) {
 		getLassoCode(builder, plot, selectionString, nameSelection, null, isEditor);
 	}
+
+  public static void getLassoCodeBarChart(StringBuilder builder, String plot, String selectionString,
+                                  String nameSelection, boolean isEditor) {
+    getLassoCodeBarChart(builder, plot, selectionString, nameSelection, null, isEditor);
+  }
 
 	/**
 	 * Generate the string necessary to support integrating the plotly
@@ -657,8 +696,8 @@ public class JSUtils {
 	 * PlotlyEditor.  This means we have to find the appropriate div by
 	 * searching for a particular CSS class.
 	 */
-	public static void getLassoCode(StringBuilder builder, 
-	                                String plot, String selectionString, String nameSelection, 
+	public static void getLassoCode(StringBuilder builder,
+	                                String plot, String selectionString, String nameSelection,
 	                                String dataElement,
 	                                boolean isEditor) {
 		if (dataElement == null)
@@ -705,7 +744,54 @@ public class JSUtils {
 		}
 		builder.append("</script>\n");
 	}
-	
+
+  public static void getLassoCodeBarChart(StringBuilder builder,
+	                                String plot, String selectionString, String nameSelection,
+	                                String dataElement,
+	                                boolean isEditor) {
+		if (dataElement == null)
+			dataElement = "text";
+
+		builder.append("var myPlot = document.getElementById('"+plot+"');\n");
+		if (isEditor) {
+			builder.append("var plots = myPlot.getElementsByClassName('"+PLOT_CLASS+"');\n");
+			builder.append("for (var i = 0; i < plots.length; i++) {\n");
+			builder.append("    var plplot = plots[i];\n");
+			builder.append("    plplot.on('plotly_selected', function (data) { \n");
+			builder.append("        var nodelist = ''; \n");
+			builder.append("        for(var i = 0; i<data.points.length; i++) { \n");
+			if (selectionString == null)
+				builder.append("            nodelist+= (',"+nameSelection+ ":' +data.points[i]."+dataElement+");\n");
+			else
+				builder.append("            nodelist+= (','+data.points[i]."+dataElement+");\n");
+			builder.append("        };\n");
+			if (selectionString == null)
+				builder.append("        cybrowser.executeCyCommand('network select nodeList = \"'+nodelist+'\"');\n");
+			else {
+				String selString = String.format(selectionString, "'+nodelist+'");
+				builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
+			}
+			builder.append("    });\n");
+			builder.append("}\n");
+		} else {
+			builder.append("myPlot.on('plotly_selected', function(data){ \n");
+		  builder.append("    var nodelist = ''; \n");
+			builder.append("    for(var i = 0; i<data.points.length; i++) { \n");
+			if (selectionString == null)
+				builder.append("        nodelist+= (',"+nameSelection+ ":'+data.points[i]."+dataElement+");\n");
+			else
+				builder.append("            nodelist+= (','+data.points[i]."+dataElement+");\n");
+			builder.append("    };\n");
+			if (selectionString == null)
+				builder.append("        cybrowser.executeCyCommand('network select nodeList = \"'+nodelist+'\"');\n");
+			else {
+				String selString = String.format(selectionString, "'+nodelist+'");
+				builder.append("        cybrowser.executeCyCommand('"+selString+"');\n");
+			}
+			builder.append("});\n");
+		}
+	}
+
 	/**
 	 * FIXME:  Note that since this overwrites layout, we probably don't
 	 * want to do it this way.  I think we should assemble the layout object
@@ -721,7 +807,7 @@ public class JSUtils {
 	 * @return the assembled label code
 	 *
 	 */
-	public static String getLayoutCode(String xLabel, String yLabel, String title, 
+	public static String getLayoutCode(String xLabel, String yLabel, String title,
 	                                   String layoutExtra, boolean showLegend) {
 
 		if (title == null) title = xLabel+" vs "+yLabel;
@@ -741,7 +827,7 @@ public class JSUtils {
 		if (title == null) title = xLabel+" vs "+yLabel;
 		return "var layout = {showlegend: "+showLegend+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "', automargin: true}, title: '" + title + "'};";
 	}
-	
+
 	/**
 	 * Generate the string necessary to support integrating the plotly
 	 * graph resizing function. This is not in an independent
@@ -777,15 +863,15 @@ public class JSUtils {
 	public static void addHideControlsCode(StringBuilder builder) {
 		loadWithScript(builder, "/js/hideControls.js");
 	}
-	
+
 
 	// Common interface for all XY Plot routines, including:
 	// 	Volcano, Scatter, Bar, Line
 	public static String getXYPlot(String type,
-	                               Map<String, String> xTraceMap, Map<String, String> yTraceMap, 
+	                               Map<String, String> xTraceMap, Map<String, String> yTraceMap,
 	                               Map<String, String> zTraceMap, Map<String, String> nameTraceMap,
 	                               String selectionString, String nameSelection,
-	                               String title, String xLabel, String yLabel, String mode, 
+	                               String title, String xLabel, String yLabel, String mode,
 	                               String dataExtra, String layoutExtra, String colorscale,
 	                               String scaleLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
@@ -808,7 +894,7 @@ public class JSUtils {
 					colorscale = "Viridis";
 
 				builder.append(",colorscale:'"+colorscale+"', showscale:true");
-				if (scaleLabel != null) 
+				if (scaleLabel != null)
 					builder.append(", colorbar: {title:'"+scaleLabel+"'}");
 				builder.append("},");
 			}
@@ -853,7 +939,7 @@ public class JSUtils {
 	 *
 	 * @param builder This is the {@link StringBuilder} that we use
 	 * to write the embedded content into.
-	 * @param js The name of the file, including the prefix that 
+	 * @param js The name of the file, including the prefix that
 	 * we're going to look for in the resources
 	 */
 	private static void loadJS(StringBuilder builder, String js) {
