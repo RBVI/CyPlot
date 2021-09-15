@@ -578,11 +578,12 @@ public class JSUtils {
 		builder.append("}\n");
 		builder.append("};\n");
 		builder.append("var data = [trace1];\n");
-		builder.append("var layout = { title: 'dot plot', xaxis: { showgrid: false, showline: true, linecolor: 'rgb(200,0,0)', ticks:'inside', tickcolor:'rgb(200,0,0)', tickwidth:4}, legend: { bgcolor: 'white', borderwidth:1, bordercolor:'black', orientation:'h', xanchor: 'center', x: 0.5, font: {size:12}}, paper_bgcolor: 'rgb(255,230,255)', plot_bgcolor:'rgb(255,230,255)'};\n");
-		builder.append("Plotly.plot('CyPlot', data, layout);\n");
+		builder.append("var layout = { title: 'dot plot'};\n");
+		builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
 		getResizeCode(builder);
+		builder.append("</script>\n");
 		builder.append(getPlotly());
-
+		writeDebugFile(builder.toString(), "DotPlot.html");
 		return builder.toString();
 	}
 
