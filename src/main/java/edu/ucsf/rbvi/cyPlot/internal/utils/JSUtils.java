@@ -558,6 +558,7 @@ public class JSUtils {
 		getPreamble(builder, editor, null);
 		builder.append("<body><div id=\"CyPlot\"></div>");
 		builder.append("<script>\n");
+		builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 		builder.append( "var trace1 = {\n");
 		builder.append("type:\"scatter\",\n");
 		builder.append("mode:\"markers\",\n");
@@ -579,8 +580,13 @@ public class JSUtils {
 		builder.append("};\n");
 		builder.append("var data = [trace1];\n");
 		builder.append("var layout = { title: 'dot plot'};\n");
+		if (!editor) {
 		builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
 		getResizeCode(builder);
+		} else {
+			builder.append("ReactDOM.render(React.createElement(app.App.default, ");
+			builder.append("{ dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
+		}
 		builder.append("</script>\n");
 		builder.append(getPlotly());
 		writeDebugFile(builder.toString(), "DotPlot.html");
