@@ -22,13 +22,13 @@ import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.LineGraphTaskFactory;
 
 public class CyActivator extends AbstractCyActivator {
-  
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 
 		//registering all services
 		CyServiceRegistrar sr = getService(context, CyServiceRegistrar.class);
-		
+
 		NodeSelectedListener nodeSelectedListener = new NodeSelectedListener(sr);
 		registerService(context, nodeSelectedListener, SelectedNodesAndEdgesListener.class, new Properties());
 
@@ -36,7 +36,7 @@ public class CyActivator extends AbstractCyActivator {
 		// Volcano
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
 			props.put(ServiceProperties.TITLE, "Volcano plot");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -46,15 +46,15 @@ public class CyActivator extends AbstractCyActivator {
 			props.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
 			props.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
 			props.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
-		
+
 			TaskFactory vtf = new VolcanoPlotTaskFactory(sr);
 			registerService(context, vtf, TaskFactory.class, props);
 		}
-		
+
 		// Scatter
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
 			props.put(ServiceProperties.TITLE, "Scatter plot");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -68,11 +68,11 @@ public class CyActivator extends AbstractCyActivator {
 			TaskFactory stf = new ScatterPlotTaskFactory(sr);
 			registerService(context, stf, TaskFactory.class, props);
 		}
-		
+
 		// Heat maps
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
 			props.put(ServiceProperties.TITLE, "Heat map");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -90,7 +90,7 @@ public class CyActivator extends AbstractCyActivator {
 		// Violin plots
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
 			props.put(ServiceProperties.TITLE, "Violin plot");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -108,7 +108,7 @@ public class CyActivator extends AbstractCyActivator {
 		// Line graphs
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
 			props.put(ServiceProperties.TITLE, "Line graph");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -126,7 +126,7 @@ public class CyActivator extends AbstractCyActivator {
 		// Bar charts
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
 			props.put(ServiceProperties.TITLE, "Bar chart");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -144,7 +144,7 @@ public class CyActivator extends AbstractCyActivator {
 		// Filled area plot
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
 			props.put(ServiceProperties.TITLE, "Filled area plot");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -158,11 +158,11 @@ public class CyActivator extends AbstractCyActivator {
 			TaskFactory ftf = new FilledAreaTaskFactory(sr);
 			registerService(context, ftf, TaskFactory.class, props);
 		}
-		
+
 		// Dot plot
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
 			props.put(ServiceProperties.TITLE, "Dot plot");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
@@ -180,7 +180,7 @@ public class CyActivator extends AbstractCyActivator {
 		// Graph editor
 		{
 			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Apps.CyPlot");
+			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
 			props.put(ServiceProperties.TITLE, "Graph editor");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
