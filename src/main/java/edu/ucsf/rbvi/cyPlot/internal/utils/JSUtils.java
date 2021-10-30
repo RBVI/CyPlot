@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.cytoscape.util.color.Palette;
 
@@ -951,7 +952,7 @@ public class JSUtils {
 	 */
 	private static void loadJS(StringBuilder builder, String js) {
 		URL plotly = JSUtils.class.getClassLoader().getResource(js);
-		try (Stream<String> stream = new BufferedReader(new InputStreamReader(plotly.openConnection().getInputStream())).lines()) {
+		try (Stream<String> stream = new BufferedReader(new InputStreamReader(plotly.openConnection().getInputStream(), StandardCharsets.UTF_8)).lines()) {
 			stream.forEach((s) -> {
 				builder.append(s+"\n");
 			});
