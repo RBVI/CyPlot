@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import plotly from 'plotly.js/dist/plotly';
+import * as d3 from "d3";
 import PlotlyEditor from 'react-chart-editor';
 import CustomEditor from './CustomEditor';
 import 'react-chart-editor/lib/react-chart-editor.css';

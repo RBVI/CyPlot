@@ -44,7 +44,7 @@ module.exports = {
     ],
   },
   plugins: [
-		new webpack.IgnorePlugin(/vertx/),
+		//new webpack.IgnorePlugin(/vertx/),
 		//new webpack.ProvidePlugin({
 		//	React: "React", react: "React", "window.react": "React", "window.React": "React"
 		//}),

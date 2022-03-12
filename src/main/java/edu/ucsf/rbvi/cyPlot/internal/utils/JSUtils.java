@@ -72,7 +72,7 @@ public class JSUtils {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, true, null);
 		builder.append("<body>\n");
-		builder.append("<div id=\"CyPlot\"></div>\n");
+    builder.append("<div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 		builder.append("<script type=\"text/javascript\">\n");
 		// builder.append("alert(\"app: \"+app.App.default.toSource());");
 		builder.append("var dataSources = {" + data + "};\n");
@@ -202,11 +202,12 @@ public class JSUtils {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor, title);
 		if(!editor) {
-			builder.append("<body><div id=\"CyPlot\"></div>\n");
+			builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 			builder.append("<script> var trace1 = { x: " + x + ", y: " + y + ", fill: 'tonexty', type: 'scatter', name: 'trace', mode: '" + mode + "', text: " + nameArray + "};\n");
 			builder.append("var data = [trace1];\n");
 			builder.append(getLabelCode(xLabel, yLabel, title, false));
-			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
+			builder.append("var config = {'responsive':true};\n");
+			builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
 			getResizeCode(builder);
 			builder.append("</script>\n");
 			if(nameSelection != null && nameArray != null) {
@@ -216,7 +217,7 @@ public class JSUtils {
 			builder.append(getPlotly());
 		}else {
 			builder.append("<body>");
-			builder.append("<div id=\"CyPlot\"></div>\n");
+			builder.append("<div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 			// builder.append("<a style=\"position:absolute; left: 100px; top: 30\" onclick='hideControls()'>Hide Controls</a>\n");
 			builder.append("<script type=\"text/javascript\" >\n");
 			builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
@@ -259,7 +260,7 @@ public class JSUtils {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor, title);
 		if(!editor) {
-			builder.append("<body><div id=\"CyPlot\"></div>");
+      builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 			builder.append("<script>\n");
 			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'scatter', mode: 'markers', name: 'trace', text: " + nameArray + "};\n");
 			builder.append("var data = [trace1];\n");
@@ -275,7 +276,7 @@ public class JSUtils {
 			writeDebugFile(builder.toString(), "VolcanoPlot.html");
 		}else {
 			builder.append("<body>");
-			builder.append("<div id=\"CyPlot\"></div>\n");
+			builder.append("<div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 			// builder.append("<a style=\"position:absolute; left: 100px; top: 30\" onclick='hideControls()'>Hide Controls</a>\n");
 			builder.append("<script type=\"text/javascript\" >\n");
 			builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
@@ -317,11 +318,12 @@ public class JSUtils {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor, title);
 		if(!editor) {
-			builder.append("<body><div id=\"CyPlot\"></div>");
+      builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 			builder.append("<script>\n");
 		 	builder.append("var data = [{ x: " + x + ", y: " + y + ", type: 'bar'}];\n");
 			builder.append(getLabelCode(xLabel, yLabel, title, false));
-			builder.append("Plotly.newPlot('CyPlot', data, layout);");
+			builder.append("var config = {'responsive':true};\n");
+			builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
 			getResizeCode(builder);
 			if (selectionString != null || nameSelection != null) {
 				getClickCodeBarChart(builder, "CyPlot", selectionString, nameSelection, false);
@@ -330,12 +332,13 @@ public class JSUtils {
 			builder.append("</script>\n");
 			builder.append(getPlotly());
 		}else {
-			builder.append("<body><div id=\"CyPlot\"></div>\n");
+      builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 			builder.append("<script type=\"text/javascript\" >\n");
 			builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'bar'}\n");
 			builder.append("var data = [trace1];\n");
 			builder.append(getLabelCode(xLabel, yLabel, title, false));
+			// builder.append("var config = {'responsive':true};\n"); // Will this work?  Can we pass config using the editor?
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 			// builder.append("var myPlot = document.getElementById('CyPlot');\n");
 			builder.append("</script>\n");
@@ -395,7 +398,7 @@ public class JSUtils {
 		String dataArray = dataArrayBuilder.toString();
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor, title);
-		builder.append("<body><div id=\"CyPlot\"></div>\n");
+    builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 		builder.append("<script>\n");
  		builder.append(colors);
 	 	builder.append("var data = [{z: " + dataArray + ", x: " + JSONUtils.listToString(columnHeaders));
@@ -434,7 +437,8 @@ public class JSUtils {
 			builder.append("ReactDOM.render(React.createElement(app.App.default, ");
 			builder.append("{ dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 		} else {
-			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
+			builder.append("var config = {'responsive':true};\n");
+			builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
 			getResizeCode(builder);
 		}
 		builder.append("</script>\n");
@@ -481,7 +485,7 @@ public class JSUtils {
 
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor, title);
-		builder.append("<body><div id=\"CyPlot\"></div>\n");
+    builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 		builder.append("<script type=\"text/javascript\">\n");
 
 		String traceStr = "var data = [";
@@ -525,7 +529,8 @@ public class JSUtils {
 		*/
 
 		if (!editor) {
-			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
+			builder.append("var config = {'responsive':true};\n");
+			builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
 			getResizeCode(builder);
 		} else {
 			builder.append("ReactDOM.render(React.createElement(app.App.default, ");
@@ -557,7 +562,7 @@ public class JSUtils {
 	public static String getDotPlot(String x, String y, String nameArray, String xLabel, String yLabel, boolean editor) {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor, null);
-		builder.append("<body><div id=\"CyPlot\"></div>");
+    builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 		builder.append("<script>\n");
 		builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 		builder.append( "var trace1 = {\n");
@@ -582,8 +587,9 @@ public class JSUtils {
 		builder.append("var data = [trace1];\n");
 		builder.append("var layout = { title: 'dot plot'};\n");
 		if (!editor) {
-		builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
-		getResizeCode(builder);
+			builder.append("var config = {'responsive':true};\n");
+			builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
+      getResizeCode(builder);
 		} else {
 			builder.append("ReactDOM.render(React.createElement(app.App.default, ");
 			builder.append("{ dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
@@ -845,21 +851,9 @@ public class JSUtils {
 	 * @param builder the StringBuilder we'll write the javascript into
 	 */
 	public static void getResizeCode(StringBuilder builder) {
-
-		builder.append("(function() { \n");
-		builder.append("    var d3 = Plotly.d3;\n");
-		builder.append("    var WIDTH_IN_PERCENT_OF_PARENT = 94;\n");
-		builder.append("    var HEIGHT_IN_PERCENT_OF_PARENT = 95;\n");
-		builder.append("    var gd3 = d3.select(\"div[id='CyPlot']\")\n");
-		builder.append("        .style({ width: WIDTH_IN_PERCENT_OF_PARENT + '%',\n");
-		builder.append("        '    margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',\n");
-		builder.append("\n");
-		builder.append("        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',\n");
-		builder.append("        'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'\n");
-		builder.append("    });\n");
-		builder.append("    var gd = gd3.node();");
-		builder.append("    window.onresize = function() {Plotly.Plots.resize(gd);};\n");
-		builder.append("})();\n");
+    builder.append("window.onresize = function() { \n");
+    builder.append("    Plotly.relayout('CyPlot', { 'xaxis.autorange': true, 'yaxis.autorange': true});\n");
+    builder.append("};\n");
 	}
 
 	/**
@@ -888,7 +882,7 @@ public class JSUtils {
 			showLegend = true;
 		getPreamble(builder, editor, title);
 
-		builder.append("<body><div id=\"CyPlot\"></div>\n");
+    builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 		builder.append("<script>\n");
 		String traceStr = "var data = [";
 		String dataSources = "var dataSources = {";
@@ -923,7 +917,8 @@ public class JSUtils {
 			builder.append(dataSources.substring(0, dataSources.length()-1)+"};\n");
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 		} else {
-			builder.append("Plotly.newPlot('CyPlot', data, layout);\n");
+			builder.append("var config = {'responsive':true};\n");
+			builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
 			getResizeCode(builder);
 		}
 		builder.append("</script>\n");
