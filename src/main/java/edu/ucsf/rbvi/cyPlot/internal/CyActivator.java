@@ -48,8 +48,11 @@ import edu.ucsf.rbvi.cyPlot.internal.tasks.VolcanoPlotColumnTaskFactory;
 
 
 
-//for cyplot column plotting
-
+//for cyplot icon 
+import org.cytoscape.util.swing.IconManager;
+import org.cytoscape.util.swing.TextIcon;
+import org.cytoscape.model.events.NetworkAddedListener;
+import org.cytoscape.task.TableTaskFactory;
 
 //import edu.ucsf.rbvi.cyPlot.internal.columnTasks.Column2DFilterTaskFactory;
 
@@ -64,6 +67,8 @@ public class CyActivator extends AbstractCyActivator {
 
 		NodeSelectedListener nodeSelectedListener = new NodeSelectedListener(sr);
 		registerService(context, nodeSelectedListener, SelectedNodesAndEdgesListener.class, new Properties());
+		var iconManager = sr.getService(IconManager.class);
+		var iconFont = iconManager.getIconFont("cytoscape-3", 18.0f);
 		
 		{
 //			CyChartManager manager = new CyChartManager(sr);
@@ -168,6 +173,20 @@ public class CyActivator extends AbstractCyActivator {
 //			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.IN_NETWORK_PANEL_CONTEXT_MENU, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			
+			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_histogram";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot histogram plot...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+			
+			
+			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "volcano");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a volcano plot from node or edge table data");
@@ -190,11 +209,25 @@ public class CyActivator extends AbstractCyActivator {
 		}
 		// Volcano
 		{
+			
 			Properties props = new Properties();
 			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
 			props.put(ServiceProperties.TITLE, "Volcano plot");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			
+			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_volcano";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot volcano plot...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+			
+			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "volcano");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a volcano plot from node or edge table data");
@@ -213,6 +246,18 @@ public class CyActivator extends AbstractCyActivator {
 			props.put(ServiceProperties.TITLE, "Scatter plot");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			
+			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_scatter";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Scatter plot...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "scatter");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a scatter plot from node or edge table data");
@@ -231,6 +276,18 @@ public class CyActivator extends AbstractCyActivator {
 			props.put(ServiceProperties.TITLE, "Heat map");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			
+			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_heatmap";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Heat map ...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "heat");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a heat map from node or edge table data");
@@ -249,6 +306,18 @@ public class CyActivator extends AbstractCyActivator {
 			props.put(ServiceProperties.TITLE, "Violin plot");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			
+			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_Violin";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Violin plot ...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "violin");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a violin plot from node or edge table data");
@@ -267,6 +336,18 @@ public class CyActivator extends AbstractCyActivator {
 			props.put(ServiceProperties.TITLE, "Line graph");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			
+			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_Line";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Line graph ...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "line");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a line graph from node or edge table data");
@@ -285,6 +366,18 @@ public class CyActivator extends AbstractCyActivator {
 			props.put(ServiceProperties.TITLE, "Bar chart");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			
+			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_Bar";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Bar chart ...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "bar");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a bar chart from node or edge table data");
@@ -303,6 +396,18 @@ public class CyActivator extends AbstractCyActivator {
 			props.put(ServiceProperties.TITLE, "Filled area plot");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			
+			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_Filled_area_plot";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Filled area plot...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "filled");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a filled area plot from node or edge table data");
@@ -321,6 +426,19 @@ public class CyActivator extends AbstractCyActivator {
 			props.put(ServiceProperties.TITLE, "Dot plot");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			
+			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_Dot_plot";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Dot plot...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+			
+			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "dot");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a dot area plot from node or edge table data");
@@ -339,6 +457,18 @@ public class CyActivator extends AbstractCyActivator {
 			props.put(ServiceProperties.TITLE, "Graph editor");
 			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
 			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			
+			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_Graph_Editor";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Graph Editor...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "editor");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Access the graph editor");
