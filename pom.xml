@@ -1,3 +1,5 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -6,7 +8,7 @@
 		<bundle.namespace>edu.ucsf.rbvi.cyPlot.internal</bundle.namespace>
 		
 
-		 <cytoscape.api.version>3.8.0</cytoscape.api.version>
+		 <cytoscape.api.version>3.9.0</cytoscape.api.version>
     <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
     <maven-bundle-plugin.version>5.1.1</maven-bundle-plugin.version>
