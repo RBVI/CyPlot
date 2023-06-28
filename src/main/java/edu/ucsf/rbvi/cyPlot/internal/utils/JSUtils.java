@@ -232,7 +232,7 @@ public class JSUtils {
 			}
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
-			//writeDebugFile(builder.toString(), "CyPlot.html");
+			writeDebugFile(builder.toString(), "FilledAreaPlot.html");
 		}
 
 		return builder.toString();
@@ -841,6 +841,10 @@ public class JSUtils {
 		if (title == null) title = xLabel+" vs "+yLabel;
 		return "var layout = {showlegend: "+showLegend+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "', automargin: true}, title: '" + title + "'};";
 	}
+	public static String getHistogramLabelCode(String xLabel, String yLabel, String title, boolean showLegend) {
+		if (title == null) title = "Frequency of "+xLabel;
+		return "var layout = {showlegend: "+showLegend+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "', automargin: true}, title: '" + title + "'};";
+	}
 
 	/**
 	 * Generate the string necessary to support integrating the plotly
@@ -985,7 +989,7 @@ if(!editor) {
 builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 builder.append("<script>\n");
 builder.append("var data = [{ x: " + x + ", type: 'histogram'}];\n");
-builder.append(getLabelCode(xLabel, yLabel, title, false));
+builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
 builder.append("var config = {'responsive':true};\n");
 builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
 getResizeCode(builder);
@@ -1001,7 +1005,7 @@ builder.append("<script type=\"text/javascript\" >\n");
 builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'histogram'}\n");
 builder.append("var data = [trace1];\n");
-builder.append(getLabelCode(xLabel, yLabel, title, false));
+builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
 // builder.append("var config = {'responsive':true};\n"); // Will this work?  Can we pass config using the editor?
 builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 // builder.append("var myPlot = document.getElementById('CyPlot');\n");
@@ -1010,6 +1014,40 @@ if (selectionString != null || nameSelection != null) {
 getClickCode(builder, "CyPlot", selectionString, nameSelection, true);
 getLassoCode(builder, "CyPlot", selectionString, nameSelection, true);
 }
+addHideControlsCode(builder);
+builder.append("</body></html>");
+}
+writeDebugFile(builder.toString(), "histogram.html");
+
+return builder.toString();
+}
+	public static String getHistogramColumnPlot(String x, String y, String selectionString, 
+            String nameArray, String title, String xLabel, String yLabel, boolean editor) {
+StringBuilder builder = new StringBuilder();
+getPreamble(builder, editor, title);
+if(!editor) {
+builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
+builder.append("<script>\n");
+builder.append("var data = [{ x: " + x + ", type: 'histogram'}];\n");
+builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
+builder.append("var config = {'responsive':true};\n");
+builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
+getResizeCode(builder);
+
+builder.append("</script>\n");
+builder.append(getPlotly());
+}else {
+builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
+builder.append("<script type=\"text/javascript\" >\n");
+builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
+builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'histogram'}\n");
+builder.append("var data = [trace1];\n");
+builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
+// builder.append("var config = {'responsive':true};\n"); // Will this work?  Can we pass config using the editor?
+builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
+// builder.append("var myPlot = document.getElementById('CyPlot');\n");
+builder.append("</script>\n");
+
 addHideControlsCode(builder);
 builder.append("</body></html>");
 }
