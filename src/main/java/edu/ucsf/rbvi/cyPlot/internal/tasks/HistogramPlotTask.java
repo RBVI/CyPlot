@@ -31,16 +31,14 @@ public class HistogramPlotTask extends AbstractTask {
 	
 	final CyServiceRegistrar sr;
 
-	@Tunable (description="Y-axis column")
-	public ListSingleSelection<String> yCol;
 	
-	@Tunable (description="X-axis column")
+	@Tunable (description="Select Column for Histogram")
 	public ListSingleSelection<String> xCol;
 
 	@Tunable (description="Name selection column")
 	public ListSingleSelection<String> nameCol;
 	
-	@Tunable (description="Open in plot editor?")
+	@Tunable (description="Open in plot editor?",context="nogui")
 	public boolean editor;
 
 	// Command interface for non-network plots
@@ -78,24 +76,31 @@ public class HistogramPlotTask extends AbstractTask {
 		this.sr = sr; 
 		appManager = sr.getService(CyApplicationManager.class);
 		netView = appManager.getCurrentNetworkView();
-		if (netView != null) {
-			network = netView.getModel();
-			table = network.getDefaultNodeTable();
-			columns = table.getColumns();
-			editor = true;
+		
+			
+			
+			if (netView != null) {
+				network = netView.getModel();
+				table = network.getDefaultNodeTable();
+				columns = table.getColumns();
+				editor = false;
+	
+				List<String> headers = ModelUtils.getColOptions(columns, "num");
+	
+				List<String> names = ModelUtils.getColOptions(columns, "string");
+				
+					xCol = new ListSingleSelection<>(headers);
+										
+					nameCol = new ListSingleSelection<>(names);
 
-			List<String> headers = ModelUtils.getColOptions(columns, "num");
-
-			List<String> names = ModelUtils.getColOptions(columns, "string");
-
-			xCol = new ListSingleSelection<>(headers);
-			yCol = new ListSingleSelection<>(headers);
-			nameCol = new ListSingleSelection<>(names);
-		} else {
-			xCol = null;
-			yCol = null;
-			nameCol = null;
-		}
+				
+	
+			} else {
+				xCol = null;
+				
+				nameCol = null;
+			}
+		
 	}
 
 	/**
@@ -114,19 +119,20 @@ public class HistogramPlotTask extends AbstractTask {
 		String nameArray;
 		String idColumn = null;
 
-		if (xCol != null && yCol != null) {
-			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
+		if (xCol != null) {
+//			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
 			CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 		
 			xArray = ModelUtils.colToArray(xColumn);
 		
-			yArray = ModelUtils.colToArray(yColumn);
+//			yArray = ModelUtils.colToArray(yColumn);
 
 			nameArray = ModelUtils.colToArray(nameColumn);
 				
 			xLabel = xColumn.getName();
-			yLabel = yColumn.getName();
+			
+			yLabel ="Frequency";
 
 			if (nameCol != null)
 				idColumn = ModelUtils.getTunableSelection(nameCol);
@@ -136,7 +142,7 @@ public class HistogramPlotTask extends AbstractTask {
 			nameArray = JSONUtils.csvToJSONArray(names);
 		}
 
-		String html = JSUtils.getHistogramPlot(xArray, yArray,  selectionString, idColumn, nameArray, 
+		String html = JSUtils.getHistogramPlot(xArray, null,  selectionString, idColumn, nameArray,
 		                                  title, xLabel, yLabel, editor);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
