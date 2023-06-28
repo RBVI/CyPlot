@@ -19,6 +19,7 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -43,6 +44,17 @@ import edu.ucsf.rbvi.cyPlot.internal.tasks.GraphEditorTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.LineGraphTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.HistogramPlotTaskFactory;
+
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JPopupMenu;
+import javax.swing.UIManager;
+
+
+
 /*
  * #%L
  * Cytoscape Table Browser Impl (table-browser-impl)
@@ -74,38 +86,31 @@ public class CyPlotAction extends AbstractCyAction {
 	
     
     
-    private final CyApplicationManager applicationManager;
+    
     
 	private final CyServiceRegistrar serviceRegistrar;
 
-	public CyPlotAction(CyApplicationManager applicationManager,
-
-            
-            
-			Icon icon,
-			float toolbargravity,
-			CyServiceRegistrar serviceRegistrar
-	) {
+	public CyPlotAction(CyServiceRegistrar serviceRegistrar,Icon icon,float gravity) {
 		super(TITLE);
 		
-        this.applicationManager = applicationManager;
+        
         
         
         
 		this.serviceRegistrar = serviceRegistrar;
 		
-		putValue(SHORT_DESCRIPTION, TITLE);
+//		putValue(SHORT_DESCRIPTION, TITLE);
 		putValue(LARGE_ICON_KEY, icon);
 
 		setIsInNodeTableToolBar(true);
 		setIsInEdgeTableToolBar(true);
-		setIsInNetworkTableToolBar(false);
-		setIsInUnassignedTableToolBar(false);
+//		setIsInNetworkTableToolBar(false);
+//		setIsInUnassignedTableToolBar(false);
 		
-		setToolbarGravity(toolbarGravity);
+		setToolbarGravity(gravity);
 		
 
-		insertSeparatorBefore = true;
+//		insertSeparatorAfter();
 	}
 
 	@Override
@@ -219,7 +224,7 @@ public class CyPlotAction extends AbstractCyAction {
 
 	    // Get the currently selected network
 			
-		    CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
+//		    CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
 	
 		        // Create a new task to plot the graph using the TaskFactory
 		    TaskIterator taskIterator;
