@@ -13,6 +13,8 @@ import static org.cytoscape.work.ServiceProperties.TITLE;
 import java.util.Properties;
 
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.application.swing.ToolBarComponent;
+
 import org.cytoscape.model.events.SelectedNodesAndEdgesListener;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
@@ -59,6 +61,10 @@ import org.cytoscape.util.swing.IconManager;
 import org.cytoscape.util.swing.TextIcon;
 import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.task.TableTaskFactory;
+import org.cytoscape.application.CyUserLog;
+import org.cytoscape.application.swing.CyAction;
+import org.cytoscape.application.swing.CytoPanelComponent;
+
 
 //import edu.ucsf.rbvi.cyPlot.internal.columnTasks.Column2DFilterTaskFactory;
 
@@ -77,33 +83,18 @@ public class CyActivator extends AbstractCyActivator {
 		registerService(context, nodeSelectedListener, SelectedNodesAndEdgesListener.class, new Properties());
 		var iconManager = sr.getService(IconManager.class);
 		var iconFont = iconManager.getIconFont("cytoscape-3", 18.0f);
-		{
-			
-			var icon = new TextIcon("+", iconFont, 10, 10);
-			var iconId = "cy::Table::Cyplot_tools";
-			iconManager.addIcon(iconId, icon);
-			var action = new CyPlotAction(applicationManager,icon,(float) 0.045,sr);
-			
-			var props = new Properties();
-			props.setProperty(TITLE, "Cyplot");
-			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
-			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Tools...");
-
-			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "0.5");
-			
-			registerService(context, action, CyAction.class, props);
-		}
-		{
-//			CyChartManager manager = new CyChartManager(sr);
-//			CyPlotColumnTaskFactory cyPlotColumnTaskFactory = new CyPlotColumnTaskFactory(manager);
-			ScatterPlotColumnTaskFactory sctf = new ScatterPlotColumnTaskFactory(sr);
-			Properties props = new Properties();
-			props.setProperty("preferredTaskManager", "table.column.task.manager.Cyplot");
-			props.put(ServiceProperties.TITLE, "Cyplot Scatter plot");
-			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
-			props.setProperty(ServiceProperties.COMMAND, "scatter");
-			registerService(context, sctf, TableColumnTaskFactory.class, props);
-		}
+		
+//		{
+////			CyChartManager manager = new CyChartManager(sr);
+////			CyPlotColumnTaskFactory cyPlotColumnTaskFactory = new CyPlotColumnTaskFactory(manager);
+//			ScatterPlotColumnTaskFactory sctf = new ScatterPlotColumnTaskFactory(sr);
+//			Properties props = new Properties();
+//			props.setProperty("preferredTaskManager", "table.column.task.manager.Cyplot");
+//			props.put(ServiceProperties.TITLE, "Cyplot Scatter plot");
+//			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+//			props.setProperty(ServiceProperties.COMMAND, "scatter");
+//			registerService(context, sctf, TableColumnTaskFactory.class, props);
+//		}
 		{
 //			CyChartManager manager = new CyChartManager(sr);
 //			CyPlotColumnTaskFactory cyPlotColumnTaskFactory = new CyPlotColumnTaskFactory(manager);
@@ -421,7 +412,7 @@ public class CyActivator extends AbstractCyActivator {
 //			props.setProperty("inEdgeTableToolBar", "true");
 //			props.setProperty("inNetworkTableToolBar", "true");
 //			props.setProperty("inUnassignedTableToolBar", "true");
-//			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
+//			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "4");
 			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
 			props.setProperty(ServiceProperties.COMMAND, "editor");
@@ -450,5 +441,32 @@ public class CyActivator extends AbstractCyActivator {
 //		props.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "false");
 //		registerService(context, stf, TableColumnTaskFactory.class, props);}
 ////		
+{
+			
+			
+			
+			
+			var props = new Properties();
+			
+			
+			props.setProperty(TITLE, "Cyplot");
+			
+//			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+			var icon = new TextIcon("+", iconFont, 40, 40); // "#" is the node table icon in the cytoscape-3 font
+			var iconId = "CyPlot_Graph_Editor";
+			iconManager.addIcon(iconId, icon);
+			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
+			
+			
+			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Tools...");
+			props.setProperty("inNodeTableToolBar", "true");
+			props.setProperty("inEdgeTableToolBar", "true");
+			props.setProperty("inNetworkTableToolBar", "true");
+			props.setProperty("inUnassignedTableToolBar", "true");
+//			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "4");
+//			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "20");
+			var action = new CyPlotAction(sr,icon,.009f);
+			registerService(context, action, CyAction.class, props);
+		}
 	}
 }
