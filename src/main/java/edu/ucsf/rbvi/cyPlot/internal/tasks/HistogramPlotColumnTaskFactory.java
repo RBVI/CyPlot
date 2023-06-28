@@ -15,13 +15,18 @@ public class HistogramPlotColumnTaskFactory extends AbstractTableColumnTaskFacto
 //	final CyChartManager manager;
 	final CyServiceRegistrar cs_registrar;
 	
+	
 	public HistogramPlotColumnTaskFactory(CyServiceRegistrar sr) {	cs_registrar = sr;	}
 	
 	public boolean isReady() {		return true;	}
 	
+
+
+
 	@Override
-	public TaskIterator createTaskIterator(CyColumn column)
-	{ 
-		return new TaskIterator(new HistogramPlotTask(cs_registrar)); 	
+	public TaskIterator createTaskIterator(CyColumn column) {
+		// TODO Auto-generated method stub
+		return new TaskIterator(new HistogramPlotColumnTask(cs_registrar,column)); 
+
 	}
 }
