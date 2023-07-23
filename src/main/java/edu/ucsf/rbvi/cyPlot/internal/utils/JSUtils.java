@@ -321,7 +321,10 @@ public class JSUtils {
       builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 			builder.append("<script>\n");
 		 	builder.append("var data = [{ x: " + x + ", y: " + y + ", type: 'bar'}];\n");
-			builder.append(getLabelCode(xLabel, yLabel, title, false));
+			
+				builder.append(getLabelCode(xLabel, yLabel, title, false));
+			
+		 	
 			builder.append("var config = {'responsive':true};\n");
 			builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
 			getResizeCode(builder);
@@ -337,7 +340,9 @@ public class JSUtils {
 			builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'bar'}\n");
 			builder.append("var data = [trace1];\n");
+			
 			builder.append(getLabelCode(xLabel, yLabel, title, false));
+		
 			// builder.append("var config = {'responsive':true};\n"); // Will this work?  Can we pass config using the editor?
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 			// builder.append("var myPlot = document.getElementById('CyPlot');\n");
@@ -842,7 +847,7 @@ public class JSUtils {
 		return "var layout = {showlegend: "+showLegend+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "', automargin: true}, title: '" + title + "'};";
 	}
 	public static String getHistogramLabelCode(String xLabel, String yLabel, String title, boolean showLegend) {
-		if (title == null) title = "Frequency of "+xLabel;
+		if (title == null) title = yLabel+" of "+xLabel;
 		return "var layout = {showlegend: "+showLegend+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "', automargin: true}, title: '" + title + "'};";
 	}
 
@@ -981,15 +986,22 @@ public class JSUtils {
 	}
 	
 	//functions for histogram plot(similar to bar chart)
-	public static String getHistogramPlot(String x, String y, String selectionString, String nameSelection,
+	public static String getHistogramPlot(String x, String y,boolean yValLog, String selectionString, String nameSelection,
             String nameArray, String title, String xLabel, String yLabel, boolean editor) {
 StringBuilder builder = new StringBuilder();
 getPreamble(builder, editor, title);
 if(!editor) {
 builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 builder.append("<script>\n");
+
 builder.append("var data = [{ x: " + x + ", type: 'histogram'}];\n");
-builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
+if(yValLog) {
+	if (title == null) title = yLabel+" of "+xLabel;
+	
+	builder.append("var layout = {showlegend: "+false+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "',type: 'log', automargin: true}, title: '" + title + "'};\n");
+}else {
+	builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
+}
 builder.append("var config = {'responsive':true};\n");
 builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
 getResizeCode(builder);
@@ -1005,7 +1017,14 @@ builder.append("<script type=\"text/javascript\" >\n");
 builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'histogram'}\n");
 builder.append("var data = [trace1];\n");
-builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
+if(yValLog) {
+if (title == null) title = yLabel+" of "+xLabel;
+	
+	builder.append("var layout = {showlegend: "+false+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "',type: 'log', automargin: true}, title: '" + title + "'};\n");
+}else {
+	builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
+}
+//builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
 // builder.append("var config = {'responsive':true};\n"); // Will this work?  Can we pass config using the editor?
 builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 // builder.append("var myPlot = document.getElementById('CyPlot');\n");
@@ -1021,7 +1040,7 @@ writeDebugFile(builder.toString(), "histogram.html");
 
 return builder.toString();
 }
-	public static String getHistogramColumnPlot(String x, String y, String selectionString, 
+	public static String getHistogramColumnPlot(String x, String y,boolean yValLog, String selectionString, 
             String nameArray, String title, String xLabel, String yLabel, boolean editor) {
 StringBuilder builder = new StringBuilder();
 getPreamble(builder, editor, title);
@@ -1029,7 +1048,14 @@ if(!editor) {
 builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 builder.append("<script>\n");
 builder.append("var data = [{ x: " + x + ", type: 'histogram'}];\n");
+
+if(yValLog) {
+if (title == null) title = yLabel+" of "+xLabel;
+
+builder.append("var layout = {showlegend: "+false+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "',type: 'log', automargin: true}, title: '" + title + "'};\n");
+}else {
 builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
+}
 builder.append("var config = {'responsive':true};\n");
 builder.append("Plotly.newPlot('CyPlot', data, layout, config);");
 getResizeCode(builder);
@@ -1042,7 +1068,13 @@ builder.append("<script type=\"text/javascript\" >\n");
 builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'histogram'}\n");
 builder.append("var data = [trace1];\n");
-builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
+if(yValLog) {
+	if (title == null) title = yLabel+" of "+xLabel;
+	
+	builder.append("var layout = {showlegend: "+false+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "',type: 'log', automargin: true}, title: '" + title + "'};\n");
+}else {
+	builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
+}
 // builder.append("var config = {'responsive':true};\n"); // Will this work?  Can we pass config using the editor?
 builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
 // builder.append("var myPlot = document.getElementById('CyPlot');\n");
