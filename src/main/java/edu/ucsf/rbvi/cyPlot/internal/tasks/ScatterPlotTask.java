@@ -46,6 +46,11 @@ public class ScatterPlotTask extends AbstractTask {
 
 	@Tunable (description="Open in plot editor?")
 	public boolean editor;
+	
+	@Tunable (description="Convert X axis values to logarithmic")
+	public boolean xValLog;
+	@Tunable (description="Convert Y axis values to logarithmic")
+	public boolean yValLog;
 
 	// Command interface for non-network plots
 	@Tunable (description="JSON formatted string of point names", context="nogui")
@@ -84,6 +89,9 @@ public class ScatterPlotTask extends AbstractTask {
 			network = netView.getModel();
 			table = network.getDefaultNodeTable();
 			columns = table.getColumns();
+			editor=true;
+			xValLog=false;
+			yValLog=false;
 
 			List<String> headers = ModelUtils.getColOptions(columns, "num");
 
@@ -115,14 +123,16 @@ public class ScatterPlotTask extends AbstractTask {
 		Map<String, String> zTraceMap = null;
 		Map<String, String> nameMap;
 		String idColumn = null;
-
+		CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+		 
+		CyColumn yColumn=table.getColumn(ModelUtils.getTunableSelection(yCol));
 		if (xValues == null && yValues == null) {
 			xTraceMap = new HashMap<>();
 			yTraceMap = new HashMap<>();
 			nameMap = new HashMap<>();
 
-			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
-			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
+			 xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+			 yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 
 			xTraceMap.put("trace",ModelUtils.colToArray(xColumn));
 
@@ -185,6 +195,22 @@ public class ScatterPlotTask extends AbstractTask {
 					nameMap.put(key, nameArr);
 				}
 			}
+		}
+		
+		if (xValLog) {
+			commandTunables.xLabel = "Log("+commandTunables.xLabel+")";
+			
+				xTraceMap.put("trace",ModelUtils.colToArrayLog(xColumn));
+			
+			
+		}
+
+		if (yValLog) {
+			
+			commandTunables.yLabel = "Log("+commandTunables.yLabel+")";
+			
+				yTraceMap.put("trace",ModelUtils.colToArrayLog(yColumn));
+			
 		}
 		Plot plot = new Plot("scatter", xTraceMap, yTraceMap, zTraceMap, nameMap, 
 				             commandTunables.selectionString, 
