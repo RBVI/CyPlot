@@ -62,7 +62,8 @@ public class HistogramPlotTask extends AbstractTask {
 
 	@Tunable (description="Y Axis Label", context="nogui")
 	public String yLabel = null;
-
+	@Tunable (description="Convert Y axis values to logarithmic")
+	public boolean yValLog;
 	
 	
 	public CyApplicationManager appManager;
@@ -118,10 +119,10 @@ public class HistogramPlotTask extends AbstractTask {
 		String yArray;
 		String nameArray;
 		String idColumn = null;
-
+		CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
 		if (xCol != null) {
 //			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
-			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+//			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
 			CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 		
 			xArray = ModelUtils.colToArray(xColumn);
@@ -141,8 +142,14 @@ public class HistogramPlotTask extends AbstractTask {
 			yArray = JSONUtils.csvToJSONArray(yValues);
 			nameArray = JSONUtils.csvToJSONArray(names);
 		}
-
-		String html = JSUtils.getHistogramPlot(xArray, null,  selectionString, idColumn, nameArray,
+if (yValLog) {
+			
+			yLabel = "Log("+yLabel+")";
+			
+				
+			
+		}
+		String html = JSUtils.getHistogramPlot(xArray, null, yValLog, selectionString, idColumn, nameArray,
 		                                  title, xLabel, yLabel, editor);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
