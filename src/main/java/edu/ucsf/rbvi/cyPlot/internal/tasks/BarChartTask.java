@@ -64,6 +64,9 @@ public class BarChartTask extends AbstractTask {
 
 	@Tunable (description="Y Axis Label", context="nogui")
 	public String yLabel = null;
+	
+	@Tunable (description="Convert Y axis values to logarithmic")
+	public boolean yValLog;
 
 	
 	
@@ -113,10 +116,10 @@ public class BarChartTask extends AbstractTask {
 		String yArray;
 		String nameArray;
 		String idColumn = null;
-
+		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
+		CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
 		if (xCol != null && yCol != null) {
-			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
-			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+			
 			CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 		
 			xArray = ModelUtils.colToArray(xColumn);
@@ -135,7 +138,14 @@ public class BarChartTask extends AbstractTask {
 			yArray = JSONUtils.csvToJSONArray(yValues);
 			nameArray = JSONUtils.csvToJSONArray(names);
 		}
-
+		if (yValLog) {
+			
+			yLabel = "Log("+yLabel+")";
+			yArray=ModelUtils.colToArrayLog(yColumn);
+			
+				
+			
+		}
 		String html = JSUtils.getBarChart(xArray, yArray,  selectionString, idColumn, nameArray, 
 		                                  title, xLabel, yLabel, editor);
 		Map<String, Object> args = new HashMap<>();		
