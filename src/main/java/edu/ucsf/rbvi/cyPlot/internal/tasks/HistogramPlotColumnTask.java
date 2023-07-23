@@ -36,7 +36,7 @@ public class HistogramPlotColumnTask extends AbstractTask {
 		
 		public CyColumn xCol;
 
-		@Tunable (description="Name selection column")
+		@Tunable (description="Name selection column",context="nogui")
 		public ListSingleSelection<String> nameCol;
 		
 		@Tunable (description="Open in plot editor?",context="nogui")
@@ -64,7 +64,8 @@ public class HistogramPlotColumnTask extends AbstractTask {
 		@Tunable (description="Y Axis Label", context="nogui")
 		public String yLabel = null;
 
-		
+		@Tunable (description="Convert Y axis values to logarithmic")
+		public boolean yValLog;
 		
 		public CyApplicationManager appManager;
 		public CyNetworkView netView;
@@ -130,12 +131,14 @@ public class HistogramPlotColumnTask extends AbstractTask {
 
 				
 				xArray = ModelUtils.colToArray(xColumn);
-				
+				if (yValLog) {
+					yLabel = "Log("+yLabel+")";
+				}
 			
 
 			
 //		}
-			String html = JSUtils.getHistogramColumnPlot(xArray,null,  selectionString, idColumn, 
+			String html = JSUtils.getHistogramColumnPlot(xArray,null, yValLog, selectionString, idColumn, 
                     title, xLabel, yLabel, editor);
 			Map<String, Object> args = new HashMap<>();		
 			args.put("text", html);
