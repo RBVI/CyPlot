@@ -116,9 +116,16 @@ public class ModelUtils {
 		for(int i = 0; i<list.size(); i++) {
 			String value = "";
 			if (list.get(i) != null) {
-				double v = (Double) list.get(i);
-				if (v != 0.0)
-					value = String.valueOf(Math.log10(v));
+				if(list.get(i) instanceof Integer) {
+					Integer v =  (Integer) list.get(i);
+					if (v != 0)
+						value = String.valueOf(Math.log10(v));
+				}else {
+					double v = (Double) list.get(i);
+					if (v != 0.0)
+						value = String.valueOf(Math.log10(v));
+				}
+				
 			}
 			if(i != list.size()-1) {
 				array += ("'" + value + "', ");
