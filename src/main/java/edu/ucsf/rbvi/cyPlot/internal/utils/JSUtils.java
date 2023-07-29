@@ -168,11 +168,11 @@ public class JSUtils {
 	                                    Map<String, String> nameTraceMap,
 	                                    String selectionString, String nameSelection,
 	                                    String title, String xLabel, String yLabel,
-	                                    String dataExtra, String layoutExtra, String mode, boolean editor) {
+	                                    String dataExtra, String layoutExtra, String mode, boolean editor,boolean yValLog,boolean xValLog) {
 		String html = getXYPlot("scatter", xTraceMap, yTraceMap, null, nameTraceMap,
 		                        selectionString, nameSelection, title, xLabel, yLabel,
 		                        dataExtra, layoutExtra,
-		                        mode, null, null, editor);
+		                        mode, null, null, editor, xValLog, yValLog);
 		writeDebugFile(html, "ScatterPlot.html");
 		return html;
 	}
@@ -314,15 +314,21 @@ public class JSUtils {
 	 */
 
 	public static String getBarChart(String x, String y, String selectionString, String nameSelection,
-									                 String nameArray, String title, String xLabel, String yLabel, boolean editor) {
+									                 String nameArray, String title, String xLabel, String yLabel, boolean editor,boolean yValLog) {
 		StringBuilder builder = new StringBuilder();
 		getPreamble(builder, editor, title);
 		if(!editor) {
       builder.append("<body><div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
 			builder.append("<script>\n");
 		 	builder.append("var data = [{ x: " + x + ", y: " + y + ", type: 'bar'}];\n");
-			
-				builder.append(getLabelCode(xLabel, yLabel, title, false));
+		 	if(yValLog) {
+		 		if (title == null) title = yLabel+" of "+xLabel;
+		 		
+		 		builder.append("var layout = {showlegend: "+false+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "',type: 'log', automargin: true}, yaxis: { title:'" + yLabel + "', automargin: true}, title: '" + title + "'};\n");
+		 	}else {
+		 		builder.append(getLabelCode(xLabel, yLabel, title, false));
+		 	}
+				
 			
 		 	
 			builder.append("var config = {'responsive':true};\n");
@@ -340,8 +346,15 @@ public class JSUtils {
 			builder.append("var dataSources = {'" + xLabel + "': "+x+", '"+yLabel +"': "+y+"};\n");
 			builder.append("var trace1 = { x: " + x + ", y: " + y + ", type: 'bar'}\n");
 			builder.append("var data = [trace1];\n");
+			if(yValLog) {
+		 		if (title == null) title = yLabel+" of "+xLabel;
+		 		
+		 		builder.append("var layout = {showlegend: "+false+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "',type: 'log', automargin: true}, yaxis: { title:'" + yLabel + "', automargin: true}, title: '" + title + "'};\n");
+		 	}else {
+		 		builder.append(getLabelCode(xLabel, yLabel, title, false));
+		 	}
 			
-			builder.append(getLabelCode(xLabel, yLabel, title, false));
+//			builder.append(getLabelCode(xLabel, yLabel, title, false));
 		
 			// builder.append("var config = {'responsive':true};\n"); // Will this work?  Can we pass config using the editor?
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
@@ -523,7 +536,7 @@ public class JSUtils {
 		if (layoutExtra == null)
 			layoutExtra = "";
 		layoutExtra += "violinmode: 'overlay', violingap: 0, violingroupgap: 0";
-		builder.append(getLayoutCode(xlabel, ylabel, title, layoutExtra, true));
+		builder.append(getLayoutCode(xlabel, ylabel, title, layoutExtra, true,false,false));
 
 		/*
 		builder.append("var layout = { hovermode: 'closest', showlegend: true, title: '"+title+"',");
@@ -827,14 +840,24 @@ public class JSUtils {
 	 *
 	 */
 	public static String getLayoutCode(String xLabel, String yLabel, String title,
-	                                   String layoutExtra, boolean showLegend) {
+	                                   String layoutExtra, boolean showLegend,boolean xValLog,boolean yValLog) {
 
 		if (title == null) title = xLabel+" vs "+yLabel;
 		String layout = "var layout = ";
 		layout += "{showLegend: "+showLegend+", legend: { x:1, y: 0.5 },";
 		layout += "hovermode: 'closest',";
-		layout += "xaxis: { title: '"+xLabel+"', automargin: true },";
-		layout += "yaxis: { title: '"+yLabel+"', automargin: true },";
+		layout += "xaxis: { title: '"+xLabel+"', automargin: true ";
+		if(xValLog) {
+			layout += ",type: 'log'},";
+		}else {
+			layout +="},";
+		}
+		layout += "yaxis: { title: '"+yLabel+"', automargin: true ";
+		if(yValLog) {
+			layout += ",type: 'log'},";
+		}else {
+			layout +="},";
+		}
 		layout += "title: '"+title+"'";
 		if (layoutExtra != null)
 			layout += ","+layoutExtra;
@@ -884,7 +907,7 @@ public class JSUtils {
 	                               String selectionString, String nameSelection,
 	                               String title, String xLabel, String yLabel, String mode,
 	                               String dataExtra, String layoutExtra, String colorscale,
-	                               String scaleLabel, boolean editor) {
+	                               String scaleLabel, boolean editor,boolean xValLog,boolean yValLog) {
 		StringBuilder builder = new StringBuilder();
 		boolean showLegend = false;
 		if (xTraceMap.keySet().size() > 1)
@@ -921,7 +944,7 @@ public class JSUtils {
 			dataSources += "'"+trace+"Y': "+yTraceMap.get(trace)+",";
 		}
 		builder.append(traceStr.substring(0, traceStr.length()-1)+"];\n");
-		builder.append(getLayoutCode(xLabel, yLabel, title, layoutExtra, showLegend));
+		builder.append(getLayoutCode(xLabel, yLabel, title, layoutExtra, showLegend,xValLog,yValLog));
 		if (editor) {
 			builder.append(dataSources.substring(0, dataSources.length()-1)+"};\n");
 			builder.append("ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources, data: data, layout: layout }), document.getElementById('CyPlot'));\n");
@@ -1020,7 +1043,7 @@ builder.append("var data = [trace1];\n");
 if(yValLog) {
 if (title == null) title = yLabel+" of "+xLabel;
 	
-	builder.append("var layout = {showlegend: "+false+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "',type: 'log', automargin: true}, title: '" + title + "'};\n");
+builder.append("var layout = {showlegend: "+false+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "', type: 'log',automargin: true}, title: '" + title + "'};\n");
 }else {
 	builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
 }
@@ -1052,7 +1075,7 @@ builder.append("var data = [{ x: " + x + ", type: 'histogram'}];\n");
 if(yValLog) {
 if (title == null) title = yLabel+" of "+xLabel;
 
-builder.append("var layout = {showlegend: "+false+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "',type: 'log', automargin: true}, title: '" + title + "'};\n");
+builder.append("var layout = {showlegend: "+false+", legend: { x: 1, y: 0.5 }, hovermode: 'closest', xaxis: { title:'" + xLabel + "', automargin: true}, yaxis: { title:'" + yLabel + "', type: 'log',automargin: true}, title: '" + title + "'};\n");
 }else {
 builder.append(getHistogramLabelCode(xLabel, yLabel, title, false));
 }
