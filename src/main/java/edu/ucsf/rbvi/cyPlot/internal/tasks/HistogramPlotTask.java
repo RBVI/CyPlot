@@ -142,13 +142,7 @@ public class HistogramPlotTask extends AbstractTask {
 			yArray = JSONUtils.csvToJSONArray(yValues);
 			nameArray = JSONUtils.csvToJSONArray(names);
 		}
-if (yValLog) {
-			
-			yLabel = "Log("+yLabel+")";
-			
-				
-			
-		}
+
 		String html = JSUtils.getHistogramPlot(xArray, null, yValLog, selectionString, idColumn, nameArray,
 		                                  title, xLabel, yLabel, editor);
 		Map<String, Object> args = new HashMap<>();		
