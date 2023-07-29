@@ -197,28 +197,14 @@ public class ScatterPlotTask extends AbstractTask {
 			}
 		}
 		
-		if (xValLog) {
-			commandTunables.xLabel = "Log("+commandTunables.xLabel+")";
-			
-				xTraceMap.put("trace",ModelUtils.colToArrayLog(xColumn));
-			
-			
-		}
-
-		if (yValLog) {
-			
-			commandTunables.yLabel = "Log("+commandTunables.yLabel+")";
-			
-				yTraceMap.put("trace",ModelUtils.colToArrayLog(yColumn));
-			
-		}
+		
 		Plot plot = new Plot("scatter", xTraceMap, yTraceMap, zTraceMap, nameMap, 
 				             commandTunables.selectionString, 
 				             idColumn, commandTunables.title, commandTunables.xLabel, 
 				             commandTunables.yLabel, "markers", null, null, 
 				             colorscale.getSelectedValue(),
 				             scaleLabel, editor, commandTunables.id, 
-				             commandTunables.id+":ScatterPlot");
+				             commandTunables.id+":ScatterPlot",xValLog,yValLog);
 
 		ModelUtils.openCyBrowser(sr, plot.getHTML(), commandTunables.title, commandTunables.id+":ScatterPlot", true);
 		if (netView != null)
