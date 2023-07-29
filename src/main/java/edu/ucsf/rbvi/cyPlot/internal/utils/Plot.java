@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class Plot {
 	private Map<String, String> settings;
+	private boolean xVl,yVl;
 	private Map<String, Map<String, String>> traceSettings;
 	private boolean editor;
 	
@@ -14,7 +15,7 @@ public class Plot {
             String selectionString, String nameSelection,
             String title, String xLabel, String yLabel, String mode, 
             String dataExtra, String layoutExtra, String colorscale,
-            String scaleLabel, boolean editor, String plotID, String tabID) {
+            String scaleLabel, boolean editor, String plotID, String tabID,boolean xValLog,boolean yValLog) {
 		settings = new HashMap<>();
 		traceSettings = new HashMap<>();
 		settings.put("type", type);
@@ -34,6 +35,9 @@ public class Plot {
 		settings.put("scaleLabel", scaleLabel);
 		settings.put("plotID", plotID);
 		settings.put("tabID", tabID);
+		xVl=xValLog;
+		yVl=yValLog;
+		
 		this.editor = editor;
 	}
 	
@@ -44,7 +48,7 @@ public class Plot {
 				settings.get("nameSelection"), settings.get("title"), settings.get("xLabel"), 
 				settings.get("yLabel"), settings.get("mode"), settings.get("dataExtra"), 
 				settings.get("layoutExtra"), settings.get("colorscale"),
-                settings.get("scaleLabel"), editor);
+                settings.get("scaleLabel"), editor,xVl,yVl);
 	}
 	
 	public void setSetting(String str, String setting) {
