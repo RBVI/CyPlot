@@ -184,26 +184,11 @@ public class LineGraphTask extends AbstractTask {
 		}
 		
 		
-		if (xValLog) {
-			xLabel = "Log("+xLabel+")";
-			
-				xTraceMap.put("trace",ModelUtils.colToArrayLog(xColumn));
-			
-			
-		}
-
-		if (yValLog) {
-			
-			yLabel = "Log("+yLabel+")";
-			
-				yTraceMap.put("trace",ModelUtils.colToArrayLog(yColumn));
-			
-		}
 		
 
 		String html = JSUtils.getXYPlot("scatter", xTraceMap, yTraceMap, null, nameMap, 
 		                                selectionString, idColumn, 
-		                                title, xLabel, yLabel, "lines", null, null, null, null, editor);
+		                                title, xLabel, yLabel, "lines", null, null, null, null, editor,xValLog,yValLog);
 
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
