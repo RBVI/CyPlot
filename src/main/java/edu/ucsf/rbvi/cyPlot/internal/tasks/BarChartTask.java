@@ -138,16 +138,9 @@ public class BarChartTask extends AbstractTask {
 			yArray = JSONUtils.csvToJSONArray(yValues);
 			nameArray = JSONUtils.csvToJSONArray(names);
 		}
-		if (yValLog) {
-			
-			yLabel = "Log("+yLabel+")";
-			yArray=ModelUtils.colToArrayLog(yColumn);
-			
-				
-			
-		}
+//		
 		String html = JSUtils.getBarChart(xArray, yArray,  selectionString, idColumn, nameArray, 
-		                                  title, xLabel, yLabel, editor);
+		                                  title, xLabel, yLabel, editor,yValLog);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
 		args.put("title", "Bar Chart");
