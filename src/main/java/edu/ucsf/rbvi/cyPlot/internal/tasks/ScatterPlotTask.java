@@ -27,6 +27,7 @@ import edu.ucsf.rbvi.cyPlot.internal.utils.ModelUtils;
 import edu.ucsf.rbvi.cyPlot.internal.utils.Plot;
 import edu.ucsf.rbvi.cyPlot.internal.utils.JSONUtils;
 import edu.ucsf.rbvi.cyPlot.internal.utils.JSUtils;
+import edu.ucsf.rbvi.cyPlot.internal.utils.LinearRegression;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
@@ -35,43 +36,46 @@ import org.cytoscape.model.CyTable;
 public class ScatterPlotTask extends AbstractTask {
 
 	final CyServiceRegistrar sr;
-	@Tunable (description="X-axis column")
+	@Tunable(description = "X-axis column")
 	public ListSingleSelection<String> xCol;
 
-	@Tunable (description="Y-axis column")
+	@Tunable(description = "Y-axis column")
 	public ListSingleSelection<String> yCol;
 
-	@Tunable (description="Name selection column")
+	@Tunable(description = "Name selection column")
 	public ListSingleSelection<String> nameCol;
 
-	@Tunable (description="Open in plot editor?")
+	@Tunable(description = "Open in plot editor?")
 	public boolean editor;
-	
-	@Tunable (description="Convert X axis values to logarithmic")
+
+	@Tunable(description = "Convert X axis values to logarithmic")
 	public boolean xValLog;
-	@Tunable (description="Convert Y axis values to logarithmic")
+	@Tunable(description = "Convert Y axis values to logarithmic")
 	public boolean yValLog;
+	
+	@Tunable(description = "Generate Regression Line")
+	public boolean regr;
 
 	// Command interface for non-network plots
-	@Tunable (description="JSON formatted string of point names", context="nogui")
+	@Tunable(description = "JSON formatted string of point names", context = "nogui")
 	public String names = null;
 
-	@Tunable (description="JSON formatted string of x values", context="nogui")
+	@Tunable(description = "JSON formatted string of x values", context = "nogui")
 	public String xValues = null;
 
-	@Tunable (description="JSON formatted string of y values", context="nogui")
+	@Tunable(description = "JSON formatted string of y values", context = "nogui")
 	public String yValues = null;
 
 	@ContainsTunables
 	public CommandTunables commandTunables = null;
 
-	@Tunable (description="JSON formatted string of z values", context="nogui")
+	@Tunable(description = "JSON formatted string of z values", context = "nogui")
 	public String zValues = null;
 
-	@Tunable (description="Color scale", context="nogui", dependsOn="zValues!=null")
+	@Tunable(description = "Color scale", context = "nogui", dependsOn = "zValues!=null")
 	public ListSingleSelection<String> colorscale;
 
-	@Tunable (description="Color scale label", context="nogui", dependsOn="zValues!=null")
+	@Tunable(description = "Color scale label", context = "nogui", dependsOn = "zValues!=null")
 	public String scaleLabel = null;
 
 	public CyApplicationManager appManager;
@@ -81,18 +85,19 @@ public class ScatterPlotTask extends AbstractTask {
 	public Collection<CyColumn> columns;
 
 	public ScatterPlotTask(final CyServiceRegistrar sr) {
+
 		super();
-		this.sr = sr; 
+		this.sr = sr;
 		appManager = sr.getService(CyApplicationManager.class);
 		netView = appManager.getCurrentNetworkView();
 		if (netView != null) {
 			network = netView.getModel();
 			table = network.getDefaultNodeTable();
 			columns = table.getColumns();
-			editor=true;
-			xValLog=false;
-			yValLog=false;
-
+			editor = true;
+			xValLog = false;
+			yValLog = false;
+			regr =false;
 			List<String> headers = ModelUtils.getColOptions(columns, "num");
 
 			List<String> names = ModelUtils.getColOptions(columns, "string");
@@ -106,37 +111,41 @@ public class ScatterPlotTask extends AbstractTask {
 			nameCol = null;
 		}
 		commandTunables = new CommandTunables();
-		colorscale = new ListSingleSelection<String>("Blues","Earth","Electric","Greens","Greys","Hot","Jet","Picnic","Portland","Reds","Viridis");
+		colorscale = new ListSingleSelection<String>("Blues", "Earth", "Electric", "Greens", "Greys", "Hot", "Jet",
+				"Picnic", "Portland", "Reds", "Viridis");
 		colorscale.setSelectedValue("Viridis");
 	}
 
 	/**
-	 * Generate the variables necessary to create a scatter plot in plotly with the cytoscape 
-	 * task. Creates and executes a TaskIterator which opens the plot within a cybrowser window. 
+	 * Generate the variables necessary to create a scatter plot in plotly with the
+	 * cytoscape task. Creates and executes a TaskIterator which opens the plot
+	 * within a cybrowser window.
 	 *
-	 * @param monitor the TaskMonitor required for this method by the parent 
-	 * AbstractTask class
+	 * @param monitor the TaskMonitor required for this method by the parent
+	 *                AbstractTask class
 	 */
-	public void run(TaskMonitor monitor) { 
+	public void run(TaskMonitor monitor) {
+		TaskManager sTM = sr.getService(TaskManager.class);
+		CommandExecutorTaskFactory taskFactory = sr.getService(CommandExecutorTaskFactory.class);
 		Map<String, String> xTraceMap;
 		Map<String, String> yTraceMap;
 		Map<String, String> zTraceMap = null;
 		Map<String, String> nameMap;
 		String idColumn = null;
 		CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
-		 
-		CyColumn yColumn=table.getColumn(ModelUtils.getTunableSelection(yCol));
+
+		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 		if (xValues == null && yValues == null) {
 			xTraceMap = new HashMap<>();
 			yTraceMap = new HashMap<>();
 			nameMap = new HashMap<>();
 
-			 xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
-			 yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
+			xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+			yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 
-			xTraceMap.put("trace",ModelUtils.colToArray(xColumn));
+			xTraceMap.put("trace", ModelUtils.colToArray(xColumn));
 
-			yTraceMap.put("trace",ModelUtils.colToArray(yColumn));
+			yTraceMap.put("trace", ModelUtils.colToArray(yColumn));
 
 			if (commandTunables.xLabel == null)
 				commandTunables.xLabel = xColumn.getName();
@@ -152,7 +161,8 @@ public class ScatterPlotTask extends AbstractTask {
 				// System.out.println("xValues");
 				xTraceMap = JSONUtils.getMap(xValues);
 			} catch (ParseException pe) {
-				monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to parse 'xValues' input: "+pe+": "+pe.getPosition());
+				monitor.showMessage(TaskMonitor.Level.ERROR,
+						"Unable to parse 'xValues' input: " + pe + ": " + pe.getPosition());
 				return;
 			}
 
@@ -160,7 +170,8 @@ public class ScatterPlotTask extends AbstractTask {
 				// System.out.println("yValues");
 				yTraceMap = JSONUtils.getMap(yValues);
 			} catch (ParseException pe) {
-				monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to parse 'yValues' input: "+pe+": "+pe.getPosition());
+				monitor.showMessage(TaskMonitor.Level.ERROR,
+						"Unable to parse 'yValues' input: " + pe + ": " + pe.getPosition());
 				return;
 			}
 
@@ -169,18 +180,24 @@ public class ScatterPlotTask extends AbstractTask {
 					// System.out.println("zValues");
 					zTraceMap = JSONUtils.getMap(zValues);
 				} catch (ParseException pe) {
-					monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to parse 'yValues' input: "+pe+": "+pe.getPosition());
+					monitor.showMessage(TaskMonitor.Level.ERROR,
+							"Unable to parse 'yValues' input: " + pe + ": " + pe.getPosition());
 					return;
 				}
 			}
 
 		}
 
+		
+		LinearRegression regrcalc = new LinearRegression(xColumn, yColumn,yValLog,xValLog);
+		
+		double slope = regrcalc.slope();
+		double intercept = regrcalc.intercept();
 		if (names == null) {
 			CyColumn nameColumn = table.getColumn(idColumn);
 			String nameArray = ModelUtils.colToArray(nameColumn);
 			nameMap = new LinkedHashMap<>();
-			for (String key: xTraceMap.keySet()) {
+			for (String key : xTraceMap.keySet()) {
 				nameMap.put(key, nameArray);
 			}
 		} else {
@@ -191,22 +208,18 @@ public class ScatterPlotTask extends AbstractTask {
 				nameMap = new HashMap<>();
 				// Maybe not?
 				String nameArr = JSONUtils.csvToJSONArray(names);
-				for (String key: xTraceMap.keySet()) {
+				for (String key : xTraceMap.keySet()) {
 					nameMap.put(key, nameArr);
 				}
 			}
 		}
-		
-		
-		Plot plot = new Plot("scatter", xTraceMap, yTraceMap, zTraceMap, nameMap, 
-				             commandTunables.selectionString, 
-				             idColumn, commandTunables.title, commandTunables.xLabel, 
-				             commandTunables.yLabel, "markers", null, null, 
-				             colorscale.getSelectedValue(),
-				             scaleLabel, editor, commandTunables.id, 
-				             commandTunables.id+":ScatterPlot",xValLog,yValLog);
 
-		ModelUtils.openCyBrowser(sr, plot.getHTML(), commandTunables.title, commandTunables.id+":ScatterPlot", true);
+		Plot plot = new Plot("scatter", xTraceMap, yTraceMap, zTraceMap, nameMap, commandTunables.selectionString,
+				idColumn, "Scatter Plot", commandTunables.xLabel, commandTunables.yLabel, "markers", null, null,
+				colorscale.getSelectedValue(), scaleLabel, editor, commandTunables.id,
+				commandTunables.id + ":ScatterPlot", xValLog, yValLog, regr,slope,intercept);
+
+		ModelUtils.openCyBrowser(sr, plot.getHTML(), commandTunables.title, commandTunables.id + ":ScatterPlot", true);
 		if (netView != null)
 			ModelUtils.addPlot(netView.getModel(), plot);
 		else
