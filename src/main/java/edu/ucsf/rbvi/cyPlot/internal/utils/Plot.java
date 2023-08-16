@@ -8,14 +8,15 @@ public class Plot {
 	private boolean xVl,yVl;
 	private Map<String, Map<String, String>> traceSettings;
 	private boolean editor;
-	
+	boolean regression;
+	double m,c;
 	public Plot(String type,
             Map<String, String> xTraceMap, Map<String, String> yTraceMap, 
             Map<String, String> zTraceMap, Map<String, String> nameTraceMap,
             String selectionString, String nameSelection,
             String title, String xLabel, String yLabel, String mode, 
             String dataExtra, String layoutExtra, String colorscale,
-            String scaleLabel, boolean editor, String plotID, String tabID,boolean xValLog,boolean yValLog) {
+            String scaleLabel, boolean editor, String plotID, String tabID,boolean xValLog,boolean yValLog,boolean regr,double slope,double intercept) {
 		settings = new HashMap<>();
 		traceSettings = new HashMap<>();
 		settings.put("type", type);
@@ -35,6 +36,9 @@ public class Plot {
 		settings.put("scaleLabel", scaleLabel);
 		settings.put("plotID", plotID);
 		settings.put("tabID", tabID);
+		regression=regr;
+		m=slope;
+		c=intercept;
 		xVl=xValLog;
 		yVl=yValLog;
 		
@@ -48,7 +52,7 @@ public class Plot {
 				settings.get("nameSelection"), settings.get("title"), settings.get("xLabel"), 
 				settings.get("yLabel"), settings.get("mode"), settings.get("dataExtra"), 
 				settings.get("layoutExtra"), settings.get("colorscale"),
-                settings.get("scaleLabel"), editor,xVl,yVl);
+                settings.get("scaleLabel"), editor,xVl,yVl,regression,m,c);
 	}
 	
 	public void setSetting(String str, String setting) {
