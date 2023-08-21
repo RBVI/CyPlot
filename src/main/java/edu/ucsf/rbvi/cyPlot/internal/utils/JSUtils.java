@@ -958,10 +958,18 @@ public class JSUtils {
 			
 			if(regr) {
 				
+				if(yValLog) {
+					var dataExtra3 = "var traceRegressionLine = {x:" + xTraceMap.get("trace")
+				    + ",y: " + xTraceMap.get("trace") + ".map(x => Math.pow(10, " + slope + "*Math.log10(x) + " + intercept + ")),mode: 'lines',type: 'scatter',name: 'Linear Regression'};";
+					builder.append(dataExtra3);
+
+				}else {
+					var dataExtra3 ="var traceRegressionLine = {x:" + xTraceMap.get("trace")
+					+ ",y: "+xTraceMap.get("trace") + ".map(x => "+slope+"*x + "+intercept+"),mode: 'lines',type: 'scatter',name: 'Linear Regression'};";
+					builder.append(dataExtra3);
+				}
 				
-				var dataExtra3 ="var traceRegressionLine = {x:" + xTraceMap.get("trace")
-				+ ",y: "+xTraceMap.get("trace") + ".map(x => "+slope+"*x + "+intercept+"),mode: 'lines',type: 'scatter',name: 'Linear Regression'};";
-				builder.append(dataExtra3);
+				
 				}
 			
 			for (String trace: xTraceMap.keySet()) {
