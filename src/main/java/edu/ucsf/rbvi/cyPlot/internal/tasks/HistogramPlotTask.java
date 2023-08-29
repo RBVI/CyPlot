@@ -27,20 +27,18 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 
-public class BarChartTask extends AbstractTask {
+public class HistogramPlotTask extends AbstractTask {
 	
 	final CyServiceRegistrar sr;
 
-	@Tunable (description="Y-axis column")
-	public ListSingleSelection<String> yCol;
 	
-	@Tunable (description="X-axis column")
+	@Tunable (description="Select Column for Histogram")
 	public ListSingleSelection<String> xCol;
 
 	@Tunable (description="Name selection column")
 	public ListSingleSelection<String> nameCol;
 	
-	@Tunable (description="Open in plot editor?")
+	@Tunable (description="Open in plot editor?",context="nogui")
 	public boolean editor;
 
 	// Command interface for non-network plots
@@ -64,10 +62,8 @@ public class BarChartTask extends AbstractTask {
 
 	@Tunable (description="Y Axis Label", context="nogui")
 	public String yLabel = null;
-	
 	@Tunable (description="Convert Y axis values to logarithmic")
 	public boolean yValLog;
-
 	
 	
 	public CyApplicationManager appManager;
@@ -76,29 +72,36 @@ public class BarChartTask extends AbstractTask {
 	public CyTable table;
 	public Collection<CyColumn> columns;
 		
-	public BarChartTask(final CyServiceRegistrar sr) {
+	public HistogramPlotTask(final CyServiceRegistrar sr) {
 		super();
 		this.sr = sr; 
 		appManager = sr.getService(CyApplicationManager.class);
 		netView = appManager.getCurrentNetworkView();
-		if (netView != null) {
-			network = netView.getModel();
-			table = network.getDefaultNodeTable();
-			columns = table.getColumns();
-			editor = true;
+		
+			
+			
+			if (netView != null) {
+				network = netView.getModel();
+				table = network.getDefaultNodeTable();
+				columns = table.getColumns();
+				editor = false;
+	
+				List<String> headers = ModelUtils.getColOptions(columns, "num");
+	
+				List<String> names = ModelUtils.getColOptions(columns, "string");
+				
+					xCol = new ListSingleSelection<>(headers);
+										
+					nameCol = new ListSingleSelection<>(names);
 
-			List<String> headers = ModelUtils.getColOptions(columns, "num");
-
-			List<String> names = ModelUtils.getColOptions(columns, "string");
-
-			xCol = new ListSingleSelection<>(headers);
-			yCol = new ListSingleSelection<>(headers);
-			nameCol = new ListSingleSelection<>(names);
-		} else {
-			xCol = null;
-			yCol = null;
-			nameCol = null;
-		}
+				
+	
+			} else {
+				xCol = null;
+				
+				nameCol = null;
+			}
+		
 	}
 
 	/**
@@ -116,20 +119,21 @@ public class BarChartTask extends AbstractTask {
 		String yArray;
 		String nameArray;
 		String idColumn = null;
-		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 		CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
-		if (xCol != null && yCol != null) {
-			
+		if (xCol != null) {
+//			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
+//			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
 			CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 		
 			xArray = ModelUtils.colToArray(xColumn);
 		
-			yArray = ModelUtils.colToArray(yColumn);
+//			yArray = ModelUtils.colToArray(yColumn);
 
 			nameArray = ModelUtils.colToArray(nameColumn);
 				
 			xLabel = xColumn.getName();
-			yLabel = yColumn.getName();
+			
+			yLabel ="Frequency";
 
 			if (nameCol != null)
 				idColumn = ModelUtils.getTunableSelection(nameCol);
@@ -138,12 +142,12 @@ public class BarChartTask extends AbstractTask {
 			yArray = JSONUtils.csvToJSONArray(yValues);
 			nameArray = JSONUtils.csvToJSONArray(names);
 		}
-//		
-		String html = JSUtils.getBarChart(xArray, yArray,  selectionString, idColumn, nameArray, 
-		                                  title, xLabel, yLabel, editor,yValLog);
+
+		String html = JSUtils.getHistogramPlot(xArray, null, yValLog, selectionString, idColumn, nameArray,
+		                                  title, xLabel, yLabel, editor);
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);
-		args.put("title", "Bar Chart");
+		args.put("title", "Histogram Plot");
 
 		TaskIterator ti = taskFactory.createTaskIterator("cybrowser", "dialog", args, null);
 		sTM.execute(ti);

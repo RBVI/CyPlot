@@ -65,6 +65,13 @@ public class LineGraphTask extends AbstractTask {
 
 	@Tunable (description="Y Axis Label", context="nogui")
 	public String yLabel = null;
+	
+
+	@Tunable (description="Convert X axis values to logarithmic")
+	public boolean xValLog;
+	@Tunable (description="Convert Y axis values to logarithmic")
+	public boolean yValLog;
+
 
 	// @ContainsTunables
 	// public CommandTunables commandTunables = null;
@@ -115,18 +122,19 @@ public class LineGraphTask extends AbstractTask {
 		Map<String, String> yTraceMap;
 		Map<String, String> nameMap;
 		String idColumn = null;
-
+		CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+		CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 		if (xCol != null && yCol != null) {
 			xTraceMap = new HashMap<>();
 			yTraceMap = new HashMap<>();
 			nameMap = new HashMap<>();
 
-			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
-			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
+//			CyColumn xColumn = table.getColumn(ModelUtils.getTunableSelection(xCol));
+//			CyColumn yColumn = table.getColumn(ModelUtils.getTunableSelection(yCol));
 			CyColumn nameColumn = table.getColumn(ModelUtils.getTunableSelection(nameCol));
 
 			xTraceMap.put("trace",ModelUtils.colToArray(xColumn));
-
+			
 			yTraceMap.put("trace",ModelUtils.colToArray(yColumn));
 
 			if (xLabel == null)
@@ -174,10 +182,13 @@ public class LineGraphTask extends AbstractTask {
 				}
 			}
 		}
-
+		
+		
+		
+		title="Line Graph";
 		String html = JSUtils.getXYPlot("scatter", xTraceMap, yTraceMap, null, nameMap, 
 		                                selectionString, idColumn, 
-		                                title, xLabel, yLabel, "lines", null, null, null, null, editor);
+		                                title, xLabel, yLabel, "lines", null, null, null, null, editor,xValLog,yValLog,false,0,0);
 
 		Map<String, Object> args = new HashMap<>();		
 		args.put("text", html);

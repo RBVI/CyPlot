@@ -39,6 +39,16 @@ public class JSONUtils {
 		}
 		return returnMap;
 	}
+	public static Map<String, String> getMapLog(String data) throws ParseException {
+		JSONParser parser = new JSONParser();
+		Map<String, Object> obj = (Map)parser.parse(data, factory);
+		Map<String, String> returnMap = new LinkedHashMap<>();
+		for (Object key: obj.keySet()) {
+			String strKey = key.toString();
+			returnMap.put(strKey, arrayToStringLog(obj.get(key)));
+		}
+		return returnMap;
+	}
 
 	public static Map<String, List<?>> getListMap(String data) throws ParseException {
 		JSONParser parser = new JSONParser();
@@ -93,6 +103,30 @@ public class JSONUtils {
 
 				if (value != 0.0)
 					value = -Math.log10(value);
+				else
+					value = Double.NaN;
+
+				builder.append("'"+String.valueOf(value)+"',");
+			}
+			return builder.substring(0,builder.length()-1).toString()+"]";
+		} else {
+			return obj.toString();
+		}
+	}
+	public static String arrayToStringLog(Object obj) {
+		if (obj instanceof JSONArray) {
+			JSONArray arr = (JSONArray) obj;
+			StringBuilder builder = new StringBuilder();
+		 	builder.append("[");
+			for (Object v: arr) {
+				double value;
+				if (v instanceof Double)
+					value = (Double)v;
+				else
+					value = Double.parseDouble(v.toString());
+
+				if (value != 0.0)
+					value = Math.log10(value);
 				else
 					value = Double.NaN;
 

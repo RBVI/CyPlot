@@ -178,7 +178,7 @@ public class VolcanoPlotTask extends AbstractTask {
 
 		String html = JSUtils.getXYPlot("scatter", fcTraceMap, pvTraceMap, null, 
 		                                nameMap, selectionString, idColumn, 
-		                                title, xLabel, yLabel, "markers", null, null, null, null, editor);
+		                                title, xLabel, yLabel, "markers", null, null, null, null, editor,false,false,false,0,0);
 
 		Map<String, Object> args = new HashMap();
 		args.put("text", html);
