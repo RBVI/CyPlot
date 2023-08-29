@@ -24,7 +24,18 @@
 		<link>
 			<name>src/main/resources/js/main.e236ec29.js</name>
 			<type>1</type>
-			<location>C:/Users/Lilly/Downloads/main.e236ec29.js</location>
+			<location>/Users/yxin/git/cytoscape/CyPlot/C::/Users/Lilly/Downloads/main.e236ec29.js</location>
 		</link>
 	</linkedResources>
+	<filteredResources>
+		<filter>
+			<id>1693351636886</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.core.resources.regexFilterMatcher</id>
+				<arguments>node_modules|\.git|__CREATED_BY_JAVA_LANGUAGE_SERVER__</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

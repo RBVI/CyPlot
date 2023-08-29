@@ -53,7 +53,7 @@ public class ScatterPlotTask extends AbstractTask {
 	@Tunable(description = "Convert Y axis values to logarithmic")
 	public boolean yValLog;
 	
-	@Tunable(description = "Generate Regression Line")
+	@Tunable(description = "Plot linear regression line")
 	public boolean regr;
 
 	// Command interface for non-network plots
