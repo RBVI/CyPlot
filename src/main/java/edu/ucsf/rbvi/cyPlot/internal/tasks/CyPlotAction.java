@@ -103,7 +103,7 @@ public class CyPlotAction extends AbstractCyAction {
 		putValue(LARGE_ICON_KEY, icon);
 
 		setIsInNodeTableToolBar(true);
-		setIsInEdgeTableToolBar(true);
+		setIsInEdgeTableToolBar(false);
 //		setIsInNetworkTableToolBar(false);
 //		setIsInUnassignedTableToolBar(false);
 		
@@ -124,7 +124,7 @@ public class CyPlotAction extends AbstractCyAction {
 	private void showCreateColumnPopup(Component invoker) {
 		var popup = new JPopupMenu();
 			
-		var columnRegular = new JMenu("Cyplot tools");
+		var columnRegular = new JMenu("CyPlot");
 		
 
 		columnRegular.add(getJMenuItemScatter(false));
