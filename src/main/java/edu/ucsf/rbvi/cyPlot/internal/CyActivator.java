@@ -452,7 +452,7 @@ public class CyActivator extends AbstractCyActivator {
 			props.setProperty(TITLE, "Cyplot");
 			
 //			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
-			var icon = new TextIcon("+", iconFont, 40, 40); // "#" is the node table icon in the cytoscape-3 font
+			var icon = new TextIcon("#", iconFont, 16, 16); // "#" is the node table icon in the cytoscape-3 font
 			var iconId = "CyPlot_Graph_Editor";
 			iconManager.addIcon(iconId, icon);
 			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
