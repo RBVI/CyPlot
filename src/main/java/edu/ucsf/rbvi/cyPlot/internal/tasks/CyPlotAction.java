@@ -82,7 +82,7 @@ import javax.swing.UIManager;
 @SuppressWarnings("serial")
 public class CyPlotAction extends AbstractCyAction {
 
-	private static String TITLE = "Cyplot Tools...";
+	private static String TITLE = "CyPlot...";
 	
     
     
@@ -99,7 +99,7 @@ public class CyPlotAction extends AbstractCyAction {
         
 		this.serviceRegistrar = serviceRegistrar;
 		
-//		putValue(SHORT_DESCRIPTION, TITLE);
+		putValue(SHORT_DESCRIPTION, TITLE);
 		putValue(LARGE_ICON_KEY, icon);
 
 		setIsInNodeTableToolBar(true);
