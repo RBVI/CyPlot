@@ -38,7 +38,7 @@ public class HistogramPlotTask extends AbstractTask {
 	@Tunable (description="Name selection column")
 	public ListSingleSelection<String> nameCol;
 	
-	@Tunable (description="Open in plot editor?",context="nogui")
+	@Tunable (description="Open in plot editor?")
 	public boolean editor;
 
 	// Command interface for non-network plots
@@ -84,7 +84,7 @@ public class HistogramPlotTask extends AbstractTask {
 				network = netView.getModel();
 				table = network.getDefaultNodeTable();
 				columns = table.getColumns();
-				editor = false;
+				editor = true;
 	
 				List<String> headers = ModelUtils.getColOptions(columns, "num");
 	
