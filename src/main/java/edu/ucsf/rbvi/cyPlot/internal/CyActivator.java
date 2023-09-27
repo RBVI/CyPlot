@@ -12,6 +12,9 @@ import static org.cytoscape.work.ServiceProperties.TITLE;
 
 import java.util.Properties;
 
+import javax.swing.Icon;
+import java.awt.Font;
+
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.ToolBarComponent;
 
@@ -31,6 +34,7 @@ import org.cytoscape.application.swing.CyAction;
 
 
 import edu.ucsf.rbvi.cyPlot.internal.tasks.VolcanoPlotTaskFactory;
+import edu.ucsf.rbvi.cyPlot.internal.utils.IconUtil;
 import edu.ucsf.rbvi.cyPlot.internal.utils.NodeSelectedListener;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ScatterPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ViolinPlotTaskFactory;
@@ -81,8 +85,6 @@ public class CyActivator extends AbstractCyActivator {
 
 		NodeSelectedListener nodeSelectedListener = new NodeSelectedListener(sr);
 		registerService(context, nodeSelectedListener, SelectedNodesAndEdgesListener.class, new Properties());
-		var iconManager = sr.getService(IconManager.class);
-		var iconFont = iconManager.getIconFont("cytoscape-3", 18.0f);
 		
 //		{
 ////			CyChartManager manager = new CyChartManager(sr);
@@ -452,11 +454,10 @@ public class CyActivator extends AbstractCyActivator {
 			props.setProperty(TITLE, "Cyplot");
 			
 //			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
-			var icon = new TextIcon("#", iconFont, 16, 16); // "#" is the node table icon in the cytoscape-3 font
-			var iconId = "CyPlot_Graph_Editor";
-			iconManager.addIcon(iconId, icon);
-			props.setProperty(ServiceProperties.LARGE_ICON_ID, iconId);
-			
+   			Font font = IconUtil.getAppFont(28f);
+    		int iconSize = 24;
+      		Icon icon = new TextIcon("[", font, iconSize, iconSize);
+		
 			
 			props.setProperty(ServiceProperties.TOOLTIP, "CyPlot Tools...");
 			props.setProperty("inNodeTableToolBar", "true");
