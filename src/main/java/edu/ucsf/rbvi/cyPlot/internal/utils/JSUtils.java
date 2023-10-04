@@ -27,6 +27,8 @@ import edu.ucsf.rbvi.cyPlot.internal.utils.LinearRegression;
 // TODO: lots of opportunity to clean things up here
 public class JSUtils {
 	public static String PLOT_CLASS = "js-plotly-plot";
+	public static boolean DEBUG = false;
+
 
 	/**
 	 * Generate the string necessary to load the needed plotly and react files.
@@ -79,7 +81,9 @@ public class JSUtils {
 				"ReactDOM.render(React.createElement(app.App.default, { dataSources: dataSources }), document.getElementById('CyPlot'));\n");
 		builder.append("</script>\n");
 		builder.append(getPlotly());
-		writeDebugFile(builder.toString(), "getChartEditor.html");
+		if (DEBUG) {
+			writeDebugFile(builder.toString(), "getChartEditor.html");
+		}
 		return builder.toString();
 	}
 
@@ -170,7 +174,9 @@ public class JSUtils {
 //			boolean xValLog) {
 //		String html = getXYPlot("scatter", xTraceMap, yTraceMap, null, nameTraceMap, selectionString, nameSelection,
 //				title, xLabel, yLabel, dataExtra, layoutExtra, mode, null, null, editor, xValLog, yValLog);
-//		writeDebugFile(html, "ScatterPlot.html");
+//		if (DEBUG) {
+//			writeDebugFile(html, "ScatterPlot.html");
+//      }
 //		return html;
 //	}
 
@@ -236,7 +242,9 @@ public class JSUtils {
 			}
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
-			writeDebugFile(builder.toString(), "FilledAreaPlot.html");
+			if (DEBUG) {
+				writeDebugFile(builder.toString(), "FilledAreaPlot.html");
+			}
 		}
 
 		return builder.toString();
@@ -279,7 +287,9 @@ public class JSUtils {
 				getLassoCode(builder, "CyPlot", selectionString, nameSelection, false);
 			}
 			builder.append(getPlotly());
-			writeDebugFile(builder.toString(), "VolcanoPlot.html");
+			if (DEBUG) {
+				writeDebugFile(builder.toString(), "VolcanoPlot.html");
+			}
 		} else {
 			builder.append("<body>");
 			builder.append("<div id=\"CyPlot\" style=\"width: 100%; height: 100%\"></div>\n");
@@ -300,7 +310,9 @@ public class JSUtils {
 			}
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
-			writeDebugFile(builder.toString(), "VolcanoEditor.html");
+			if (DEBUG) {
+				writeDebugFile(builder.toString(), "VolcanoEditor.html");
+			}
 		}
 
 		return builder.toString();
@@ -383,7 +395,9 @@ public class JSUtils {
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
 		}
-		writeDebugFile(builder.toString(), "barchart.html");
+		if (DEBUG) {
+			writeDebugFile(builder.toString(), "barchart.html");
+		}
 
 		return builder.toString();
 	}
@@ -487,7 +501,9 @@ public class JSUtils {
 		if (editor)
 			addHideControlsCode(builder);
 		builder.append(getPlotly());
-		writeDebugFile(builder.toString(), "HeatMap.html");
+		if (DEBUG) {
+			writeDebugFile(builder.toString(), "HeatMap.html");
+		}
 		return builder.toString();
 	}
 
@@ -580,7 +596,9 @@ public class JSUtils {
 			getLassoCode(builder, "CyPlot", selectionString, nameSelection, editor);
 		}
 		builder.append(getPlotly());
-		writeDebugFile(builder.toString(), "ViolinPlot.html");
+		if (DEBUG) {
+			writeDebugFile(builder.toString(), "ViolinPlot.html");
+		}
 		return builder.toString();
 	}
 
@@ -636,7 +654,9 @@ public class JSUtils {
 		}
 		builder.append("</script>\n");
 		builder.append(getPlotly());
-		writeDebugFile(builder.toString(), "DotPlot.html");
+		if (DEBUG) {
+			writeDebugFile(builder.toString(), "DotPlot.html");
+		}
 		return builder.toString();
 	}
 
@@ -1026,8 +1046,9 @@ public class JSUtils {
 			if (editor)
 			addHideControlsCode(builder);
 			builder.append(getPlotly());
-			
-			writeDebugFile(builder.toString(), type+"Plot.html");
+			if (DEBUG) {
+				writeDebugFile(builder.toString(), type+"Plot.html");
+			}
 			return builder.toString();
 }
 	/**
@@ -1132,7 +1153,9 @@ public class JSUtils {
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
 		}
-		writeDebugFile(builder.toString(), "histogram.html");
+		if (DEBUG) {
+			writeDebugFile(builder.toString(), "histogram.html");
+		}
 
 		return builder.toString();
 	}
@@ -1189,7 +1212,9 @@ public class JSUtils {
 			addHideControlsCode(builder);
 			builder.append("</body></html>");
 		}
-		writeDebugFile(builder.toString(), "histogram.html");
+		if (DEBUG) {
+			writeDebugFile(builder.toString(), "histogram.html");
+		}
 
 		return builder.toString();
 	}
