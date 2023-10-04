@@ -78,7 +78,7 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 				network = netView.getModel();
 				table = network.getDefaultNodeTable();
 				columns = table.getColumns();
-
+				editor = true;
 				List<String> headers = ModelUtils.getColOptions(columns, "num");
 				List<String> names = ModelUtils.getColOptions(columns, "string");
 
