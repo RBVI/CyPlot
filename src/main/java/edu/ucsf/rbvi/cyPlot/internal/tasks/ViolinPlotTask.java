@@ -16,7 +16,8 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 	import org.cytoscape.view.model.CyNetworkView;
 	import org.cytoscape.work.AbstractTask;
 	import org.cytoscape.work.ContainsTunables;
-	import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.ProvidesTitle;
+import org.cytoscape.work.TaskIterator;
 	import org.cytoscape.work.TaskManager;
 	import org.cytoscape.work.TaskMonitor;
 	import org.cytoscape.work.Tunable;
@@ -172,4 +173,8 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 
 			ModelUtils.openCyBrowser(sr, html, commandTunables.title, commandTunables.id+":ViolinPlot", true);
 		}
+	@ProvidesTitle
+    public String getTitle() {
+        return "Violin Plot";
+    }
 }

@@ -30,6 +30,7 @@ import org.cytoscape.util.color.PaletteType;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.ContainsTunables;
+import org.cytoscape.work.ProvidesTitle;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
@@ -299,4 +300,8 @@ public class HeatMapTask extends AbstractTask {
 		}
 		return minmax;
 	}
+	@ProvidesTitle
+    public String getTitle() {
+        return "Heat Map";
+    }
 }

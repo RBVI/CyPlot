@@ -17,6 +17,7 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.ContainsTunables;
+import org.cytoscape.work.ProvidesTitle;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
@@ -225,4 +226,9 @@ public class ScatterPlotTask extends AbstractTask {
 		else
 			ModelUtils.addPlot(null, plot); // Command?
 	}
+
+	@ProvidesTitle
+    public String getTitle() {
+        return "Scatter Plot";
+    }
 }
