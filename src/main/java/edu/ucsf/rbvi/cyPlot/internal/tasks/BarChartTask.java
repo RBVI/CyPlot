@@ -88,12 +88,14 @@ public class BarChartTask extends AbstractTask {
 			columns = table.getColumns();
 			editor = true;
 
-			List<String> headers = ModelUtils.getColOptions(columns, "num");
+			List<String> xheaders = ModelUtils.getColOptions(columns, "all");
+
+			List<String> yheaders = ModelUtils.getColOptions(columns, "num");
 
 			List<String> names = ModelUtils.getColOptions(columns, "string");
 
-			xCol = new ListSingleSelection<>(headers);
-			yCol = new ListSingleSelection<>(headers);
+			xCol = new ListSingleSelection<>(xheaders);
+			yCol = new ListSingleSelection<>(yheaders);
 			nameCol = new ListSingleSelection<>(names);
 		} else {
 			xCol = null;
