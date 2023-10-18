@@ -153,7 +153,7 @@ public class VolcanoPlotTask extends AbstractTask {
 		}
 
 		if (names == null) {
-			CyColumn nameColumn = table.getColumn("shared name");
+			CyColumn nameColumn = table.getColumn(idColumn);
 			String nameArray = ModelUtils.colToArray(nameColumn);
 			nameMap = new HashMap<>();
 			for (String key: fcTraceMap.keySet()) {

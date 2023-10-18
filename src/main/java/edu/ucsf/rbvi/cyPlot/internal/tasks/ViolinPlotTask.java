@@ -116,9 +116,18 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 				}
 			}
 
+			String idColumn = null;
+			if (nameCol != null)
+				idColumn = ModelUtils.getTunableSelection(nameCol);
+
+			String dataExtra = null;
+			if (showAll) {
+				dataExtra = "points: 'all'";
+			}
+
 			String nameArray;
 			if (names == null) {
-				CyColumn nameColumn = table.getColumn("shared name");
+				CyColumn nameColumn = table.getColumn(idColumn);
 				nameArray = ModelUtils.colToArray(nameColumn);
 				nameMap = new HashMap<>();
 				for (String key: traceMap.keySet()) {
@@ -147,15 +156,6 @@ package edu.ucsf.rbvi.cyPlot.internal.tasks;
 				}
 			} else {
 				traceOrder = new ArrayList<>(traceMap.keySet());
-			}
-
-			String idColumn = null;
-			if (nameCol != null)
-				idColumn = ModelUtils.getTunableSelection(nameCol);
-
-			String dataExtra = null;
-			if (showAll) {
-				dataExtra = "points: 'all'";
 			}
 
 			if (jitter > 0.0) {
