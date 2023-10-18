@@ -38,7 +38,7 @@ import edu.ucsf.rbvi.cyPlot.internal.utils.NodeSelectedListener;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ScatterPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ViolinPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.BarChartTaskFactory;
-import edu.ucsf.rbvi.cyPlot.internal.tasks.DotPlotTaskFactory;
+//import edu.ucsf.rbvi.cyPlot.internal.tasks.DotPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.FilledAreaTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.GraphEditorTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapTaskFactory;
@@ -131,7 +131,7 @@ public class CyPlotAction extends AbstractCyAction {
 		columnRegular.add(getJMenuItemHistogram(false));
 		columnRegular.add(getJMenuItemVolcano(false));
 		columnRegular.add(getJMenuItemViolin(false));
-		columnRegular.add(getJMenuItemDot(false));
+//		columnRegular.add(getJMenuItemDot(false));
 		columnRegular.add(getJMenuItemBar(false));
 		columnRegular.add(getJMenuItemFilledArea(false));
 		columnRegular.add(getJMenuItemGraphEditor(false));
@@ -192,13 +192,13 @@ public class CyPlotAction extends AbstractCyAction {
 		
 		return mi;
 	}
-	private JMenuItem getJMenuItemDot(boolean isShared) {
-		var mi = new JMenuItem();
-		mi.setText("Dot Plot");
-		mi.addActionListener(e -> createNewAttribute("Dot Plot", isShared));
+//	private JMenuItem getJMenuItemDot(boolean isShared) {
+//		var mi = new JMenuItem();
+//		mi.setText("Dot Plot");
+//		mi.addActionListener(e -> createNewAttribute("Dot Plot", isShared));
 		
-		return mi;
-	}
+//		return mi;
+//	}
 	private JMenuItem getJMenuItemFilledArea(boolean isShared) {
 		var mi = new JMenuItem();
 		mi.setText("Filled Area Plot");
@@ -276,11 +276,11 @@ public class CyPlotAction extends AbstractCyAction {
 		    		TaskManager taskManager = serviceRegistrar.getService(TaskManager.class);
 		    		taskManager.execute(taskIterator);
 			    	
-			    }else if(type.equals("Dot Plot")) {
-			    	DotPlotTaskFactory dptf=new DotPlotTaskFactory(serviceRegistrar);
-		    		taskIterator = dptf.createTaskIterator();
-		    		TaskManager taskManager = serviceRegistrar.getService(TaskManager.class);
-		    		taskManager.execute(taskIterator);
+//			    }else if(type.equals("Dot Plot")) {
+//			    	DotPlotTaskFactory dptf=new DotPlotTaskFactory(serviceRegistrar);
+//		    		taskIterator = dptf.createTaskIterator();
+//		    		TaskManager taskManager = serviceRegistrar.getService(TaskManager.class);
+//		    		taskManager.execute(taskIterator);
 			    	
 			    }else if(type.equals("Filled Area Plot")) {
 			    	FilledAreaTaskFactory faptf=new FilledAreaTaskFactory(serviceRegistrar);

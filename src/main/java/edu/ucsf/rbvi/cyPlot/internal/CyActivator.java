@@ -39,7 +39,7 @@ import edu.ucsf.rbvi.cyPlot.internal.utils.NodeSelectedListener;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ScatterPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ViolinPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.BarChartTaskFactory;
-import edu.ucsf.rbvi.cyPlot.internal.tasks.DotPlotTaskFactory;
+//import edu.ucsf.rbvi.cyPlot.internal.tasks.DotPlotTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.FilledAreaTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.GraphEditorTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapTaskFactory;
@@ -49,7 +49,7 @@ import edu.ucsf.rbvi.cyPlot.internal.tasks.HistogramPlotTaskFactory;
 
 import edu.ucsf.rbvi.cyPlot.internal.tasks.ScatterPlotColumnTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.BarChartColumnTaskFactory;
-import edu.ucsf.rbvi.cyPlot.internal.tasks.DotPlotColumnTaskFactory;
+//import edu.ucsf.rbvi.cyPlot.internal.tasks.DotPlotColumnTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.FilledAreaColumnTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.GraphEditorColumnTaskFactory;
 import edu.ucsf.rbvi.cyPlot.internal.tasks.HeatMapColumnTaskFactory;
@@ -367,12 +367,12 @@ public class CyActivator extends AbstractCyActivator {
 		}
 
 		// Dot plot
-		{
-			Properties props = new Properties();
-			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
-			props.put(ServiceProperties.TITLE, "Dot plot");
-			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
-			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
+//		{
+//			Properties props = new Properties();
+//			props.put(ServiceProperties.PREFERRED_MENU, "Tools.CyPlot");
+//			props.put(ServiceProperties.TITLE, "Dot plot");
+//			props.setProperty(ServiceProperties.IN_MENU_BAR, "true");
+//			props.setProperty(ServiceProperties.ENABLE_FOR, "networkAndView");
 			
 //			var icon = new TextIcon("/", iconFont, 10, 10); // "#" is the node table icon in the cytoscape-3 font
 //			var iconId = "CyPlot_Dot_plot";
@@ -386,16 +386,16 @@ public class CyActivator extends AbstractCyActivator {
 //			props.setProperty(ServiceProperties.TOOL_BAR_GRAVITY, "5");
 			
 			
-			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
-			props.setProperty(ServiceProperties.COMMAND, "dot");
-			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a dot area plot from node or edge table data");
-			props.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
-			props.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
-			props.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
+//			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
+//			props.setProperty(ServiceProperties.COMMAND, "dot");
+//			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a dot area plot from node or edge table data");
+//			props.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
+//			props.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
+//			props.setProperty(ServiceProperties.COMMAND_EXAMPLE_JSON, "{}");
 
-			TaskFactory dtf = new DotPlotTaskFactory(sr);
-			registerService(context, dtf, TaskFactory.class, props);
-		}
+//			TaskFactory dtf = new DotPlotTaskFactory(sr);
+//			registerService(context, dtf, TaskFactory.class, props);
+//		}
 
 		// Graph editor
 		{
