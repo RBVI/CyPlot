@@ -135,7 +135,7 @@ public class CyActivator extends AbstractCyActivator {
 			
 			
 			props.setProperty(ServiceProperties.COMMAND_NAMESPACE, "cyplot");
-			props.setProperty(ServiceProperties.COMMAND, "volcano");
+			props.setProperty(ServiceProperties.COMMAND, "histogram");
 			props.setProperty(ServiceProperties.COMMAND_DESCRIPTION, "Create a volcano plot from node or edge table data");
 			props.setProperty(ServiceProperties.COMMAND_LONG_DESCRIPTION, "TODO");
 			props.setProperty(ServiceProperties.COMMAND_SUPPORTS_JSON, "true");
